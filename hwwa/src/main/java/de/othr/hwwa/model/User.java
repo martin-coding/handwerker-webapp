@@ -2,6 +2,7 @@ package de.othr.hwwa.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -51,6 +52,13 @@ public class User implements Serializable{
     )
     private List<Role> roles = new ArrayList<Role>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name="usertask",
+            joinColumns = @JoinColumn(name="iduser"),
+            inverseJoinColumns = @JoinColumn(name="idtask")
+    )
+    private List<Task> tasks = new ArrayList<>();
 
     public List<Role> getRoles() {
         return roles;
@@ -104,4 +112,11 @@ public class User implements Serializable{
         this.password = password;
     }
 
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
 }
