@@ -41,8 +41,8 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/resources/**", "/api/**", "/api/workshops/**", "/student/**",
-                        "/webjars/**", "/h2-console/**", "/login", "/logout").permitAll()
-                .requestMatchers("/home").hasAnyAuthority("REGISTRATION", "LIST_STUDENT")
+                        "/webjars/**", "/h2-console/**", "/login", "/logout", "/", "home", "/tasks").permitAll()
+                //.requestMatchers("/home").hasAnyAuthority("REGISTRATION", "LIST_STUDENT")
                 .requestMatchers("/registration/**").hasAuthority("REGISTRATION")
         );
 
