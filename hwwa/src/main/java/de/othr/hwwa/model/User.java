@@ -2,75 +2,63 @@ package de.othr.hwwa.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name="user")
 @Inheritance(strategy=InheritanceType.JOINED)
-//more about: https://stackabuse.com/guide-to-jpa-with-hibernate-inheritance-mapping/
 public class User implements Serializable{
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    @NotBlank(message = "login is mandatory")
-    private String login;
+    private String firstName;
 
-    @NotBlank(message = "password is mandatory")
+    private String lastName;
+
+    private String userName;
+
     private String password;
 
-    @NotBlank(message = "Email is mandatory")
     private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     private boolean active = true;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
-            name="userrole",
-            joinColumns = @JoinColumn(name="iduser"),
-            inverseJoinColumns = @JoinColumn(name="idrole")
-    )
-    private List<Role> roles = new ArrayList<Role>();
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name="usertask",
-            joinColumns = @JoinColumn(name="iduser"),
-            inverseJoinColumns = @JoinColumn(name="idtask")
+            name="user_task",
+            joinColumns = @JoinColumn(name="user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name="task_id", referencedColumnName = "id")
     )
     private List<Task> tasks = new ArrayList<>();
 
-    public List<Role> getRoles() {
-        return roles;
-    }
+    public User(){}
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
+    public String getFirstName() {return firstName;}
+
+    public void setFirstName(String firstName) {this.firstName = firstName;}
+
+    public String getLastName() {return lastName;}
+
+    public void setLastName(String lastName) {this.lastName = lastName;}
 
     public Long getId() {
         return id;
     }
+
+    public String getUserName() {return userName;}
+
+    public void setUserName(String userName) {this.userName = userName;}
 
     public String getEmail() {
         return email;
@@ -78,30 +66,6 @@ public class User implements Serializable{
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public static long getSerialversionuid() {
-        return serialVersionUID;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
     }
 
     public String getPassword() {
@@ -116,7 +80,15 @@ public class User implements Serializable{
         return tasks;
     }
 
+    public Role getRole() {return role;}
+
+    public void setRole(Role role) {this.role = role;}
+
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
+
+    public boolean isActive() {return active;}
+
+    public void setActive(boolean active) {this.active = active;}
 }

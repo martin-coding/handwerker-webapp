@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import de.othr.hwwa.model.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import de.othr.hwwa.model.Authority;
-import de.othr.hwwa.model.Role;
 import de.othr.hwwa.model.User;
 
 public class MyUserDetails implements UserDetails {
@@ -20,35 +20,24 @@ public class MyUserDetails implements UserDetails {
     private String password;
     private boolean active;
     private List<GrantedAuthority> authorities;
-    private List <Role> roles;
+    private Role role;
 
 
     public MyUserDetails(User user) {
-        this.userName= user.getLogin();
+        this.userName= user.getUserName();
         this.password= user.getPassword();
         System.out.println("password of the user is="+password);
         System.out.println("userName of the user is="+this.userName);
         this.active = user.isActive();
 
-        //getting roles from the DB
-        List<Role> myRoles = (List<Role>) user.getRoles();
-
-        System.out.println("the user "+  user.getLogin() +" has "+
-                myRoles.size() +" roles");
-
-        //authorities is required by Userdetails from Spring Security
-        this.roles = myRoles;
-        authorities = new ArrayList<>();
-
-        //passing the authorities of each Profile from the DB to the Spring Security collection UserDetails.authorities
-        for (int i=0; i< myRoles.size(); i++){
-            List <Authority> myAuthsProfile = (List<Authority>) myRoles.get(i).getAuthorities();
-            for (Authority auth : myAuthsProfile) {
-                authorities.add(new SimpleGrantedAuthority(auth.getDescription().toUpperCase()));
-                System.out.println("the authority" + i +" of the profile "+myRoles.get(i).getDescription()+" of the user " +user.getLogin() + " is "+ auth.getDescription());
+        Role userRole = user.getRole();
+        this.authorities = new ArrayList<>();
+        if (userRole != null){
+            for (Authority authority : userRole.getAuthorities()) {
+                authorities.add(new SimpleGrantedAuthority(authority.getName()));
             }
-
         }
+
 
     }
 

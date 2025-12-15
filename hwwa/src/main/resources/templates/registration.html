@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrierung – Craftnote</title>
+    <link th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- Include header -->
+<div th:insert="fragments/header :: siteHeader"></div>
+
+<section class="py-5">
+    <div class="container">
+        <h2 class="mb-4 text-center">Neuen Benutzer registrieren</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form th:action="@{/registration}" th:object="${user}" method="post">
+
+                    <div class="mb-3">
+                        <label for="firstName" class="form-label">Vorname</label>
+                        <input type="text" th:field="*{firstName}" class="form-control" id="firstName" placeholder="Vorname" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label">Nachname</label>
+                        <input type="text" th:field="*{lastName}" class="form-control" id="lastName" placeholder="Nachname" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-Mail</label>
+                        <input type="email" th:field="*{email}" class="form-control" id="email" placeholder="name@example.com" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Passwort</label>
+                        <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="Passwort" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Registrieren</button>
+                </form>
+
+                <p class="text-center mt-3">
+                    Schon registriert? <a th:href="@{/login}">Login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Include footer -->
+<div th:insert="fragments/footer :: siteFooter"></div>
+
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

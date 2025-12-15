@@ -1,27 +1,94 @@
 <!DOCTYPE html>
-<html layout:decorate="~{layout}">
-<head><meta charset="UTF-8" /></head>
-
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Craftnote – Deine digitale Handwerker App</title>
+    <link th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" rel="stylesheet"/>
+</head>
 <body>
-	<section class="layout-content" layout:fragment="mybody">
-			
-		<nav class="navbar navbar-expand-md bg-light">
-			<div class="collapse navbar-collapse" id="navbarsExampleDefault">
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item active">
-						<i class="oi oi-caret-right"></i>
-						<span>Home</span>
-						
-					</li>
-				</ul>
-			</div>
-		</nav>
-		
-		<div class="container">
-			
-		</div>
-			
-		
-	</section>		
+
+<!-- Include header -->
+<div th:insert="fragments/header :: siteHeader"></div>
+
+<!-- Hero Section -->
+<section class="bg-light py-5 text-center">
+    <div class="container">
+        <h1 class="display-4">Die digitale Baumappe für deine Baustelle</h1>
+        <p class="lead mb-4">Effiziente Abläufe ohne Zettelchaos – für Büro und Baustelle.</p>
+        <!-- Include CTA buttons -->
+        <div th:insert="fragments/buttons :: ctaButtons"></div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="mb-4 text-center">Was Craftnote für dich bringt</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card h-100 text-center p-3">
+                    <h5>Digitale Baumappe</h5>
+                    <p>Alle wichtigen Informationen zu Projekten an einem Ort.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 text-center p-3">
+                    <h5>Zeiterfassung</h5>
+                    <p>Arbeitszeiten direkt im Projekt erfassen und exportieren.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 text-center p-3">
+                    <h5>Aufgaben & Kommunikation</h5>
+                    <p>Behalte Aufgaben im Blick und kommuniziere direkt im Projekt.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 text-center p-3">
+                    <h5>Formulare & PDFs</h5>
+                    <p>Standardisierte digitale Formulare direkt erstellen.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="mb-4 text-center">Was unsere Nutzer sagen</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <blockquote class="blockquote mb-0">
+                        „Wir brauchten eine digitale Software für Zeiterfassung und Baustellenbegleitung.“
+                    </blockquote>
+                    <footer class="blockquote-footer mt-2">Projektleiter, Alois Mehlhart GmbH</footer>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <blockquote class="blockquote mb-0">
+                        „Mein Ziel war es, komplett papierlos zu arbeiten.“
+                    </blockquote>
+                    <footer class="blockquote-footer mt-2">Wolf Nepraschek</footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 text-center">
+    <div class="container">
+        <h2 class="mb-4">Starte jetzt – kostenlos testen!</h2>
+        <div th:insert="fragments/buttons :: ctaButtons"></div>
+    </div>
+</section>
+
+<!-- Include footer -->
+<div th:insert="fragments/footer :: siteFooter"></div>
+
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
