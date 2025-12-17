@@ -1,71 +1,46 @@
 package de.othr.hwwa.model;
 
-import java.io.Serializable;
-import java.util.Collection;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name="role")
+@Inheritance(strategy=InheritanceType.JOINED)
 public class Role implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String description;
-
-    @ManyToMany(mappedBy = "roles")
-    private Collection<User> users;
+    private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "roleauthority",
-            joinColumns = @JoinColumn(name = "idrole", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "idauthority", referencedColumnName = "id"))
-    private Collection<Authority> authorities;
+    @JoinTable(name = "role_authorities",
+            joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id",
+                    referencedColumnName = "id"))
+    private Set<Authority> authorities;
 
-    public Long getId() {
+    public long getId(Long id) {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getName() {
+        return name;
     }
 
-    public String getDescription() {
-        return description;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Collection<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Collection<User> users) {
-        this.users = users;
-    }
-
-    public Collection<Authority> getAuthorities() {
+    public Set<Authority> getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(Collection<Authority> authorities) {
+    public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
     }
-
 }
