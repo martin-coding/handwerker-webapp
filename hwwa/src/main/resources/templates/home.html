@@ -13,8 +13,8 @@
 <!-- Hero Section -->
 <section class="bg-light py-5 text-center">
     <div class="container">
-        <h1 class="display-4">Die digitale Baumappe für deine Baustelle</h1>
-        <p class="lead mb-4">Effiziente Abläufe ohne Zettelchaos – für Büro und Baustelle.</p>
+        <h1 th:text="#{home_title}" class="display-4"></h1>
+        <p th:text="#{home_subtitle}" class="lead mb-4"></p>
         <!-- Include CTA buttons -->
         <div th:insert="fragments/buttons :: ctaButtons"></div>
     </div>
@@ -23,30 +23,30 @@
 <!-- Features Section -->
 <section class="py-5">
     <div class="container">
-        <h2 class="mb-4 text-center">Was Craftnote für dich bringt</h2>
+        <h2 th:text="#{feature_titel}" class="mb-4 text-center"></h2>
         <div class="row g-4">
             <div class="col-md-3">
                 <div class="card h-100 text-center p-3">
-                    <h5>Digitale Baumappe</h5>
-                    <p>Alle wichtigen Informationen zu Projekten an einem Ort.</p>
+                    <h5 th:text="#{feature_1}"></h5>
+                    <p th:text="#{feature_1_desc}"></p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card h-100 text-center p-3">
-                    <h5>Zeiterfassung</h5>
-                    <p>Arbeitszeiten direkt im Projekt erfassen und exportieren.</p>
+                    <h5 th:text="#{feature_2}"></h5>
+                    <p th:text="#{feature_2_desc}"></p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card h-100 text-center p-3">
-                    <h5>Aufgaben & Kommunikation</h5>
-                    <p>Behalte Aufgaben im Blick und kommuniziere direkt im Projekt.</p>
+                    <h5 th:text="#{feature_3}"></h5>
+                    <p th:text="#{feature_3_desc}"></p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card h-100 text-center p-3">
-                    <h5>Formulare & PDFs</h5>
-                    <p>Standardisierte digitale Formulare direkt erstellen.</p>
+                    <h5 th:text="#{feature_4}"></h5>
+                    <p th:text="#{feature_4_desc}"></p>
                 </div>
             </div>
         </div>
@@ -56,21 +56,17 @@
 <!-- Testimonials Section -->
 <section class="bg-light py-5">
     <div class="container">
-        <h2 class="mb-4 text-center">Was unsere Nutzer sagen</h2>
+        <h2 th:text="#{testimonials_title}" class="mb-4 text-center"></h2>
         <div class="row g-4">
             <div class="col-md-6">
                 <div class="card p-3">
-                    <blockquote class="blockquote mb-0">
-                        „Wir brauchten eine digitale Software für Zeiterfassung und Baustellenbegleitung.“
-                    </blockquote>
+                    <blockquote th:text="#{quote1}" class="blockquote mb-0"></blockquote>
                     <footer class="blockquote-footer mt-2">Projektleiter, Alois Mehlhart GmbH</footer>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card p-3">
-                    <blockquote class="blockquote mb-0">
-                        „Mein Ziel war es, komplett papierlos zu arbeiten.“
-                    </blockquote>
+                    <blockquote th:text="#{quote2}" class="blockquote mb-0"></blockquote>
                     <footer class="blockquote-footer mt-2">Wolf Nepraschek</footer>
                 </div>
             </div>
@@ -81,7 +77,7 @@
 <!-- CTA Section -->
 <section class="py-5 text-center">
     <div class="container">
-        <h2 class="mb-4">Starte jetzt – kostenlos testen!</h2>
+        <h2 th:text="#{bottom_text}" class="mb-4"></h2>
         <div th:insert="fragments/buttons :: ctaButtons"></div>
     </div>
 </section>
