@@ -4,8 +4,8 @@
             <h1 class="h3 m-0">Craftnote</h1>
             <nav>
                 <a class="text-white mx-2" th:href="@{/}">Home</a>
-                <a class="text-white mx-2" th:href="@{/register}">Registrieren</a>
-                <a class="text-white mx-2" th:href="@{/login}">Login</a>
+                <a th:text="#{signup}" class="text-white mx-2" th:href="@{/register}"></a>
+                <a th:text="#{signin}" class="text-white mx-2" th:href="@{/login}"></a>
             </nav>
         </div>
     </header>
