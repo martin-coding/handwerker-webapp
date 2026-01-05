@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Craftnote - Kunden</title>
+
+    <link th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" rel="stylesheet"/>
+    <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}" defer></script>
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+<!-- Header -->
+<div th:insert="fragments/header :: siteHeader"></div>
+
+<main class="flex-grow-1">
+    <div class="container mt-4">
+
+        <!-- Page header -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 th:text="#{client}" class="h3 mb-0"></h1>
+
+            <a th:text="#{client_add}" th:href="@{/clients/new}" class="btn btn-primary"></a>
+        </div>
+
+        <!-- Sorting / filter row -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <form th:action="@{/clients}" method="get" class="d-flex">
+                    <select name="sort" class="form-select me-2">
+                        <option value="name" th:selected="${sort == 'name'}">Name</option>
+                        <option value="email" th:selected="${sort == 'email'}">Email</option>
+                        <option value="createdAt" th:selected="${sort == 'createdAt'}">Created Date</option>
+                    </select>
+
+                    <select name="dir" class="form-select me-2">
+                        <option value="asc" th:selected="${dir == 'asc'}">Ascending</option>
+                        <option value="desc" th:selected="${dir == 'desc'}">Descending</option>
+                    </select>
+
+                    <button class="btn btn-outline-secondary" type="submit">
+                        Sort
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Clients table -->
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>
+                            <a th:href="@{/clients(sort='name', dir=${dir == 'asc' ? 'desc' : 'asc'})}">
+                                Name
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="@{/clients(sort='email', dir=${dir == 'asc' ? 'desc' : 'asc'})}">
+                                Email
+                            </a>
+                        </th>
+                        <th>Phone</th>
+                        <th>
+                            <a th:href="@{/clients(sort='createdAt', dir=${dir == 'asc' ? 'desc' : 'asc'})}">
+                                Created
+                            </a>
+                        </th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="client : ${clients}">
+                        <td th:text="${client.name}">John Doe</td>
+                        <td th:text="${client.email}">john@example.com</td>
+                        <td th:text="${client.phone}">123456</td>
+                        <td th:text="${#temporals.format(client.createdAt, 'yyyy-MM-dd')}"></td>
+
+                        <td class="text-end">
+                            <a th:href="@{/clients/{id}/edit(id=${client.id})}"
+                            class="btn btn-sm btn-outline-primary">
+                                Edit
+                            </a>
+
+                            <button class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    th:data-bs-target="'#deleteModal-' + ${client.id}">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(clients)}">
+                        <td colspan="5" class="text-center text-muted py-4">
+                            No clients found
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <!--- Pagination -->
+        <nav th:if="${totalPages > 1}">
+            <ul class="pagination justify-content-center">
+
+                <!-- Previous -->
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link"
+                    th:href="@{/clients(page=${currentPage - 1}, sort=${sort}, dir=${dir})}">
+                        Previous
+                    </a>
+                </li>
+
+                <!-- Page numbers -->
+                <li class="page-item"
+                    th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link"
+                    th:text="${i + 1}"
+                    th:href="@{/clients(page=${i}, sort=${sort}, dir=${dir})}">
+                    </a>
+                </li>
+
+                <!-- Next -->
+                <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+                    <a class="page-link"
+                    th:href="@{/clients(page=${currentPage + 1}, sort=${sort}, dir=${dir})}">
+                        Next
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+
+    </div>
+</main>
+
+<!-- Delete confirmation modals -->
+<div th:each="client : ${clients}">
+    <div class="modal fade" th:id="'deleteModal-' + ${client.id}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 th:text="#{client_del}" class="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Are you sure you want to delete
+                    <strong th:text="${client.name}">this client</strong>?
+                </div>
+
+                <div class="modal-footer">
+                    <button th:text="#{cancel}" class="btn btn-secondary" data-bs-dismiss="modal"></button>
+
+                    <form th:action="@{/clients/{id}/delete(id=${client.id})}" method="post">
+                        <button th:text="#{delete}" type="submit" class="btn btn-danger"></button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:insert="fragments/footer :: siteFooter"></div>
+
+</body>
+</html>
