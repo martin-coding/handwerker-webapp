@@ -1,56 +1,146 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" class="light">
 <head>
-    <meta charset="UTF-8">
-    <title>Registrierung – Craftnote</title>
-    <link th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" rel="stylesheet"/>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Registration - CraftManager</title>
+
+    <!-- Bootstrap CSS Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/input_fields_and_icons.css}">
+    <link rel="stylesheet" th:href="@{/css/img.css}">
+    <link rel="stylesheet" th:href="@{/css/button.css}">
+
 </head>
-<body>
+<script th:src="@{/js/scripts.js}"></script>
+<body class="d-flex flex-column min-vh-100">
 
-<!-- Include header -->
-<div th:insert="fragments/header :: siteHeader"></div>
+    <div class="bg-surface-custom container-fluid flex-grow-1">
+        <div class="row h-100">
 
-<section class="py-5">
-    <div class="container">
-        <h2 class="mb-4 text-center">Neuen Benutzer registrieren</h2>
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <form th:action="@{/registration}" th:object="${user}" method="post">
-
-                    <div class="mb-3">
-                        <label for="firstName" class="form-label">Vorname</label>
-                        <input type="text" th:field="*{firstName}" class="form-control" id="firstName" placeholder="Vorname" required>
+            <!-- Left Section: Form -->
+            <div class="col-lg-6 d-flex flex-column justify-content-center px-5">
+                <div class="mx-auto" style="max-width: 400px; width: 100%;">
+                    <!-- Logo -->
+                    <div class="d-flex align-items-center mb-2 py-3 gap-2">
+                        <div class="icon-container">
+                            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                <path clip-rule="evenodd" d="M24 4H6V17.3333V30.6667H24V44H42V30.6667V17.3333H24V4Z" fill="currentColor" fill-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <span class="fw-bold fs-4">CraftManager</span>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="lastName" class="form-label">Nachname</label>
-                        <input type="text" th:field="*{lastName}" class="form-control" id="lastName" placeholder="Nachname" required>
+                    <!-- INTRO -->
+                    <h1 class="h3 fw-bold mb-2">Account erstellen</h1>
+                    <p class="text-muted-custom mb-4">Verwalte noch heute deine Aufgaben, Kunden und Abrechnungen.</p>
+
+                    <form th:action="@{/registration}" th:object="${user}" method="post" novalidate>
+                        <!-- Firstname -->
+                        <div class="mb-3 input-wrapper">
+                            <label class="form-label fw-medium">Vorname</label>
+                            <input type="text" th:field="*{firstName}" th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'" id="firstname" required placeholder="Max" class="input-field input-field-registration">
+                            <div class="invalid-feedback" th:errors="*{firstName}"></div>
+                        </div>
+                        <!-- Lastname -->
+                        <div class="mb-3 input-wrapper">
+                            <label class="form-label fw-medium">Nachname</label>
+                            <input type="text" th:field="*{lastName}" th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'" id="lastname" required placeholder="Mustermann" class="input-field input-field-registration">
+                            <div class="invalid-feedback" th:errors="*{lastName}"></div>
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="mb-3 input-wrapper">
+                            <label class="form-label fw-medium">Email</label>
+                            <input type="email" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'" id="email" required placeholder="max.mustermann@firma.com" class="input-field input-field-registration">
+                            <div class="invalid-feedback" th:errors="*{email}"></div>
+                        </div>
+
+                        <!-- PASSWORD -->
+                        <div class="mb-3 input-wrapper">
+                            <label class="form-label fw-medium">Passwort</label>
+
+                            <input type="password"
+                                   th:field="*{password}"
+                                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
+                                   id="password"
+                                   required
+                                   placeholder="Passwort"
+                                   class="input-field input-field-registration">
+                            <span class="material-symbols-outlined input-field-icon icon-right">visibility</span>
+                            <div class="invalid-feedback" th:errors="*{password}"></div>
+                        </div>
+
+
+                        <!-- company name -->
+                        <div class="mb-3 input-wrapper">
+                            <label class="form-label fw-medium">Firma</label>
+                            <input type="text" th:field="*{companyName}" th:classappend="${#fields.hasErrors('companyName')} ? 'is-invalid'" id="company" required placeholder="Firmenname" class="input-field input-field-registration">
+                            <div class="invalid-feedback" th:errors="*{companyName}"></div>
+                        </div>
+
+                        <!-- country name -->
+                        <div class="mb-3 input-wrapper">
+                            <label class="form-label fw-medium">Land</label>
+                            <input type="text" th:field="*{country}" th:classappend="${#fields.hasErrors('country')} ? 'is-invalid'" id="country" required placeholder="Land" class="input-field input-field-registration">
+                            <div class="invalid-feedback" th:errors="*{country}"></div>
+                        </div>
+
+
+                        <!-- city name -->
+                        <div class="mb-3 input-wrapper">
+                            <label class="form-label fw-medium">Stadt</label>
+                            <input type="text" th:field="*{city}" th:classappend="${#fields.hasErrors('city')} ? 'is-invalid'" id="city" required placeholder="Stadtname" class="input-field input-field-registration">
+                            <div class="invalid-feedback" th:errors="*{city}"></div>
+                        </div>
+
+
+                        <!-- postal code name -->
+                        <div class="mb-3 input-wrapper">
+                            <label class="form-label fw-medium">Postleitzahl</label>
+                            <input type="text" th:field="*{postalCode}" th:classappend="${#fields.hasErrors('postalCode')} ? 'is-invalid'" id="postalCode" required placeholder="12345" class="input-field input-field-registration">
+                            <div class="invalid-feedback" th:errors="*{postalCode}"></div>
+                        </div>
+
+
+                        <!-- street name -->
+                        <div class="mb-5 input-wrapper">
+                            <label class="form-label fw-medium">Straße</label>
+                            <input type="text" th:field="*{street}" th:classappend="${#fields.hasErrors('street')} ? 'is-invalid'" id="street" required placeholder="Straßenname" class="input-field input-field-registration">
+                            <div class="invalid-feedback" th:errors="*{street}"></div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn-custom mb-3">Account erstellen</button>
+                    </form>
+
+
+                    <!-- Footer Link -->
+                    <p class="text-center small text-muted-custom">
+                        Du hast bereits ein Konto?
+                        <a th:href="@{/login}" class="text-primary-custom fw-semibold text-decoration-none">
+                            Login
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Section: Image / Branding -->
+            <!-- RIGHT: IMAGE PANEL -->
+            <div class="col-lg-6 d-none d-lg-block flex-grow-1 bg-img bg-img-registration">
+                <div class="p-4">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div><span class="material-symbols-outlined">handyman</span></div>
+                        <span>Vertrauen von 10.000+ Handwerkern weltweit</span>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="email" class="form-label">E-Mail</label>
-                        <input type="email" th:field="*{email}" class="form-control" id="email" placeholder="name@example.com" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Passwort</label>
-                        <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="Passwort" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100">Registrieren</button>
-                </form>
-
-                <p class="text-center mt-3">
-                    Schon registriert? <a th:href="@{/login}">Login</a>
-                </p>
+                    <blockquote>
+                        "Mit CraftManager konnten wir unser Renovierungsgeschäft ausbauen – ganz ohne lästige Berechnungen in Excel oder auf Papier. Es ist das zentrale Werkzeug für unsere Geschäftsabläufe."
+                    </blockquote>
+                </div>
             </div>
         </div>
     </div>
-</section>
 
-<!-- Include footer -->
-<div th:insert="fragments/footer :: siteFooter"></div>
-
-<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

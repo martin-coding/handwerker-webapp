@@ -1,0 +1,51 @@
+/* Input fields */
+.input-field{
+    width: 100%;
+    border-radius: .5rem;
+    border: 1px solid #d1d5db;
+    font-size: 1rem;
+    line-height: 1.25rem;
+    padding: .75rem 0.75rem .75rem 0.75rem;
+}
+.input-field-login{
+    padding: 0.75rem 2.5rem 0.75rem 2.5rem;
+}
+.input-field-registration{
+    padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+}
+
+.input-field-employee{
+    padding: 0.75rem 0.75rem 0.75rem 0.75rem;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-field-icon{
+    position: absolute;
+    top: 3.4rem;
+    transform: translateY(-50%);
+    color: var(--muted);
+}
+.icon-left{
+    left: 0.75rem;
+    pointer-events: none;
+}
+.icon-right {
+    right: 0.75rem;
+    cursor: pointer;
+    pointer-events: auto;
+    z-index: 2;
+}
+.icon-employee {
+    right: 1.5rem;
+    cursor: pointer;
+    pointer-events: auto;
+    z-index: 2;
+}
+
+.icon-container {
+    width: 2rem;
+    height: 2rem;
+    color: var(--primary); }

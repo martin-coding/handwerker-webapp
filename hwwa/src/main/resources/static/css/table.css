@@ -1,0 +1,46 @@
+/* Table */
+.employee-table th {
+    text-transform: uppercase;
+    font-size: 12px;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    color: var(--muted);
+    background: var(--muted-light);
+}
+
+.employee-table td{
+    vertical-align: middle;
+}
+
+.employee-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.employee-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
