@@ -85,7 +85,6 @@ public class DataInitializer implements CommandLineRunner {
                     user.setCompany(company);
                     return userRepository.save(user);
                 });
-        user1.setActive(false);
         //Check if dummy user exists
         User user2 = userRepository.findUserByEmailIgnoreCase("sarah.mueller@abc.com")
                 .orElseGet(() -> {

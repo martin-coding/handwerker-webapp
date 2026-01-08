@@ -10,6 +10,13 @@
     background: var(--muted-light);
 }
 
+.col-name { width: 20%; }
+.col-role  { width: 10%; }
+.col-email{ width: 30%; }
+.col-phoneNumber {width: 20%;}
+.col-hourlyRate {width: 10%}
+.col-action {width: 10%}
+
 .employee-table td{
     vertical-align: middle;
 }

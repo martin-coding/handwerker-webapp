@@ -88,7 +88,7 @@
                 <table class="table employee-table mb-0">
                     <thead>
                     <tr>
-                        <th>
+                        <th class="col-name">
                             <a th:href="@{/employee(
                                     page=${currentPage},
                                     sort='lastName',
@@ -97,7 +97,7 @@
                                 Mitarbeiter
                             </a>
                         </th>
-                        <th>
+                        <th class="col-role">
                             <a th:href="@{/employee(
                                     page=${currentPage},
                                     sort='role',
@@ -106,9 +106,9 @@
                                 Rolle
                             </a>
                         </th>
-                        <th>Email</th>
-                        <th>Telefonnummer</th>
-                        <th>
+                        <th class="col-email">Email</th>
+                        <th class="col-phoneNumber">Telefonnummer</th>
+                        <th class="col-hourlyRate">
                             <a th:href="@{/employee(
                                     page=${currentPage},
                                     sort='hourlyRate',
@@ -117,7 +117,7 @@
                                 Lohn
                             </a>
                         </th>
-                        <th class="text-end">Aktionen</th>
+                        <th class="text-end col-action">Aktionen</th>
                     </tr>
                     </thead>
                     <tbody>
