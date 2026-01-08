@@ -1,0 +1,102 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
+
+/* Root variables: colors, sizes, etc. */
+:root {
+    /* Colors */
+    --primary: #135bec;
+    --primary-light: #e0e7ff;
+    --primary-hover: rgba(19, 91, 236, 0.85);
+    --background-light: #f6f6f8;
+    --surface-light: #ffffff;
+    --text-dark: #101827;
+    --muted: #6b7280;
+    --muted-light: #f8f9fa;
+    --success: #16a34a;
+    --success-light: #ecfdf5;
+    --warning: #f59e0b;
+    --error: #b91c1c;
+    --error-light: #fef2f2;
+    --purple:#8b5cf6;
+
+    /* Card & border radius */
+    --card-radius: 1rem; /* 2xl */
+    --badge-radius: 999px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Global */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    background: var(--background-light);
+}
+
+/* Layout */
+.app-body { display: flex; flex-direction: column; min-height: 100vh; }
+.app-main { flex: 1; }
+
+/* Header */
+.app-header {
+    background: var(--surface-light);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.header-inner { height: 80px; align-items: center; }
+
+/* Brand */
+.brand-title { font-size: 1rem; margin: 0; font-weight: 700; line-height: 1; }
+
+/* Avatar */
+.avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #fff;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Navigation */
+.nav-links .btn { border-radius: .6rem; }
+
+/* Utility classes */
+.text-primary-custom { color: var(--primary); }
+.bg-primary-custom { background-color: var(--primary); }
+.bg-primary-custom:hover { background-color: var(--primary-hover); }
+.text-muted-custom { color: var(--muted); }
+.bg-light-custom { background-color: var(--background-light); }
+.bg-surface-custom { background-color: var(--surface-light); }
+.text-success-custom { color: var(--success); }
+.bg-success-custom { background-color: var(--success); }
+.text-warning-custom { color: var(--warning); }
+.bg-warning-custom { background-color: var(--warning); }
+.text-error-custom { color: var(--error); }
+.bg-error-custom { background-color: var(--error); }
+.bg-purple-custom { background: var(--purple);}
+.rounded-2xl-custom { border-radius: var(--card-radius); }
+.rounded-full-custom { border-radius: var(--badge-radius); }
+.shadow-sm-custom { box-shadow: var(--shadow-sm); }
+.shadow-md-custom { box-shadow: var(--shadow-md); }
+
+
+/* Responsive tweaks */
+@media (min-width: 992px) { .feature-media { min-height: 220px; } }
+@media (max-width: 991.98px) {
+    #mobileNav {
+        background-color: var(--surface-light);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 15rem;
+        padding: 0.5rem 1rem;
+        z-index: 1000;
+        box-shadow: var(--shadow-md);
+    }
+    #mobileNav a { width: 100%; margin-bottom: .5rem; }
+}

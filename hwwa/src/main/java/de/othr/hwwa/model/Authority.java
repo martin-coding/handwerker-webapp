@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 @Table(name="authority")
 @Entity
+@Inheritance(strategy= InheritanceType.JOINED)
 public class Authority implements Serializable {
     private static final long serialVersionUID = 1L;
 

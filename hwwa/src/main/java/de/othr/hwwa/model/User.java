@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name="user")
@@ -22,11 +20,11 @@ public class User implements Serializable{
 
     private String lastName;
 
-    private String userName;
-
     private String password;
 
     private String email;
+    private float hourlyRate;
+    private String phoneNumber;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -42,6 +40,10 @@ public class User implements Serializable{
     )
     private List<Task> tasks = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "company_id", referencedColumnName = "id", nullable = false)
+    private Company company;
+
     public User(){}
 
     public String getFirstName() {return firstName;}
@@ -55,10 +57,6 @@ public class User implements Serializable{
     public Long getId() {
         return id;
     }
-
-    public String getUserName() {return userName;}
-
-    public void setUserName(String userName) {this.userName = userName;}
 
     public String getEmail() {
         return email;
@@ -76,6 +74,14 @@ public class User implements Serializable{
         this.password = password;
     }
 
+    public float getHourlyRate() {return hourlyRate;}
+
+    public void setHourlyRate(float hourlyRate) {this.hourlyRate = hourlyRate;}
+
+    public String getPhoneNumber() {return phoneNumber;}
+
+    public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
+
     public List<Task> getTasks() {
         return tasks;
     }
@@ -91,4 +97,8 @@ public class User implements Serializable{
     public boolean isActive() {return active;}
 
     public void setActive(boolean active) {this.active = active;}
+
+    public Company getCompany() {return company;}
+
+    public void setCompany(Company company) {this.company = company;}
 }

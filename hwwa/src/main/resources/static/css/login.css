@@ -1,0 +1,15 @@
+/* Alerts */
+.alert-custom-error {
+    background-color: var(--error-light);
+    color: var(--error);
+    border-radius: .5rem;
+    padding: .75rem 1rem;
+}
+.alert-custom-success {
+    background-color: var(--success-light);
+    color: var(--success);
+    border-radius: .5rem;
+    padding: .75rem 1rem;
+}
+
+
