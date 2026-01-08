@@ -4,13 +4,12 @@ import de.othr.hwwa.exceptions.EmailAlreadyUsedException;
 import de.othr.hwwa.model.dto.UserRegistrationDto;
 import de.othr.hwwa.service.RegistrationServiceI;
 import jakarta.validation.Valid;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/registration")
@@ -20,6 +19,12 @@ public class RegistrationController {
 
     public RegistrationController(RegistrationServiceI registrationService) {
         this.registrationService = registrationService;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        // trims strings and converts empty strings to null
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
     @GetMapping

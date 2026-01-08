@@ -71,7 +71,11 @@
                             <span class="material-symbols-outlined input-field-icon icon-right">visibility</span>
                             <div class="invalid-feedback" th:errors="*{password}"></div>
                         </div>
-
+                        <div class="mb-3 input-wrapper">
+                            <label class="form-label fw-medium">Telefonnummer</label>
+                            <input type="text" th:field="*{phoneNumber}" th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'" id="phoneNumber" placeholder="+49 1234567" class="input-field input-field-registration">
+                            <div class="invalid-feedback" th:errors="*{phoneNumber}"></div>
+                        </div>
 
                         <!-- company name -->
                         <div class="mb-3 input-wrapper">

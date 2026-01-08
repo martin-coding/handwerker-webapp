@@ -10,6 +10,8 @@ import de.othr.hwwa.service.RegistrationServiceI;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class RegistrationServiceImpl implements RegistrationServiceI {
 
@@ -44,6 +46,9 @@ public class RegistrationServiceImpl implements RegistrationServiceI {
                 .orElseThrow(() -> new IllegalStateException("Es gibt keine Rolle mit der Bezeichnung: 'Owner'"));
         user.setRole(ownerRole);
 
+        if (user.getCreatedAt() == null) {
+            user.setCreatedAt(LocalDateTime.now());
+        }
         return userRepository.save(user);
     }
 
@@ -69,5 +74,6 @@ public class RegistrationServiceImpl implements RegistrationServiceI {
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setPhoneNumber(dto.getPhoneNumber());
     }
 }
