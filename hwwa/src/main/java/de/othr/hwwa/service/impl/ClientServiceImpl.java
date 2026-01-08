@@ -9,15 +9,15 @@ import java.time.LocalDateTime;
 
 import de.othr.hwwa.model.Client;
 import de.othr.hwwa.service.ClientServiceI;
-import de.othr.hwwa.repository.ClientRepository;
+import de.othr.hwwa.repository.ClientRepositoryI;
 
 @Service
 @Transactional
 public class ClientServiceImpl implements ClientServiceI {
 
-    private final ClientRepository clientRepository;
+    private final ClientRepositoryI clientRepository;
 
-    public ClientServiceImpl(ClientRepository clientRepository) {
+    public ClientServiceImpl(ClientRepositoryI clientRepository) {
         this.clientRepository = clientRepository;
     }
 

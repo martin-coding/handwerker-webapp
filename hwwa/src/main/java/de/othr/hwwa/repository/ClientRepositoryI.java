@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ClientRepository extends JpaRepository<Client, Long> {
+public interface ClientRepositoryI extends JpaRepository<Client, Long> {
     @Query("""
         SELECT c FROM Client c
         WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
