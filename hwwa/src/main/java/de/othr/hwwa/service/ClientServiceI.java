@@ -9,6 +9,8 @@ public interface ClientServiceI {
 
     Page<Client> findAll(Pageable pageable);
 
+    Page<Client> search(String keyword, Pageable pageable);
+
     Client findById(Long id);
 
     Client save(Client client);

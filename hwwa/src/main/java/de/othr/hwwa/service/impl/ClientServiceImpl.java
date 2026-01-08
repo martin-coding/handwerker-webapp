@@ -26,6 +26,10 @@ public class ClientServiceImpl implements ClientServiceI {
         return clientRepository.findAll(pageable);
     }
 
+    public Page<Client> search(String keyword, Pageable pageable) {
+        return clientRepository.search(keyword, pageable);
+    }
+
     @Override
     public Client findById(Long id) {
         return clientRepository.findById(id).orElse(null);

@@ -5,34 +5,64 @@
     <title>Craftnote - Kunden</title>
 
     <link th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/table.css}">
+    <link rel="stylesheet" th:href="@{/css/input_fields_and_icons.css}">
+    <link rel="stylesheet" th:href="@{/css/cards.css}">
     <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}" defer></script>
 </head>
-<body class="bg-light d-flex flex-column min-vh-100">
+<body class="app-body">
 
 <!-- Header -->
-<div th:insert="fragments/header :: siteHeader"></div>
+<div th:insert="~{fragments/header :: siteHeader}"></div>
 
-<main class="flex-grow-1">
-    <div class="container mt-4">
-
-        <!-- Page header -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1 th:text="#{client}" class="h3 mb-0"></h1>
-
-            <a th:text="#{client_add}" th:href="@{/clients/new}" class="btn btn-primary"></a>
+<!-- Main -->
+<main class="flex-grow-1 app-main">
+    <div class="container-xxl py-4">
+        <!-- Header (text only) -->
+        <div class="page-header mb-4">
+            <div>
+                <h1 th:text="#{client}"></h1>
+                <p>Manage your customers.</p>
+            </div>
         </div>
 
+        <!-- Search bar-->
+        <form th:action="@{/clients}" method="get"
+              class="card card-dark shadow-sm p-3 d-flex flex-column flex-md-row align-items-center gap-3 mb-3">
+
+            <div class="flex-grow-1 position-relative">
+                <input type="text"
+                       name="keyword"
+                       th:value="${keyword}"
+                       class="form-control"
+                       placeholder="Mitarbeiter suchen...">
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                    <span class="material-symbols-outlined">search</span> Suchen
+                </button>
+                <a th:href="@{/clients}"
+                   class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                    <span class="material-symbols-outlined">close</span> Clear
+                </a>
+            </div>
+
+        </form>
+
         <!-- Sorting / filter row -->
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <form th:action="@{/clients}" method="get" class="d-flex">
-                    <select name="sort" class="form-select me-2">
+        <div class="row mb-3 align-items-center">
+            <!-- Left: Sorting -->
+            <div class="col-md-8">
+                <form th:action="@{/clients}" method="get" class="d-flex flex-wrap gap-2">
+                    <select name="sort" class="form-select w-auto">
                         <option value="name" th:selected="${sort == 'name'}">Name</option>
                         <option value="email" th:selected="${sort == 'email'}">Email</option>
                         <option value="createdAt" th:selected="${sort == 'createdAt'}">Created Date</option>
                     </select>
 
-                    <select name="dir" class="form-select me-2">
+                    <select name="dir" class="form-select w-auto">
                         <option value="asc" th:selected="${dir == 'asc'}">Ascending</option>
                         <option value="desc" th:selected="${dir == 'desc'}">Descending</option>
                     </select>
@@ -42,14 +72,23 @@
                     </button>
                 </form>
             </div>
+
+            <!-- Right: Add Client -->
+            <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                <a th:text="#{client_add}"
+                th:href="@{/clients/new}"
+                class="btn btn-primary">
+                </a>
+            </div>
         </div>
+
 
         <!-- Clients table -->
         <div class="card shadow-sm">
-            <div class="card-body p-0">
+            <div class="table-responsive">
 
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
+                <table class="table employee-table mb-0">
+                    <thead>
                     <tr>
                         <th>
                             <a th:href="@{/clients(sort='name', dir=${dir == 'asc' ? 'desc' : 'asc'})}">
@@ -79,16 +118,18 @@
                         <td th:text="${#temporals.format(client.createdAt, 'yyyy-MM-dd')}"></td>
 
                         <td class="text-end">
-                            <a th:href="@{/clients/{id}/edit(id=${client.id})}"
-                            class="btn btn-sm btn-outline-primary">
-                                Edit
-                            </a>
+                            <div class="d-inline-flex gap-2">
+                                <a th:href="@{/clients/{id}/edit(id=${client.id})}"
+                                class="btn btn-sm btn-icon btn-icon-edit">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </a>
 
-                            <button class="btn btn-sm btn-outline-danger"
-                                    data-bs-toggle="modal"
-                                    th:data-bs-target="'#deleteModal-' + ${client.id}">
-                                Delete
-                            </button>
+                                <button class="btn btn-sm btn-icon btn-icon-delete"
+                                        data-bs-toggle="modal"
+                                        th:data-bs-target="'#deleteModal-' + ${client.id}">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
                         </td>
                     </tr>
 
@@ -101,40 +142,33 @@
                 </table>
 
             </div>
-        </div>
 
-        <!--- Pagination -->
-        <nav th:if="${totalPages > 1}">
-            <ul class="pagination justify-content-center">
-
-                <!-- Previous -->
-                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link"
-                    th:href="@{/clients(page=${currentPage - 1}, sort=${sort}, dir=${dir})}">
+            <!--- Pagination -->
+            <div class="card-footer d-flex justify-content-between align-items-center px-3 py-2">
+                <p class="text-muted-custom mb-0">
+                    <span th:text="${clientPage.number * clientPage.size + 1}">1</span>
+                    -
+                    <span th:text="${clientPage.number * clientPage.size + clientPage.numberOfElements}">8</span>
+                    von
+                    <span th:text="${clientPage.totalElements}">24</span>
+                    Kunden
+                </p>
+                    
+                <div class="d-flex gap-2">
+                    <a th:href="@{/clients(page=${currentPage - 1}, sort=${sort}, dir=${dir})}"
+                        th:classappend="${currentPage == 0} ? 'disabled'"
+                        class="btn btn-outline-secondary btn-sm">
                         Previous
                     </a>
-                </li>
-
-                <!-- Page numbers -->
-                <li class="page-item"
-                    th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                    th:classappend="${i == currentPage} ? 'active'">
-                    <a class="page-link"
-                    th:text="${i + 1}"
-                    th:href="@{/clients(page=${i}, sort=${sort}, dir=${dir})}">
-                    </a>
-                </li>
-
-                <!-- Next -->
-                <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-                    <a class="page-link"
-                    th:href="@{/clients(page=${currentPage + 1}, sort=${sort}, dir=${dir})}">
+                    <a th:href="@{/clients(page=${currentPage + 1}, sort=${sort}, dir=${dir})}"
+                        th:classappend="${currentPage + 1 == totalPages} ? 'disabled'"
+                        class="btn btn-outline-secondary btn-sm">
                         Next
                     </a>
-                </li>
+                </div>
+            </div>
 
-            </ul>
-        </nav>
+        </div>
 
     </div>
 </main>
@@ -169,7 +203,7 @@
 </div>
 
 <!-- Footer -->
-<div th:insert="fragments/footer :: siteFooter"></div>
+<div th:insert="~{fragments/footer :: siteFooter}"></div>
 
 </body>
 </html>

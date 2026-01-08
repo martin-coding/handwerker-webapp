@@ -28,9 +28,10 @@ public class ClientController {
     @GetMapping
     public String listClients(
         @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "8") int size,
         @RequestParam(defaultValue = "name") String sort,
         @RequestParam(defaultValue = "asc") String dir,
+        @RequestParam(value = "keyword", required = false) String keyword,
         Model model) {
 
         // TODO: Get current user and only return clients with the same Firma as loggedinuser
@@ -41,7 +42,13 @@ public class ClientController {
 
         PageRequest pageable = PageRequest.of(page, size, sortObj);
 
-        Page<Client> clientPage = clientService.findAll(pageable);
+        Page<Client> clientPage;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            clientPage = clientService.search(keyword, pageable);
+        } else {
+            clientPage = clientService.findAll(pageable);
+        }
 
         model.addAttribute("clientPage", clientPage);
         model.addAttribute("clients", clientPage.getContent());
@@ -49,6 +56,7 @@ public class ClientController {
         model.addAttribute("totalPages", clientPage.getTotalPages());
         model.addAttribute("sort", sort);
         model.addAttribute("dir", dir);
+        model.addAttribute("keyword", keyword);
 
         return "clients";
     }
