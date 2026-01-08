@@ -156,14 +156,24 @@
                     
                 <div class="d-flex gap-2">
                     <a th:text="#{previous}"
-                        th:href="@{/clients(page=${currentPage - 1}, sort=${sort}, dir=${dir})}"
-                        th:classappend="${currentPage == 0} ? 'disabled'"
-                        class="btn btn-outline-secondary btn-sm">
+                    th:href="@{/clients(
+                        page=${currentPage - 1},
+                        sort=${sort},
+                        dir=${dir},
+                        keyword=${keyword}
+                    )}"
+                    th:classappend="${currentPage == 0} ? 'disabled'"
+                    class="btn btn-outline-secondary btn-sm">
                     </a>
                     <a th:text="#{next}"
-                        th:href="@{/clients(page=${currentPage + 1}, sort=${sort}, dir=${dir})}"
-                        th:classappend="${currentPage + 1 == totalPages} ? 'disabled'"
-                        class="btn btn-outline-secondary btn-sm">
+                    th:href="@{/clients(
+                        page=${currentPage + 1},
+                        sort=${sort},
+                        dir=${dir},
+                        keyword=${keyword}
+                    )}"
+                    th:classappend="${currentPage + 1 == totalPages} ? 'disabled'"
+                    class="btn btn-outline-secondary btn-sm">
                     </a>
                 </div>
             </div>
