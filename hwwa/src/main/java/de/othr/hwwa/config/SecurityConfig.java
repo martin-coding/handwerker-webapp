@@ -34,7 +34,8 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**", "/login", "/logout", "/registration").permitAll()
                 .requestMatchers("/", "/home").hasAuthority("basic")
                 .requestMatchers("/tasks").hasAuthority("tasks")
-                .requestMatchers("/employee/**").hasAuthority("manage_employees")
+                .requestMatchers("/employee/**").hasAuthority("manageEmployees")
+                .requestMatchers("/profile/company/edit/**").hasAuthority("updateCompanyData")
                 .anyRequest().authenticated()
         );
 

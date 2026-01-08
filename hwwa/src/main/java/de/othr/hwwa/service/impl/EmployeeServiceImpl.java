@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class EmployeeServiceImpl extends BaseServiceImpl implements EmployeeServiceI {
+public class EmployeeServiceImpl extends SecurityServiceImpl implements EmployeeServiceI {
 
     private final UserRepositoryI userRepository;
     private final RoleRepositoryI roleRepository;
@@ -99,10 +99,7 @@ public class EmployeeServiceImpl extends BaseServiceImpl implements EmployeeServ
         }
         newUser.setRole(roleRepository.getRoleByName(dto.getRoleName()));
 
-        User currentUser = userRepository.findById(getCurrentUserId())
-                .orElseThrow(() -> new UserDoesNotExistsException("Nutzer mit dieser Id existiert nicht"));
-        Company company = companyRepository.getCompanyById(currentUser.getId());
-        newUser.setCompany(company);
+        newUser.setCompany(getCurrentCompany());
 
         // Angelegter Nutzer wird zunächst wie gelöschter Account betrachtet. Durch Registrierung wird der Account aktiv.
         newUser.setActive(false);

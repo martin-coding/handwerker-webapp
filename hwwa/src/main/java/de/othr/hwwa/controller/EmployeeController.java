@@ -92,8 +92,6 @@ public class EmployeeController {
 
     @PostMapping("/employee/add")
     public String addNewEmployee(@Valid @ModelAttribute("newEmployee") NewEmployeeDto dto, BindingResult result, Model model) {
-        // TODO PasswordDto und ProfileDto getrennt an Page schicken und erhalten. Fehlerüberprüfung durchführen und User updaten
-        /*
         if (!dto.getPassword().equals(dto.getPassword_check())) {
             result.rejectValue("password_check", null, "Passwort stimmt nicht überein");
         }
@@ -107,7 +105,6 @@ public class EmployeeController {
         try{
             employeeService.addNewEmployee(dto);
         } catch(IllegalArgumentException e){}
-        */
         return "redirect:/employee";
     }
 }

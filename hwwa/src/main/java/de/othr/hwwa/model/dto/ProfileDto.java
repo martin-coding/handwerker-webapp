@@ -1,4 +1,5 @@
 package de.othr.hwwa.model.dto;
+import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.*;
 
 public class ProfileDto {
@@ -6,24 +7,28 @@ public class ProfileDto {
     @Size(min = 2, max = 50, message = "Vorname muss zwischen 2 und 50 Zeichen lang sein")
     @Pattern(regexp = "^[A-Za-zÀ-ÿ'\\- ]+$", message = "Vorname darf nur Buchstaben, Leerzeichen, Bindestriche oder Apostrophe enthalten")
     private String firstName;
+
     @NotBlank(message = "Nachname darf nicht leer sein")
     @Size(min = 2, max = 50, message = "Nachname muss zwischen 2 und 50 Zeichen lang sein")
     @Pattern(regexp = "^[A-Za-zÀ-ÿ'\\- ]+$", message = "Nachname darf nur Buchstaben, Leerzeichen, Bindestriche oder Apostrophe enthalten")
     private String lastName;
-    @NotBlank(message = "Passwort darf nicht leer sein")
+
     @Size(min = 8, max = 100, message = "Passwort muss mindestens 8 Zeichen lang sein")
     private String newPassword;
-    @NotBlank
+
+    @Size(min = 8, max = 100, message = "Passwort muss mindestens 8 Zeichen lang sein")
     private String oldPassword;
+
     @NotBlank(message = "E-Mail darf nicht leer sein")
     @Email(message = "Bitte eine gültige E-Mail-Adresse eingeben")
     private String email;
-    @NotBlank(message = "Telefonnummer darf nicht leer sein")
+
     @Pattern(
-            regexp = "^\\+?[0-9]{7,15}$",
-            message = "Ungültige Telefonnummer. Nur Zahlen, optional + am Anfang"
+            regexp = "^\\+?[0-9 /]{7,20}$",
+            message = "Ungültige Telefonnummer. Nur Zahlen, Leerzeichen ' ' und '/' erlaubt. Optional + am Anfang."
     )
     private String phoneNumber;
+    private boolean changePassword;
 
 
     public ProfileDto() {}
@@ -76,5 +81,13 @@ public class ProfileDto {
     public String getPhoneNumber() {return phoneNumber;}
 
     public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
+
+    public boolean isChangePassword() {
+        return changePassword;
+    }
+
+    public void setChangePassword(boolean changePassword) {
+        this.changePassword = changePassword;
+    }
 }
 

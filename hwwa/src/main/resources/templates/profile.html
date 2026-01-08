@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" class="light">
+<html lang="de" class="light" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Mitarbeiterdetails bearbeiten</title>
@@ -8,12 +8,13 @@
     <!-- Bootstrap CSS Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/alert.css}">
     <link rel="stylesheet" th:href="@{/css/input_fields_and_icons.css}">
     <link rel="stylesheet" th:href="@{/css/cards.css}">
     <link rel="stylesheet" th:href="@{/css/button.css}">
 
 </head>
-<script th:src="@{/js/scripts.js}"></script>
+
 <body class="app-body">
 
 <div th:insert="~{fragments/header :: siteHeader}"></div>
@@ -25,13 +26,17 @@
         <h1>Mitarbeiterdetails bearbeiten</h1>
         <p>Bearbeiten Sie die persönlichen Daten, Rolle und Berechtigungen des Mitarbeiters.</p>
 
+        <div th:if="${param.success}" class="alert-custom-success mb-3">
+            Daten wurde erfolgreich gespeichert
+        </div>
+
         <!-- Profil -->
         <div class="profile-card">
             <div class="profile-image"
                  style="background-image:url('https://lh3.googleusercontent.com/aida-public/AB6AXuAITRXtmNvpfryi_i2qRORmJ-wRCvEy8p_y0_x6m2u5-ebUGj4szRojYQKkmFOSYDvvEY6G8m1eAyoaG1ortjXwh1ySpvte2atoHwv2TshaVl9IGfrYQuTZoGZwhxl_MCjbvzsBbGXAPwXVJhc2Z1Fyd7yWR072v88wIOIDX2oB8t7IMVflKBREbi07Lxp-ukB-fpwtkbUFcR7YeFdxnhSJ_HB_wuykCJIQ8v19cQ2WqxiIp2pRj-HK3tpdOBLYK8uELXrAhOQF')">
             </div>
             <div>
-                <h2 th:text="${profileDto.firstName} + ' ' + ${profileDto.lastName}">Max Mustermann</h2>
+                <h2 th:text="${profile.firstName} + ' ' + ${profile.lastName}">Max Mustermann</h2>
                 <small>Mitarbeiter seit 2021</small><br>
                 <button class="profil-button">Profilbild ändern</button>
             </div>
@@ -44,7 +49,7 @@
 
             <hr>
 
-            <form th:object="${profileDto}" th:action="@{/profile/edit/}" method="post">
+            <form th:object="${profile}" th:action="@{/profile/employee/edit}" method="post">
                 <div class="row g-4">
                     <div class="col-md-6 input-wrapper">
                         <label class="form-label fw-medium">Vorname</label>
@@ -93,42 +98,116 @@
                             <div class="invalid-feedback" th:errors="*{phoneNumber}"></div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <button type="button" class="profil-button" id="togglePasswordBtn">Password ändern</button>
+                    <div class="col-md-6 input-wrapper mt-5">
+                        <label class="form-label fw-medium">Altes Passwort</label>
+                        <input type="password"
+                               th:field="*{oldPassword}"
+                               th:classappend="${#fields.hasErrors('oldPassword')} ? 'is-invalid'"
+                               id="oldPassword"
+                               placeholder="Passwort"
+                               class="input-field input-field-employee">
+                        <span class="material-symbols-outlined input-field-icon icon-employee">visibility</span>
+                        <div class="invalid-feedback" th:errors="*{oldPassword}"></div>
                     </div>
-                    <div id="passwordFields" class="row g-4" style="display: none;">
-                        <div class="col-md-6 input-wrapper">
-                            <label class="form-label fw-medium">Altes Passwort</label>
-                            <input type="password"
-                                   th:field="*{oldPassword}"
-                                   th:classappend="${#fields.hasErrors('oldPassword')} ? 'is-invalid'"
-                                   id="oldPassword"
-                                   placeholder="Passwort"
-                                   class="input-field input-field-registration">
-                            <span class="material-symbols-outlined input-field-icon icon-employee">visibility</span>
-                            <div class="invalid-feedback" th:errors="*{oldPassword}"></div>
-                        </div>
-                        <div class="col-md-6 input-wrapper">
-                            <label class="form-label fw-medium">Neues Passwort</label>
-                            <input type="password"
-                                   th:field="*{newPassword}"
-                                   th:classappend="${#fields.hasErrors('newPassword')} ? 'is-invalid'"
-                                   id="newPassword"
-                                   placeholder="Passwort"
-                                   class="input-field input-field-registration">
-                            <span class="material-symbols-outlined input-field-icon icon-employee">visibility</span>
-                            <div class="invalid-feedback" th:errors="*{newPassword}"></div>
+                    <div class="col-md-6 input-wrapper mt-5">
+                        <label class="form-label fw-medium">Neues Passwort</label>
+                        <input type="password"
+                               th:field="*{newPassword}"
+                               th:classappend="${#fields.hasErrors('newPassword')} ? 'is-invalid'"
+                               id="newPassword"
+                               placeholder="Passwort"
+                               class="input-field input-field-employee">
+                        <span class="material-symbols-outlined input-field-icon icon-employee">visibility</span>
+                        <div class="invalid-feedback" th:errors="*{newPassword}"></div>
+                    </div>
+                    <p>Um Ihr Passwort zu ändern, geben Sie bitte Ihr aktuelles und Ihr neues Passwort ein.</p>
+                    <div class="button-right-orientated">
+                        <div>
+                            <button type="button"
+                                    class="btn btn-light me-2"
+                                    onclick="history.back()">
+                                Abbrechen
+                            </button>
+                            <button type="submit" class="btn btn-primary">Änderungen speichern</button>
                         </div>
                     </div>
                 </div>
-                <div class="button-right-orientated">
-                    <div>
-                        <button type="button"
-                                class="btn btn-light me-2"
-                                onclick="history.back()">
-                            Abbrechen
-                        </button>
-                        <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+            </form>
+        </div>
+
+        <div class="card form-card" sec:authorize="hasAuthority('updateCompanyData')">
+            <div class="fw-medium">
+                <label>Firmendaten</label>
+            </div>
+
+            <hr>
+
+            <form th:object="${company}" th:action="@{/profile/company/edit}" method="post">
+                <div class="row g-4">
+                    <div class="col-md-6 input-wrapper">
+                        <label class="form-label fw-medium">Firmenname</label>
+                        <div class="input-group">
+                            <input type="text"
+                                   th:field="*{companyName}"
+                                   th:classappend="${#fields.hasErrors('companyName')} ? 'is-invalid'"
+                                   id="companyName"
+                                   class="form-control input-field input-field-employee">
+                            <div class="invalid-feedback" th:errors="*{companyName}"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 input-wrapper">
+                        <label class="form-label fw-medium">Straße</label>
+                        <div class="input-group">
+                            <input type="text"
+                                   th:field="*{street}"
+                                   th:classappend="${#fields.hasErrors('street')} ? 'is-invalid'"
+                                   id="street"
+                                   class="form-control input-field input-field-employee">
+                            <div class="invalid-feedback" th:errors="*{street}"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 input-wrapper">
+                        <label class="form-label fw-medium">Stadt</label>
+                        <div class="input-group">
+                            <input type="text"
+                                   th:field="*{city}"
+                                   th:classappend="${#fields.hasErrors('city')} ? 'is-invalid'"
+                                   id="city"
+                                   class="form-control input-field input-field-employee">
+                            <div class="invalid-feedback" th:errors="*{city}"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 input-wrapper">
+                        <label class="form-label fw-medium">Postleitzahl</label>
+                        <div class="input-group">
+                            <input type="text"
+                                   th:field="*{postalCode}"
+                                   th:classappend="${#fields.hasErrors('postalCode')} ? 'is-invalid'"
+                                   id="postalCode"
+                                   class="form-control input-field input-field-employee">
+                            <div class="invalid-feedback" th:errors="*{postalCode}"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 input-wrapper">
+                        <label class="form-label fw-medium">Land</label>
+                        <div class="input-group">
+                            <input type="text"
+                                   th:field="*{country}"
+                                   th:classappend="${#fields.hasErrors('country')} ? 'is-invalid'"
+                                   id="country"
+                                   class="form-control input-field input-field-employee">
+                            <div class="invalid-feedback" th:errors="*{country}"></div>
+                        </div>
+                    </div>
+                    <div class="button-right-orientated">
+                        <div>
+                            <button type="button"
+                                    class="btn btn-light me-2"
+                                    onclick="history.back()">
+                                Abbrechen
+                            </button>
+                            <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -138,5 +217,6 @@
 </main>
 
 <div th:insert="~{fragments/footer :: siteFooter}"></div>
+<script th:src="@{/js/scripts.js}"></script>
 </body>
 </html>
