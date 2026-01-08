@@ -1,0 +1,13 @@
+/* Image panels */
+.bg-img {
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+}
+
+.bg-img-login{
+    background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDiVBbhwlLsIJfmmN2I5M-llqb5gNZ5M7Ja_Ut6sbbPR0N_epjYdGZFhTeJ8h57B-Gl-Hmv5R-ML6CVug00Xw3_SDMSrtmZa0FFegfYVj9EUG7MDyi4Pif3KhhtWDX0dXZyHKw0oyBhJI3P-q7fpjbbyyWzdrGmk6vqKJ-akrsiNR9G7nrak0J24hQD-HIC8OJaYNmMMXg-dkdHsuapYgM5VC7g5AeksThhi9oSRp8MdRSFTzQQAcpNRku9TAEbBUbo9SHKWr5X');
+}
+.bg-img-registration {
+    background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuADGVsVBm8HgTvWpDwMe-NEwcmiJ98XN2rhDgo4d46xHQRonRwkP-HYN8M215wWe_VJmucr5uJRwClPwastz5CKGv7FVxiDGYcA0KrufkJghyfrGgLUYMpiiTbmJtM3wCDVsJmuHnCDIawk2lgtRCrCJlXLBFjNJmwNy2RaPPhy8KQxxNcSyc_NK1N7m0mWGd9X7k9yQLxr8GalWwz906mrQ9sf0mwQJ-Ki49z0sT4V72n-CWSeEB8qQZ-0JwjGoxTekpqYynFV');
+}

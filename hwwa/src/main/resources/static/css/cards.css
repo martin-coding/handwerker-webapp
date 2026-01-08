@@ -1,0 +1,69 @@
+/* Cards */
+.card {
+    background: var(--surface-light);
+    border-radius: var(--card-radius);
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Role cards */
+.role-card {
+    display: block;
+    border: 1px solid #dbdfe6;
+    border-radius: 10px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.role-card input {
+    display: none;
+}
+
+.role-card:hover {
+    border-color: var(--primary);
+}
+
+.role-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.role-card input:checked + span,
+.role-card input:checked ~ strong {
+    color: var(--primary);
+}
+
+
+/* Stat cards */
+.stat-card {
+    background: var(--surface-light);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.stat-card h3 {
+    margin: 0;
+    font-weight: 700;
+}
+
+/* Profil Cards */
+.profile-card,
+.form-card {
+    background: #fff;
+    border: 1px solid #dbdfe6;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 30px;
+    display: flex;
+    gap: 24px;
+}
+
+.profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-size: cover;
+}

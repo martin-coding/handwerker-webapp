@@ -1,0 +1,21 @@
+/* Bars */
+.weekly-bars .bar{
+    flex:1;}
+.weekly-bars .bar-track{
+    height:96px;
+    background:linear-gradient(180deg,#f1f5f9,#fff);
+    border-radius:.35rem;
+    position:relative;
+    overflow:hidden;}
+.weekly-bars .bar-fill{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    background:var(--primary);
+    transition:height .3s ease;}
+.weekly-bars .bar-fill.muted{
+    background:var(--muted)}
+
+
+

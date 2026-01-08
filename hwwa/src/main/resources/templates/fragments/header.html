@@ -1,12 +1,94 @@
+
 <div th:fragment="siteHeader">
-    <header class="bg-primary text-white p-3 mb-4">
-        <div class="container d-flex justify-content-between align-items-center">
-            <h1 class="h3 m-0">Craftnote</h1>
-            <nav>
-                <a class="text-white mx-2" th:href="@{/}">Home</a>
-                <a th:text="#{signup}" class="text-white mx-2" th:href="@{/register}"></a>
-                <a th:text="#{signin}" class="text-white mx-2" th:href="@{/login}"></a>
-            </nav>
+    <header class="app-header sticky-top">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center justify-content-between header-inner">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center gap-1">
+                        <div class="icon-container">
+                            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                <path clip-rule="evenodd" d="M24 4H6V17.3333V30.6667H24V44H42V30.6667V17.3333H24V4Z" fill="currentColor" fill-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="brand">
+                            <h1 class="brand-title">CraftManager</h1>
+                        </div>
+                    </div>
+
+                    <!-- Navigation (hidden on small screens) -->
+                    <nav id="mobileNav" class="d-none d-md-flex align-items-center gap-2 nav-links">
+                        <a class="btn btn-sm d-flex align-items-center gap-2"
+                           th:href="@{/}"
+                           th:classappend="${currentUri == '/' ? 'btn-primary text-white' : 'btn-light'}">
+                            <span class="material-symbols-outlined">Home</span> Homepage
+                        </a>
+
+                        <a class="btn btn-sm d-flex align-items-center gap-2"
+                           th:href="@{/tasks}"
+                           th:classappend="${currentUri.startsWith('/tasks') ? 'btn-primary text-white' : 'btn-light'}">
+                            <span class="material-symbols-outlined">check_box</span> Aufgaben
+                        </a>
+
+                        <a class="btn btn-sm d-flex align-items-center gap-2"
+                           th:href="@{/invoices}"
+                           th:classappend="${currentUri.startsWith('/invoices') ? 'btn-primary text-white' : 'btn-light'}">
+                            <span class="material-symbols-outlined">receipt_long</span> Rechnungen
+                        </a>
+
+                        <a class="btn btn-sm d-flex align-items-center gap-2"
+                           th:href="@{/employee}"
+                           th:classappend="${currentUri.startsWith('/employee') ? 'btn-primary text-white' : 'btn-light'}">
+                            <span class="material-symbols-outlined">group</span> Mitarbeiter
+                        </a>
+
+                        <a class="btn btn-sm d-flex align-items-center gap-2"
+                           th:href="@{/customers}"
+                           th:classappend="${currentUri.startsWith('/customers') ? 'btn-primary text-white' : 'btn-light'}">
+                            <span class="material-symbols-outlined">person_book</span> Kunden
+                        </a>
+
+                        <a class="btn btn-sm d-flex align-items-center gap-2"
+                           th:href="@{/calendar}"
+                           th:classappend="${currentUri.startsWith('/calendar') ? 'btn-primary text-white' : 'btn-light'}">
+                            <span class="material-symbols-outlined">calendar_today</span> Kalender
+                        </a>
+
+                        <a class="btn btn-sm d-flex align-items-center gap-2"
+                           th:href="@{/settings}"
+                           th:classappend="${currentUri.startsWith('/settings') ? 'btn-primary text-white' : 'btn-light'}">
+                            <span class="material-symbols-outlined">settings</span> Einstellungen
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <div class="vr d-none d-sm-block"></div>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="text-end d-none d-lg-block me-2">
+                                <div class="fw-semibold" th:text="${currentUser.firstName} + ' ' + ${currentUser.lastName}">Max Muster</div>
+                                <small class="text-muted"  th:text="${currentUser.roleName}">Owner</small>
+                            </div>
+
+                            <a th:href="@{/profile}">
+                                <div class="avatar"  th:href="@{/settings}" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCAInbn6Pq12jrnLGMHlxUcZ5CiTdKVLdlZwlZdKTP_1Yl2x2EuJKpWtS4SUKolgOBY2sP_jloNqL8OKcnFTQbouUSJS8Yj0szI6jz7EeTzU2KDM9G5MRqQKa2r6NlGQCn0_Q-axRnm0KNIiIyZFvHrtrXVxkigWXZ7lsM-SFnp_YS7v6zKy2M6T-FsEQs9cGQlwyoF0wKDWT4FvVDgy2e_A-7TMOlUKYGHuWyhTrGTGzTsq4fxg1bS2UeyYxvxUu68bkdf616R');"></div>
+                            </a>
+                        </div>
+
+                        <form th:action="@{/logout}" method="post">
+                            <button class="btn btn-sm icon-btn" title="Logout">
+                            <span class="material-symbols-outlined">logout</span>
+                            </button>
+                        </form>
+
+                        <button id="menuBtn" class="btn btn-sm d-md-none icon-btn">
+                            <span class="material-symbols-outlined">menu</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 </div>

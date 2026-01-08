@@ -21,6 +21,6 @@ public class TaskController {
         taskService.getAllTasks().forEach(task -> {
             System.out.println(task);
         });
-        return "home";
+        return "homepage";
     }
 }
