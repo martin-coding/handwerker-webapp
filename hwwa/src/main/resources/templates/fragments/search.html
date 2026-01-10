@@ -1,0 +1,26 @@
+<form th:fragment="searchBar(actionUrl)"
+      th:action="${actionUrl}"
+      method="get"
+      class="card card-dark shadow-sm p-3 d-flex flex-column flex-md-row align-items-center gap-3 mb-3">
+
+    <div class="flex-grow-1 position-relative">
+        <input type="text"
+               name="keyword"
+               th:value="${keyword}"
+               class="form-control"
+               th:placeholder="#{search_text}">
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined">search</span>
+            <span th:text="#{search}"></span>
+        </button>
+        <a th:href="${actionUrl}"
+           class="btn btn-outline-secondary d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined">close</span>
+            <span th:text="#{clear}"></span>
+        </a>
+    </div>
+
+</form>

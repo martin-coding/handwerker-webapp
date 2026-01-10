@@ -1,5 +1,5 @@
 /* Table */
-.employee-table th {
+.general-table th {
     text-transform: uppercase;
     font-size: 12px;
     border-top-left-radius: 0.75rem;
@@ -17,7 +17,7 @@
 .col-hourlyRate {width: 10%}
 .col-action {width: 10%}
 
-.employee-table td{
+.general-table td{
     vertical-align: middle;
 }
 
