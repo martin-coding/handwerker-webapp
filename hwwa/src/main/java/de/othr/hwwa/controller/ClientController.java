@@ -45,11 +45,7 @@ public class ClientController {
 
         Page<Client> clientPage;
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            clientPage = clientService.search(keyword, pageable);
-        } else {
-            clientPage = clientService.findAll(pageable);
-        }
+        clientPage = clientService.search(keyword, pageable);
 
         model.addAttribute("clientPage", clientPage);
         model.addAttribute("clients", clientPage.getContent());

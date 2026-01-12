@@ -70,18 +70,21 @@
                     <thead>
                     <tr>
                         <th>
-                            <a th:href="@{/clients(sort='name', dir=${dir == 'asc' ? 'desc' : 'asc'})}">
+                            <a th:href="@{/clients(
+                                    sort='name',
+                                    dir=${dir == 'asc' ? 'desc' : 'asc'},
+                                    keyword=${keyword})}">
                                 Name
                             </a>
                         </th>
                         <th>
-                            <a th:href="@{/clients(sort='email', dir=${dir == 'asc' ? 'desc' : 'asc'})}">
+                            <a th:href="@{/clients(sort='email', dir=${dir == 'asc' ? 'desc' : 'asc'}, keyword=${keyword})}">
                                 Email
                             </a>
                         </th>
                         <th>Phone</th>
                         <th>
-                            <a th:href="@{/clients(sort='createdAt', dir=${dir == 'asc' ? 'desc' : 'asc'})}">
+                            <a th:href="@{/clients(sort='createdAt', dir=${dir == 'asc' ? 'desc' : 'asc'}, keyword=${keyword})}">
                                 Created
                             </a>
                         </th>

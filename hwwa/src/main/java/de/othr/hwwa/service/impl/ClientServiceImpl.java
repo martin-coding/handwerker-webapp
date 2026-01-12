@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 import de.othr.hwwa.model.Client;
 import de.othr.hwwa.model.Company;
-import de.othr.hwwa.service.BaseServiceI;
 import de.othr.hwwa.service.ClientServiceI;
 import de.othr.hwwa.repository.ClientRepositoryI;
 import de.othr.hwwa.repository.CompanyRepositoryI;
@@ -33,7 +32,10 @@ public class ClientServiceImpl extends BaseServiceImpl implements ClientServiceI
     }
 
     public Page<Client> search(String keyword, Pageable pageable) {
-        return clientRepository.search(keyword, pageable);
+        Long currentUserId = getCurrentUserId();
+        Company company = companyRepository.getCompanyById(currentUserId);
+        Long companyId = company.getId();
+        return clientRepository.search(companyId, keyword, pageable);
     }
 
     @Override

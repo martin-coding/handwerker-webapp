@@ -13,8 +13,17 @@ import org.springframework.stereotype.Repository;
 public interface ClientRepositoryI extends JpaRepository<Client, Long> {
     @Query("""
         SELECT c FROM Client c
-        WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
-        OR LOWER(c.email) LIKE LOWER(CONCAT('%', :keyword, '%'))
+        WHERE c.company.id = :companyId
+          AND (
+              :keyword IS NULL
+              OR LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+              OR LOWER(c.email) LIKE LOWER(CONCAT('%', :keyword, '%'))
+          )
     """)
-    Page<Client> search(@Param("keyword") String keyword, Pageable pageable);
+    Page<Client> search(
+        @Param("companyId") Long companyId,
+        @Param("keyword") String keyword,
+        Pageable pageable
+    );
 }
+
