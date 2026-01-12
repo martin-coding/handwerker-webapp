@@ -50,6 +50,8 @@ public class DataInitializer implements CommandLineRunner {
                 .orElseGet(() -> authorityRepository.save(new Authority("create_user")));
         Authority manageEmployees = authorityRepository.findByName("manage_employees")
                 .orElseGet(() -> authorityRepository.save(new Authority("manage_employees")));
+        Authority manageClients = authorityRepository.findByName("manage_clients")
+                .orElseGet(() -> authorityRepository.save(new Authority("manage_clients")));
 
         // Check if role exists
         Role employee = roleRepository.findByName("Employee")
@@ -63,14 +65,14 @@ public class DataInitializer implements CommandLineRunner {
                 .orElseGet(() -> {
                     Role r = new Role();
                     r.setName("Manager");
-                    r.setAuthorities(Set.of(tasks, basic));
+                    r.setAuthorities(Set.of(tasks, basic, manageClients));
                     return roleRepository.save(r);
                 });
         Role owner = roleRepository.findByName("Owner")
                 .orElseGet(() -> {
                     Role r = new Role();
                     r.setName("Owner");
-                    r.setAuthorities(Set.of(tasks, createUser,manageEmployees, basic));
+                    r.setAuthorities(Set.of(tasks, createUser,manageEmployees, basic, manageClients));
                     return roleRepository.save(r);
                 });
 

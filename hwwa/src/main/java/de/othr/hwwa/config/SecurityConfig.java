@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .requestMatchers("/", "/home").hasAuthority("basic")
                 .requestMatchers("/tasks").hasAuthority("tasks")
                 .requestMatchers("/employee/**").hasAuthority("manage_employees")
+                .requestMatchers("/clients/**").hasAuthority("manage_clients")
                 .anyRequest().authenticated()
         );
 
