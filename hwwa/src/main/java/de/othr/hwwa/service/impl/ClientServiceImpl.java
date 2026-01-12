@@ -1,6 +1,7 @@
 package de.othr.hwwa.service.impl;
 
 import jakarta.transaction.Transactional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -8,17 +9,22 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 import de.othr.hwwa.model.Client;
+import de.othr.hwwa.model.Company;
+import de.othr.hwwa.service.BaseServiceI;
 import de.othr.hwwa.service.ClientServiceI;
 import de.othr.hwwa.repository.ClientRepositoryI;
+import de.othr.hwwa.repository.CompanyRepositoryI;
 
 @Service
 @Transactional
-public class ClientServiceImpl implements ClientServiceI {
+public class ClientServiceImpl extends BaseServiceImpl implements ClientServiceI {
 
     private final ClientRepositoryI clientRepository;
+    private final CompanyRepositoryI companyRepository;
 
-    public ClientServiceImpl(ClientRepositoryI clientRepository) {
+    public ClientServiceImpl(ClientRepositoryI clientRepository, CompanyRepositoryI companyRepository) {
         this.clientRepository = clientRepository;
+        this.companyRepository = companyRepository;
     }
 
     @Override
@@ -40,6 +46,9 @@ public class ClientServiceImpl implements ClientServiceI {
         if (client.getCreatedAt() == null) {
             client.setCreatedAt(LocalDateTime.now());
         }
+        Long currentUserId = getCurrentUserId();
+        Company company = companyRepository.getCompanyById(currentUserId);
+        client.setCompany(company);
         return clientRepository.save(client);
     }
 

@@ -16,6 +16,10 @@ public class Client implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id", referencedColumnName = "id", nullable = false)
+    private Company company;
+
     @Column(nullable = false)
     private String name;
 
@@ -99,6 +103,14 @@ public class Client implements Serializable {
 
     public void setActiveTasks(Collection<Task> activeTasks) {
         this.activeTasks = activeTasks;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
 }

@@ -34,7 +34,8 @@ public class ClientController {
         @RequestParam(value = "keyword", required = false) String keyword,
         Model model) {
 
-        // TODO: Get current user and only return clients with the same Firma as loggedinuser
+        // TODO: Get current user and only return clients with the same Company as loggedinuser
+        // maybe use Hibernate Filter for Automatic Tenant Isolation
 
         Sort sortObj = dir.equalsIgnoreCase("desc")
                 ? Sort.by(sort).descending()
