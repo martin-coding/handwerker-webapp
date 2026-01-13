@@ -2,6 +2,7 @@ package de.othr.hwwa.startup;
 
 import de.othr.hwwa.model.*;
 import de.othr.hwwa.repository.AuthorityRepositoryI;
+import de.othr.hwwa.repository.ClientRepositoryI;
 import de.othr.hwwa.repository.CompanyRepositoryI;
 import de.othr.hwwa.repository.RoleRepositoryI;
 import de.othr.hwwa.repository.UserRepositoryI;
@@ -9,6 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Component
@@ -19,19 +21,22 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepositoryI userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CompanyRepositoryI companyRepository;
+    private final ClientRepositoryI clientRepository;
 
     public DataInitializer(
             RoleRepositoryI roleRepository,
             AuthorityRepositoryI authorityRepository,
             UserRepositoryI userRepository,
             PasswordEncoder passwordEncoder,
-            CompanyRepositoryI companyRepository
+            CompanyRepositoryI companyRepository,
+            ClientRepositoryI clientRepository
     ) {
         this.roleRepository = roleRepository;
         this.authorityRepository = authorityRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.companyRepository = companyRepository;
+        this.clientRepository = clientRepository;
     }
 
     @Override
@@ -41,14 +46,14 @@ public class DataInitializer implements CommandLineRunner {
                 .orElseGet(() -> authorityRepository.save(new Authority("tasks")));
         Authority basic = authorityRepository.findByName("basic")
                 .orElseGet(() -> authorityRepository.save(new Authority("basic")));
-        Authority createUser = authorityRepository.findByName("create_user")
-                .orElseGet(() -> authorityRepository.save(new Authority("create_user")));
-        Authority manageEmployees = authorityRepository.findByName("manage_employees")
-                .orElseGet(() -> authorityRepository.save(new Authority("manage_employees")));
+        Authority createUser = authorityRepository.findByName("createUser")
+                .orElseGet(() -> authorityRepository.save(new Authority("createUser")));
+        Authority manageEmployees = authorityRepository.findByName("manageEmployees")
+                .orElseGet(() -> authorityRepository.save(new Authority("manageEmployees")));
         Authority updateCompanyData = authorityRepository.findByName("updateCompanyData")
                 .orElseGet(() -> authorityRepository.save(new Authority("updateCompanyData")));
-        Authority manageClients = authorityRepository.findByName("manage_clients")
-                .orElseGet(() -> authorityRepository.save(new Authority("manage_clients")));
+        Authority manageClients = authorityRepository.findByName("manageClients")
+                .orElseGet(() -> authorityRepository.save(new Authority("manageClients")));
 
         // Check if role exists
         Role employee = roleRepository.findByName("Employee")
@@ -62,7 +67,7 @@ public class DataInitializer implements CommandLineRunner {
                 .orElseGet(() -> {
                     Role r = new Role();
                     r.setName("Manager");
-                    r.setAuthorities(Set.of(tasks, basic));
+                    r.setAuthorities(Set.of(tasks, basic, manageClients));
                     return roleRepository.save(r);
                 });
         Role owner = roleRepository.findByName("Owner")
@@ -74,8 +79,10 @@ public class DataInitializer implements CommandLineRunner {
                 });
 
 
-        Company company = new Company("abc", new Address("abc", "abc", "123", "abc"));
+        Company company = new Company("Schreiner Test", new Address("Sonnenweg", "München", "94921", "Deutschland"));
         companyRepository.save(company);
+        Company company01 = new Company("def", new Address("def", "def", "456", "def"));
+        companyRepository.save(company01);
 
         //Check if dummy user exists
         User user1 = userRepository.findUserByEmailIgnoreCase("thomas.test@abc.com")
@@ -84,7 +91,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Thomas");
                     user.setLastName("Test");
                     user.setEmail("thomas.test@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(owner);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -96,7 +103,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Sarah");
                     user.setLastName("Mueller");
                     user.setEmail("sarah.mueller@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -108,7 +115,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Lea");
                     user.setLastName("Meier");
                     user.setEmail("lea.meier@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(manager);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -120,7 +127,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Hans");
                     user.setLastName("Zimmer");
                     user.setEmail("hans.zimmer@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -132,7 +139,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Johann");
                     user.setLastName("Fuchs");
                     user.setEmail("johann.fuchs@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -144,7 +151,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Michael");
                     user.setLastName("Pauli");
                     user.setEmail("michael.pauli@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -156,7 +163,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Jürgen");
                     user.setLastName("Zimmerer");
                     user.setEmail("juergen.zimmerer@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -167,7 +174,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Thomas");
                     user.setLastName("Fuchs");
                     user.setEmail("thomas.fuchs@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -183,7 +190,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Anna");
                     user.setLastName("Beier");
                     user.setEmail("anna.beier@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company_02);
                     return userRepository.save(user);
@@ -195,11 +202,26 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Bernd");
                     user.setLastName("Becker");
                     user.setEmail("bernd.becker@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(owner);
                     user.setCompany(company_02);
                     return userRepository.save(user);
                 });
 
+        Client client1 = new Client();
+        client1.setName("Alice");
+        client1.setEmail("alice@abc.de");
+        client1.setPhone("123");
+        client1.setCompany(company);
+        client1.setCreatedAt(LocalDateTime.now());
+        clientRepository.save(client1);
+
+        Client client2 = new Client();
+        client2.setName("Bob");
+        client2.setEmail("bob@def.de");
+        client2.setPhone("456");
+        client2.setCompany(company01);
+        client2.setCreatedAt(LocalDateTime.now());
+        clientRepository.save(client2);
     }
 }
