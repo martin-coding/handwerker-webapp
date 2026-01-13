@@ -5,11 +5,15 @@ import de.othr.hwwa.repository.AuthorityRepositoryI;
 import de.othr.hwwa.repository.CompanyRepositoryI;
 import de.othr.hwwa.repository.RoleRepositoryI;
 import de.othr.hwwa.repository.UserRepositoryI;
+import de.othr.hwwa.repository.TaskRepositoryI;
+import de.othr.hwwa.repository.TaskAssignmentRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
+import java.time.LocalDateTime;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -19,19 +23,25 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepositoryI userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CompanyRepositoryI companyRepository;
+    private final TaskRepositoryI taskRepository;
+    private final TaskAssignmentRepository taskAssignmentRepository;
 
     public DataInitializer(
             RoleRepositoryI roleRepository,
             AuthorityRepositoryI authorityRepository,
             UserRepositoryI userRepository,
             PasswordEncoder passwordEncoder,
-            CompanyRepositoryI companyRepository
+            CompanyRepositoryI companyRepository,
+            TaskRepositoryI taskRepository,
+            TaskAssignmentRepository taskAssignmentRepository
     ) {
         this.roleRepository = roleRepository;
         this.authorityRepository = authorityRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.companyRepository = companyRepository;
+        this.taskRepository = taskRepository;
+        this.taskAssignmentRepository = taskAssignmentRepository;
     }
 
     @Override
@@ -65,10 +75,9 @@ public class DataInitializer implements CommandLineRunner {
                 .orElseGet(() -> {
                     Role r = new Role();
                     r.setName("Owner");
-                    r.setAuthorities(Set.of(tasks, createUser,manageEmployees, basic));
+                    r.setAuthorities(Set.of(tasks, createUser, manageEmployees, basic));
                     return roleRepository.save(r);
                 });
-
 
         Company company = new Company("abc", new Address("abc", "abc", "123", "abc"));
         companyRepository.save(company);
@@ -85,7 +94,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setCompany(company);
                     return userRepository.save(user);
                 });
-        //Check if dummy user exists
+        seedTasks(user1);
         User user2 = userRepository.findUserByEmailIgnoreCase("sarah.mueller@abc.com")
                 .orElseGet(() -> {
                     User user = new User();
@@ -97,7 +106,6 @@ public class DataInitializer implements CommandLineRunner {
                     user.setCompany(company);
                     return userRepository.save(user);
                 });
-        //Check if dummy user exists
         User user3 = userRepository.findUserByEmailIgnoreCase("lea.meier@abc.com")
                 .orElseGet(() -> {
                     User user = new User();
@@ -109,7 +117,6 @@ public class DataInitializer implements CommandLineRunner {
                     user.setCompany(company);
                     return userRepository.save(user);
                 });
-        //Check if dummy user exists
         User user4 = userRepository.findUserByEmailIgnoreCase("hans.zimmer@abc.com")
                 .orElseGet(() -> {
                     User user = new User();
@@ -121,7 +128,6 @@ public class DataInitializer implements CommandLineRunner {
                     user.setCompany(company);
                     return userRepository.save(user);
                 });
-        //Check if dummy user exists
         User user5 = userRepository.findUserByEmailIgnoreCase("johann.fuchs@abc.com")
                 .orElseGet(() -> {
                     User user = new User();
@@ -133,7 +139,6 @@ public class DataInitializer implements CommandLineRunner {
                     user.setCompany(company);
                     return userRepository.save(user);
                 });
-        //Check if dummy user exists
         User user6 = userRepository.findUserByEmailIgnoreCase("michael.pauli@abc.com")
                 .orElseGet(() -> {
                     User user = new User();
@@ -145,7 +150,6 @@ public class DataInitializer implements CommandLineRunner {
                     user.setCompany(company);
                     return userRepository.save(user);
                 });
-        //Check if dummy user exists
         User user7 = userRepository.findUserByEmailIgnoreCase("juergen.zimmerer@abc.com")
                 .orElseGet(() -> {
                     User user = new User();
@@ -169,8 +173,6 @@ public class DataInitializer implements CommandLineRunner {
                     return userRepository.save(user);
                 });
 
-
-
         Company company_02 = new Company("bc", new Address("bc", "bc", "223", "bc"));
         companyRepository.save(company_02);
         User user9 = userRepository.findUserByEmailIgnoreCase("anna.beier@abc.com")
@@ -184,7 +186,6 @@ public class DataInitializer implements CommandLineRunner {
                     user.setCompany(company_02);
                     return userRepository.save(user);
                 });
-        //Check if dummy user exists
         User user10 = userRepository.findUserByEmailIgnoreCase("bernd.becker@abc.com")
                 .orElseGet(() -> {
                     User user = new User();
@@ -196,6 +197,83 @@ public class DataInitializer implements CommandLineRunner {
                     user.setCompany(company_02);
                     return userRepository.save(user);
                 });
+    }
 
+    private void seedTasks(User user) {
+        LocalDateTime now = LocalDateTime.now();
+
+        Task t1 = createTaskIfMissing(
+                "Angebot erstellen",
+                "Angebot für Kunde Muster GmbH vorbereiten und kalkulieren.",
+                TaskStatus.IN_PROGRESS,
+                now.minusDays(1).withHour(9).withMinute(0).withSecond(0).withNano(0),
+                now.minusDays(1).withHour(12).withMinute(0).withSecond(0).withNano(0),
+                user
+        );
+
+        Task t2 = createTaskIfMissing(
+                "Material bestellen",
+                "Materialliste prüfen und fehlende Positionen bestellen.",
+                TaskStatus.PLANNED,
+                now.plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0),
+                now.plusDays(1).withHour(11).withMinute(30).withSecond(0).withNano(0),
+                user
+        );
+
+        Task t3 = createTaskIfMissing(
+                "Baustelle prüfen",
+                "Vor-Ort Termin zur Einschätzung, Fotos machen, Risiken notieren.",
+                TaskStatus.DONE,
+                now.minusDays(3).withHour(14).withMinute(0).withSecond(0).withNano(0),
+                now.minusDays(3).withHour(16).withMinute(0).withSecond(0).withNano(0),
+                user
+        );
+
+        assignIfMissing(user, t1, 90);
+        assignIfMissing(user, t2, 45);
+        assignIfMissing(user, t3, 120);
+    }
+
+    private Task createTaskIfMissing(String title,
+                                     String description,
+                                     TaskStatus status,
+                                     LocalDateTime start,
+                                     LocalDateTime end,
+                                     User createdBy) {
+
+        List<Task> existing = taskRepository.findByTitleContainingIgnoreCase(title);
+        for (Task t : existing) {
+            if (t.getTitle() != null && t.getTitle().equalsIgnoreCase(title)) {
+
+                if (t.getStatus() == null) t.setStatus(status);
+                if (t.getStartDateTime() == null) t.setStartDateTime(start);
+                if (t.getEndDateTime() == null) t.setEndDateTime(end);
+                if (t.getCreatedBy() == null) t.setCreatedBy(createdBy);
+
+                return taskRepository.save(t);
+            }
+        }
+
+        Task task = new Task();
+        task.setTitle(title);
+        task.setDescription(description);
+        task.setStatus(status);
+        task.setStartDateTime(start);
+        task.setEndDateTime(end);
+        task.setCreatedBy(createdBy);
+
+        return taskRepository.save(task);
+    }
+
+    private void assignIfMissing(User user, Task task, int initialMinutes) {
+        boolean exists = taskAssignmentRepository
+                .findByUserIdAndTaskId(user.getId(), task.getId())
+                .isPresent();
+
+        if (!exists) {
+            TaskAssignment assignment = new TaskAssignment(user, task);
+            assignment.setMinutesWorked(initialMinutes);
+            taskAssignmentRepository.save(assignment);
+        }
     }
 }

@@ -1,9 +1,10 @@
 package de.othr.hwwa.service;
 
+import de.othr.hwwa.model.Task;
+import de.othr.hwwa.model.User;
+
 import java.util.List;
 import java.util.Optional;
-
-import de.othr.hwwa.model.Task;
 
 public interface TaskServiceI {
 
@@ -11,12 +12,17 @@ public interface TaskServiceI {
 
     Task saveTask(Task task);
 
-    Optional <Task> getTaskById(Long id);
+    Optional<Task> getTaskById(Long id);
 
     Task updateTask(Task task);
 
     void delete(Task task);
 
-    public List<Task> findTasksByTitle(String title) ;
+    List<Task> findTasksByTitle(String title);
 
+    List<Task> getAssignedTasksForUser(User user);
+
+    void assignUserToTask(User user, Task task, int initialMinutes);
+
+    void addWorkHours(Long taskId, Long userId, int minutes);
 }

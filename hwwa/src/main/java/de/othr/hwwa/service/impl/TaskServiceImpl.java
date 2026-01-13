@@ -1,50 +1,61 @@
 package de.othr.hwwa.service.impl;
 
+import de.othr.hwwa.model.Task;
+import de.othr.hwwa.model.TaskAssignment;
+import de.othr.hwwa.model.User;
+import de.othr.hwwa.repository.TaskAssignmentRepository;
+import de.othr.hwwa.repository.TaskRepositoryI;
+import de.othr.hwwa.service.TaskServiceI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-
-import de.othr.hwwa.model.Task;
-import de.othr.hwwa.repository.TaskRepositoryI;
-import de.othr.hwwa.service.TaskServiceI;
-
-
 @Service
-public class TaskServiceImpl implements TaskServiceI{
+@Transactional(readOnly = true)
+public class TaskServiceImpl implements TaskServiceI {
 
+    private final TaskRepositoryI taskRepository;
+    private final TaskAssignmentRepository taskAssignmentRepository;
 
-    private TaskRepositoryI  taskRepository;
-
-    public TaskServiceImpl(TaskRepositoryI  taskRepository) {
-        super();
-
+    @Autowired
+    public TaskServiceImpl(TaskRepositoryI taskRepository,
+                           TaskAssignmentRepository taskAssignmentRepository) {
         this.taskRepository = taskRepository;
+        this.taskAssignmentRepository = taskAssignmentRepository;
     }
 
     @Override
     public List<Task> getAllTasks() {
-        return (List<Task>) taskRepository.findAll();
+        return taskRepository.findAll();
     }
 
     @Override
+    @Transactional
     public Task saveTask(Task task) {
-        return null;
+        return taskRepository.save(task);
     }
 
     @Override
     public Optional<Task> getTaskById(Long id) {
-        return taskRepository.findById(id) ;
+        return taskRepository.findById(id);
     }
 
     @Override
+    @Transactional
     public Task updateTask(Task task) {
-        return null;
+        if (!taskRepository.existsById(task.getId())) {
+            throw new IllegalArgumentException("Task not found: " + task.getId());
+        }
+        return taskRepository.save(task);
     }
 
     @Override
-    public void delete(Task Task) {
-
+    @Transactional
+    public void delete(Task task) {
+        taskRepository.delete(task);
     }
 
     @Override
@@ -52,4 +63,31 @@ public class TaskServiceImpl implements TaskServiceI{
         return taskRepository.findByTitleContainingIgnoreCase(title);
     }
 
+    @Override
+    public List<Task> getAssignedTasksForUser(User user) {
+        return taskAssignmentRepository.findByUserId(user.getId())
+                .stream()
+                .map(TaskAssignment::getTask)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public void assignUserToTask(User user, Task task, int initialMinutes) {
+        if (taskAssignmentRepository.findByUserIdAndTaskId(user.getId(), task.getId()).isPresent()) {
+            throw new IllegalStateException("User already assigned to task");
+        }
+        TaskAssignment assignment = new TaskAssignment(user, task);
+        assignment.setMinutesWorked(initialMinutes);
+        taskAssignmentRepository.save(assignment);
+    }
+
+    @Override
+    @Transactional
+    public void addWorkHours(Long taskId, Long userId, int minutes) {
+        TaskAssignment assignment = taskAssignmentRepository.findByUserIdAndTaskId(userId, taskId)
+                .orElseThrow(() -> new IllegalArgumentException("No assignment found"));
+        assignment.setMinutesWorked(assignment.getMinutesWorked() + minutes);
+        taskAssignmentRepository.save(assignment);
+    }
 }

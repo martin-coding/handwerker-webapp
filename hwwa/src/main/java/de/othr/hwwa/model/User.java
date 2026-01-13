@@ -32,13 +32,16 @@ public class User implements Serializable{
 
     private boolean active = true;
 
-    @ManyToMany
-    @JoinTable(
-            name="user_task",
-            joinColumns = @JoinColumn(name="user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name="task_id", referencedColumnName = "id")
-    )
-    private List<Task> tasks = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TaskAssignment> taskAssignments = new ArrayList<>();
+
+    public List<Task> getAssignedTasks() {
+        return taskAssignments.stream().map(TaskAssignment::getTask).toList();
+    }
+
+    public void setTaskAssignments(List<TaskAssignment> taskAssignments) {
+        this.taskAssignments = taskAssignments;
+    }
 
     @ManyToOne
     @JoinColumn(name = "company_id", referencedColumnName = "id", nullable = false)
@@ -82,17 +85,9 @@ public class User implements Serializable{
 
     public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
 
-    public List<Task> getTasks() {
-        return tasks;
-    }
-
     public Role getRole() {return role;}
 
     public void setRole(Role role) {this.role = role;}
-
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
-    }
 
     public boolean isActive() {return active;}
 
@@ -101,4 +96,12 @@ public class User implements Serializable{
     public Company getCompany() {return company;}
 
     public void setCompany(Company company) {this.company = company;}
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<TaskAssignment> getTaskAssignments() {
+        return taskAssignments;
+    }
 }
