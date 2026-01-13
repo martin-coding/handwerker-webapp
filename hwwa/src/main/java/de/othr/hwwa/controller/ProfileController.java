@@ -44,20 +44,17 @@ public class ProfileController {
         try {
             profileService.updateProfile(profile);
         } catch (MissingPasswordException e) {
-            // Add an error message to the model to display in the form
             result.rejectValue("oldPassword", null, e.getMessage());
             result.rejectValue("newPassword", null, e.getMessage());
             model.addAttribute("company", profileService.getCurrentCompanyDto());
             return "profile"; // go back to profile page
         } catch (IllegalArgumentException e) {
-            // Add an error message to the model to display in the form
             result.rejectValue("oldPassword", null, e.getMessage());
             model.addAttribute("company", profileService.getCurrentCompanyDto());
             return "profile"; // go back to profile page
         }
         return "redirect:/profile?success";
     }
-
 
     @PostMapping("/profile/company/edit")
     public String updateCompany(@Valid @ModelAttribute("company") CompanyDto company, BindingResult result, Model model) {

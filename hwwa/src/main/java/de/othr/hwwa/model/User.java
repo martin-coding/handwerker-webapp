@@ -17,6 +17,10 @@ public class User implements Serializable{
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private boolean twoFactorEnabled = false;
+
+    private String twoFactorSecret;
+
     private String firstName;
 
     private String lastName;
@@ -57,6 +61,18 @@ public class User implements Serializable{
         this.hourlyRate = hourlyRate;
         this.role = role;
         this.company = company;
+    }
+
+    public boolean isTwoFactorEnabled() {return twoFactorEnabled;}
+
+    public void setTwoFactorEnabled(boolean twoFactorEnabled) {this.twoFactorEnabled = twoFactorEnabled;}
+
+    public String getTwoFactorSecret() {
+        return twoFactorSecret;
+    }
+
+    public void setTwoFactorSecret(String twoFactorSecret) {
+        this.twoFactorSecret = twoFactorSecret;
     }
 
     public String getFirstName() {return firstName;}

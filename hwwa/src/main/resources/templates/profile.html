@@ -22,13 +22,21 @@
 <main class="flex-grow-1 app-main">
     <div class="container-xl py-4">
 
+        <div th:if="${param.success}" class="alert-custom-success mb-3">
+            Daten wurde erfolgreich gespeichert
+        </div>
+
+        <div th:if="${param.error}" class="alert-custom-error mb-3">
+            2 Faktor Authentifizierung wurde bereits angelegt
+        </div>
 
         <h1>Mitarbeiterdetails bearbeiten</h1>
         <p>Bearbeiten Sie die persönlichen Daten, Rolle und Berechtigungen des Mitarbeiters.</p>
 
-        <div th:if="${param.success}" class="alert-custom-success mb-3">
-            Daten wurde erfolgreich gespeichert
-        </div>
+        <a th:href="@{/2fa/init}"
+           class="btn btn-primary d-inline-flex align-items-center gap-2">
+            <span>2 Faktor Authentifizierung einrichten</span>
+        </a>
 
         <!-- Profil -->
         <div class="profile-card">

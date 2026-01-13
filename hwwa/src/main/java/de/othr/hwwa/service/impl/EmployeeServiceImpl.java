@@ -13,7 +13,6 @@ import de.othr.hwwa.service.EmployeeServiceI;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +38,7 @@ public class EmployeeServiceImpl extends SecurityServiceImpl implements Employee
 
     @Override
     public Page<User> getEmployeeList(int page, int size, String sort, String dir, String keyword){
-        User loggedInUser = ((MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getLoggedInUser();
-        Company company = loggedInUser.getCompany();
+        Company company = getCurrentCompany();
         Sort.Direction direction =
                 dir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
 
