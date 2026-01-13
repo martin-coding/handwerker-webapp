@@ -1,6 +1,7 @@
 package de.othr.hwwa.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,10 @@ public class User implements Serializable{
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private boolean twoFactorEnabled = false;
+
+    private String twoFactorSecret;
+
     private String firstName;
 
     private String lastName;
@@ -25,6 +30,8 @@ public class User implements Serializable{
     private String email;
     private float hourlyRate;
     private String phoneNumber;
+
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -45,6 +52,28 @@ public class User implements Serializable{
     private Company company;
 
     public User(){}
+
+    public User(String firstName, String lastName,String email, String password, float hourlyRate, Role role, Company company) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.hourlyRate = hourlyRate;
+        this.role = role;
+        this.company = company;
+    }
+
+    public boolean isTwoFactorEnabled() {return twoFactorEnabled;}
+
+    public void setTwoFactorEnabled(boolean twoFactorEnabled) {this.twoFactorEnabled = twoFactorEnabled;}
+
+    public String getTwoFactorSecret() {
+        return twoFactorSecret;
+    }
+
+    public void setTwoFactorSecret(String twoFactorSecret) {
+        this.twoFactorSecret = twoFactorSecret;
+    }
 
     public String getFirstName() {return firstName;}
 
@@ -89,6 +118,10 @@ public class User implements Serializable{
     public Role getRole() {return role;}
 
     public void setRole(Role role) {this.role = role;}
+
+    public LocalDateTime getCreatedAt() {return createdAt;}
+
+    public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;

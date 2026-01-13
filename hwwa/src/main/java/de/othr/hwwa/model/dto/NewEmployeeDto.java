@@ -3,6 +3,15 @@ package de.othr.hwwa.model.dto;
 import jakarta.validation.constraints.*;
 
 public class NewEmployeeDto {
+    @NotBlank(message = "Vorname darf nicht leer sein")
+    @Size(min = 2, max = 50, message = "Vorname muss zwischen 2 und 50 Zeichen lang sein")
+    @Pattern(regexp = "^[A-Za-zÀ-ÿ'\\- ]+$", message = "Vorname darf nur Buchstaben, Leerzeichen, Bindestriche oder Apostrophe enthalten")
+    private String firstName;
+
+    @NotBlank(message = "Nachname darf nicht leer sein")
+    @Size(min = 2, max = 50, message = "Nachname muss zwischen 2 und 50 Zeichen lang sein")
+    @Pattern(regexp = "^[A-Za-zÀ-ÿ'\\- ]+$", message = "Nachname darf nur Buchstaben, Leerzeichen, Bindestriche oder Apostrophe enthalten")
+    private String lastName;
     @NotBlank(message = "Passwort darf nicht leer sein")
     @Size(min = 8, max = 100, message = "Passwort muss mindestens 8 Zeichen lang sein")
     private String password;
@@ -18,13 +27,23 @@ public class NewEmployeeDto {
     public NewEmployeeDto() {
     }
 
-    public NewEmployeeDto(String password, String password_check, String email, String roleName, float hourlyRate) {
+    public NewEmployeeDto(String firstName, String lastName, String password, String password_check, String email, String roleName, float hourlyRate) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.password = password;
         this.password_check = password_check;
         this.email = email;
         this.roleName = roleName;
         this.hourlyRate = hourlyRate;
     }
+
+    public String getFirstName() {return firstName;}
+
+    public void setFirstName(String firstName) {this.firstName = firstName;}
+
+    public String getLastName() {return lastName;}
+
+    public void setLastName(String lastName) {this.lastName = lastName;}
 
     public String getPassword() {
         return password;

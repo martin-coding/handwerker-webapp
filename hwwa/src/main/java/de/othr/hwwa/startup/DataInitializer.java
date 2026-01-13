@@ -46,12 +46,14 @@ public class DataInitializer implements CommandLineRunner {
                 .orElseGet(() -> authorityRepository.save(new Authority("tasks")));
         Authority basic = authorityRepository.findByName("basic")
                 .orElseGet(() -> authorityRepository.save(new Authority("basic")));
-        Authority createUser = authorityRepository.findByName("create_user")
-                .orElseGet(() -> authorityRepository.save(new Authority("create_user")));
-        Authority manageEmployees = authorityRepository.findByName("manage_employees")
-                .orElseGet(() -> authorityRepository.save(new Authority("manage_employees")));
-        Authority manageClients = authorityRepository.findByName("manage_clients")
-                .orElseGet(() -> authorityRepository.save(new Authority("manage_clients")));
+        Authority createUser = authorityRepository.findByName("createUser")
+                .orElseGet(() -> authorityRepository.save(new Authority("createUser")));
+        Authority manageEmployees = authorityRepository.findByName("manageEmployees")
+                .orElseGet(() -> authorityRepository.save(new Authority("manageEmployees")));
+        Authority updateCompanyData = authorityRepository.findByName("updateCompanyData")
+                .orElseGet(() -> authorityRepository.save(new Authority("updateCompanyData")));
+        Authority manageClients = authorityRepository.findByName("manageClients")
+                .orElseGet(() -> authorityRepository.save(new Authority("manageClients")));
 
         // Check if role exists
         Role employee = roleRepository.findByName("Employee")
@@ -72,15 +74,15 @@ public class DataInitializer implements CommandLineRunner {
                 .orElseGet(() -> {
                     Role r = new Role();
                     r.setName("Owner");
-                    r.setAuthorities(Set.of(tasks, createUser,manageEmployees, basic, manageClients));
+                    r.setAuthorities(Set.of(tasks, createUser,manageEmployees, basic, updateCompanyData, manageClients));
                     return roleRepository.save(r);
                 });
 
 
-        Company company = new Company("abc", new Address("abc", "abc", "123", "abc"));
+        Company company = new Company("Schreiner Test", new Address("Sonnenweg", "München", "94921", "Deutschland"));
         companyRepository.save(company);
-        Company differentCompany = new Company("def", new Address("def", "def", "456", "def"));
-        companyRepository.save(differentCompany);
+        Company company01 = new Company("def", new Address("def", "def", "456", "def"));
+        companyRepository.save(company01);
 
         //Check if dummy user exists
         User user1 = userRepository.findUserByEmailIgnoreCase("thomas.test@abc.com")
@@ -89,7 +91,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Thomas");
                     user.setLastName("Test");
                     user.setEmail("thomas.test@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(owner);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -101,7 +103,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Sarah");
                     user.setLastName("Mueller");
                     user.setEmail("sarah.mueller@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -113,7 +115,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Lea");
                     user.setLastName("Meier");
                     user.setEmail("lea.meier@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(manager);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -125,7 +127,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Hans");
                     user.setLastName("Zimmer");
                     user.setEmail("hans.zimmer@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -137,7 +139,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Johann");
                     user.setLastName("Fuchs");
                     user.setEmail("johann.fuchs@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -149,7 +151,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Michael");
                     user.setLastName("Pauli");
                     user.setEmail("michael.pauli@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -161,7 +163,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Jürgen");
                     user.setLastName("Zimmerer");
                     user.setEmail("juergen.zimmerer@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -172,7 +174,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Thomas");
                     user.setLastName("Fuchs");
                     user.setEmail("thomas.fuchs@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
                     return userRepository.save(user);
@@ -188,7 +190,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Anna");
                     user.setLastName("Beier");
                     user.setEmail("anna.beier@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company_02);
                     return userRepository.save(user);
@@ -200,12 +202,12 @@ public class DataInitializer implements CommandLineRunner {
                     user.setFirstName("Bernd");
                     user.setLastName("Becker");
                     user.setEmail("bernd.becker@abc.com");
-                    user.setPassword(passwordEncoder.encode("123456"));
+                    user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(owner);
                     user.setCompany(company_02);
                     return userRepository.save(user);
                 });
-        
+
         Client client1 = new Client();
         client1.setName("Alice");
         client1.setEmail("alice@abc.de");
@@ -218,7 +220,7 @@ public class DataInitializer implements CommandLineRunner {
         client2.setName("Bob");
         client2.setEmail("bob@def.de");
         client2.setPhone("456");
-        client2.setCompany(differentCompany);
+        client2.setCompany(company01);
         client2.setCreatedAt(LocalDateTime.now());
         clientRepository.save(client2);
     }

@@ -1,5 +1,4 @@
-
-<div th:fragment="siteHeader">
+<div th:fragment="siteHeader" xmlns:sec="http://www.w3.org/1999/xhtml">
     <header class="app-header sticky-top">
         <div class="container-fluid">
             <div class="d-flex align-items-center justify-content-between header-inner">
@@ -35,7 +34,7 @@
                             <span class="material-symbols-outlined">receipt_long</span> Rechnungen
                         </a>
 
-                        <a class="btn btn-sm d-flex align-items-center gap-2"
+                        <a class="btn btn-sm d-flex align-items-center gap-2" sec:authorize="hasAuthority('manageEmployees')"
                            th:href="@{/employee}"
                            th:classappend="${currentUri.startsWith('/employee') ? 'btn-primary text-white' : 'btn-light'}">
                             <span class="material-symbols-outlined">group</span> Mitarbeiter

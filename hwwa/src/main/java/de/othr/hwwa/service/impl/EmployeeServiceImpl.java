@@ -6,35 +6,39 @@ import de.othr.hwwa.exceptions.UserDoesNotExistsException;
 import de.othr.hwwa.model.*;
 import de.othr.hwwa.model.dto.NewEmployeeDto;
 import de.othr.hwwa.model.dto.UserDto;
-import de.othr.hwwa.repository.CompanyRepositoryI;
 import de.othr.hwwa.repository.RoleRepositoryI;
 import de.othr.hwwa.repository.UserRepositoryI;
+import de.othr.hwwa.service.EmailServiceI;
 import de.othr.hwwa.service.EmployeeServiceI;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class EmployeeServiceImpl extends BaseServiceImpl implements EmployeeServiceI {
+public class EmployeeServiceImpl extends SecurityServiceImpl implements EmployeeServiceI {
 
     private final UserRepositoryI userRepository;
     private final RoleRepositoryI roleRepository;
-    private final CompanyRepositoryI companyRepository;
+    private final EmailServiceI emailService;
+    private final PasswordEncoder passwordEncoder;
 
-    public EmployeeServiceImpl(UserRepositoryI userRepository, RoleRepositoryI roleRepository, CompanyRepositoryI companyRepository) {
+
+
+    public EmployeeServiceImpl(UserRepositoryI userRepository, RoleRepositoryI roleRepository, EmailServiceI emailService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.companyRepository = companyRepository;
+        this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public Page<User> getEmployeeList(int page, int size, String sort, String dir, String keyword){
-        User loggedInUser = ((MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getLoggedInUser();
-        Company company = loggedInUser.getCompany();
+        Company company = getCurrentCompany();
         Sort.Direction direction =
                 dir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
 
@@ -87,26 +91,20 @@ public class EmployeeServiceImpl extends BaseServiceImpl implements EmployeeServ
 
     @Override
     public void addNewEmployee(NewEmployeeDto dto) {
-        User newUser  = new User();
-        newUser.setEmail(dto.getEmail());
-        newUser.setPassword(dto.getPassword());
-        newUser.setHourlyRate(dto.getHourlyRate());
-
         Role role = roleRepository.getRoleByName(dto.getRoleName());
         if (role == null) {
             // Kann nur auftreten, wenn schädlicher Nutzer versucht das System zu sabotieren, daher ist es nicht notwendig dies extra in der GUI anzuzeigen.
             throw new IllegalArgumentException("Role nicht gefunden");
         }
-        newUser.setRole(roleRepository.getRoleByName(dto.getRoleName()));
+        User newUser  = new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()), dto.getHourlyRate(), role, getCurrentCompany());
 
-        User currentUser = userRepository.findById(getCurrentUserId())
-                .orElseThrow(() -> new UserDoesNotExistsException("Nutzer mit dieser Id existiert nicht"));
-        Company company = companyRepository.getCompanyById(currentUser.getId());
-        newUser.setCompany(company);
 
-        // Angelegter Nutzer wird zunächst wie gelöschter Account betrachtet. Durch Registrierung wird der Account aktiv.
-        newUser.setActive(false);
+        if (newUser.getCreatedAt() == null) {
+            newUser.setCreatedAt(LocalDateTime.now());
+        }
         userRepository.save(newUser);
+
+        emailService.sendRegistrationEmail(newUser, dto.getPassword());
     }
 
     @Override

@@ -16,7 +16,7 @@ import de.othr.hwwa.repository.CompanyRepositoryI;
 
 @Service
 @Transactional
-public class ClientServiceImpl extends BaseServiceImpl implements ClientServiceI {
+public class ClientServiceImpl extends SecurityServiceImpl implements ClientServiceI {
 
     private final ClientRepositoryI clientRepository;
     private final CompanyRepositoryI companyRepository;
