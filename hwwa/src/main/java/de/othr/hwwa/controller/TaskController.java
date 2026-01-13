@@ -1,26 +1,22 @@
 package de.othr.hwwa.controller;
 
-import org.springframework.stereotype.Controller;
-
 import de.othr.hwwa.service.TaskServiceI;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class TaskController {
 
-    private TaskServiceI taskService;
+    private final TaskServiceI taskService;
 
     public TaskController(TaskServiceI taskService) {
-        super();
-        this.taskService= taskService;
+        this.taskService = taskService;
     }
 
-    @GetMapping(value = {"/tasks"})
+    @GetMapping("/tasks")
     public String tasks(Model model) {
-        taskService.getAllTasks().forEach(task -> {
-            System.out.println(task);
-        });
-        return "homepage";
+        model.addAttribute("tasks", taskService.getAssignedTasksForUser());
+        return "tasks";
     }
 }
