@@ -71,6 +71,26 @@
 
                 <div class="row g-4">
                     <div class="col-md-6 input-wrapper">
+                        <label class="form-label fw-medium">Vorname</label>
+                        <input type="text"
+                               th:field="*{firstName}"
+                               th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'"
+                               id="firstName"
+                               placeholder="Vorname"
+                               class="input-field input-field-employee">
+                        <div class="invalid-feedback" th:errors="*{firstName}"></div>
+                    </div>
+                    <div class="col-md-6 input-wrapper">
+                        <label class="form-label fw-medium">Nachname</label>
+                        <input type="text"
+                               th:field="*{lastName}"
+                               th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'"
+                               id="lastName"
+                               placeholder="Nachname"
+                               class="input-field input-field-employee">
+                        <div class="invalid-feedback" th:errors="*{lastName}"></div>
+                    </div>
+                    <div class="col-md-6 input-wrapper">
                         <label class="form-label fw-medium">Email</label>
                         <input type="email"
                                th:field="*{email}"

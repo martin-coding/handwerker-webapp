@@ -66,16 +66,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    const toggleBtn = document.getElementById("togglePasswordBtn");
-    const passwordFields = document.getElementById("passwordFields");
-
-    toggleBtn.addEventListener("click", () => {
-        if (passwordFields.style.display === "none") {
-            passwordFields.style.display = "flex"; // or "block"
-        } else {
-            passwordFields.style.display = "none";
-        }
-    });
-});
-

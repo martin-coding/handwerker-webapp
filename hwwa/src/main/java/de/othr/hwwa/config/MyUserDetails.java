@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import de.othr.hwwa.model.Role;
-import de.othr.hwwa.repository.UserRepositoryI;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,12 +39,14 @@ public class MyUserDetails implements UserDetails {
                 authorities.add(new SimpleGrantedAuthority(authority.getName()));
             }
         }
-
-
     }
 
     public User getLoggedInUser() {
         return this.loggedInUser;
+    }
+
+    public boolean isTwoFactorEnabled(){
+        return this.loggedInUser.isTwoFactorEnabled();
     }
 
     @Override

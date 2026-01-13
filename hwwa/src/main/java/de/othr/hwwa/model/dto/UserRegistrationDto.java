@@ -40,10 +40,16 @@ public class UserRegistrationDto {
     @NotBlank(message = "Firmenname darf nicht leer sein")
     private String companyName;
 
+    @Pattern(
+            regexp = "^\\+?[0-9 /]{7,20}$",
+            message = "Ungültige Telefonnummer. Nur Zahlen, Leerzeichen ' ' und '/' erlaubt. Optional + am Anfang."
+    )
+    private String phoneNumber;
+
 
     public UserRegistrationDto() {}
 
-    public UserRegistrationDto(String firstName, String lastName, String password, String email, String street, String city, String postalCode, String country, String companyName) {
+    public UserRegistrationDto(String firstName, String lastName, String password, String email, String street, String city, String postalCode, String country, String companyName, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
@@ -53,6 +59,7 @@ public class UserRegistrationDto {
         this.postalCode = postalCode;
         this.country = country;
         this.companyName = companyName;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getFirstName() {
@@ -106,4 +113,8 @@ public class UserRegistrationDto {
     public String getCompanyName() {return companyName;}
 
     public void setCompanyName(String companyName) {this.companyName = companyName;}
+
+    public String getPhoneNumber() {return phoneNumber;}
+
+    public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
 }
