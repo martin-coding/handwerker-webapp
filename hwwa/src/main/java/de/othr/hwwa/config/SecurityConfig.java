@@ -11,16 +11,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    @Bean
-    public AuthenticationSuccessHandler twoFactorAuthenticationSuccessHandler() {
-        return new TwoFactorAuthenticationSuccessHandler();
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,8 +34,9 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**", "/login", "/logout", "/registration").permitAll()
                 .requestMatchers("/", "/home").hasAuthority("basic")
                 .requestMatchers("/tasks").hasAuthority("tasks")
-                .requestMatchers("/employee/**").hasAuthority("manageEmployees")
+                .requestMatchers("/employee/**").hasAuthority("manage_employees")
                 .requestMatchers("/profile/company/edit/**").hasAuthority("updateCompanyData")
+                .requestMatchers("/clients/**").hasAuthority("manage_clients")
                 .anyRequest().authenticated()
         );
 
@@ -49,7 +44,7 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .failureUrl("/login?error")
-                .successHandler(twoFactorAuthenticationSuccessHandler())
+                .defaultSuccessUrl("/", true)
                 .permitAll()
         );
 
