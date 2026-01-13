@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
-public class TaskServiceImpl implements TaskServiceI {
+public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI {
 
     private final TaskRepositoryI taskRepository;
     private final TaskAssignmentRepository taskAssignmentRepository;
@@ -64,8 +64,8 @@ public class TaskServiceImpl implements TaskServiceI {
     }
 
     @Override
-    public List<Task> getAssignedTasksForUser(User user) {
-        return taskAssignmentRepository.findByUserId(user.getId())
+    public List<Task> getAssignedTasksForUser() {
+        return taskAssignmentRepository.findByUserId(getCurrentUserId())
                 .stream()
                 .map(TaskAssignment::getTask)
                 .toList();

@@ -20,7 +20,7 @@ public interface TaskServiceI {
 
     List<Task> findTasksByTitle(String title);
 
-    List<Task> getAssignedTasksForUser(User user);
+    List<Task> getAssignedTasksForUser();
 
     void assignUserToTask(User user, Task task, int initialMinutes);
 

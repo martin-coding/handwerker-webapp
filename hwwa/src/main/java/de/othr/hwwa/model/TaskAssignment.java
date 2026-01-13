@@ -11,8 +11,8 @@ import java.util.Objects;
 public class TaskAssignment implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @EmbeddedId  // <-- STATT @IdClass
-    private TaskAssignmentId id = new TaskAssignmentId();  // <-- neues Feld!
+    @EmbeddedId
+    private TaskAssignmentId id = new TaskAssignmentId();
 
     @MapsId("userId")  // <-- Mappt zur IdClass-Komponente
     @ManyToOne(fetch = FetchType.LAZY)
