@@ -13,6 +13,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping("/profile")
 public class ProfileController {
 
     ProfileServiceI profileService;
@@ -27,14 +28,14 @@ public class ProfileController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @GetMapping("/profile")
+    @GetMapping
     public String showProfilPage(Model model) {
         model.addAttribute("profile", profileService.getCurrentProfileDto());
         model.addAttribute("company", profileService.getCurrentCompanyDto());
         return "profile";
     }
 
-    @PostMapping("/profile/employee/edit")
+    @PostMapping("/employee/edit")
     public String updateEmployeeProfile(@Valid @ModelAttribute("profile") ProfileDto profile, BindingResult result, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("company", profileService.getCurrentCompanyDto());
@@ -56,7 +57,7 @@ public class ProfileController {
         return "redirect:/profile?success";
     }
 
-    @PostMapping("/profile/company/edit")
+    @PostMapping("/company/edit")
     public String updateCompany(@Valid @ModelAttribute("company") CompanyDto company, BindingResult result, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("profile", profileService.getCurrentProfileDto());

@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
+@RequestMapping("/employee")
 public class EmployeeController {
 
     private final EmployeeServiceI employeeService;
@@ -23,7 +24,7 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("/employee")
+    @GetMapping()
     public String showEmployeePage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
@@ -43,7 +44,7 @@ public class EmployeeController {
         return "employee_management/employee";
     }
 
-    @GetMapping("/employee/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String showEmployeeUpdatePage(@PathVariable int id, Model model) {
         UserDto user = employeeService.getUserById(id);
         List<Role> roles = employeeService.findAllRoles();
@@ -55,7 +56,7 @@ public class EmployeeController {
     }
 
 
-    @PostMapping("/employee/edit/{id}")
+    @PostMapping("/edit/{id}")
     public String updateEmployee(@PathVariable int id, @Valid @ModelAttribute("employeeChanged") UserDto dto, BindingResult result, Model model) {
         if (result.hasErrors()){
             List<Role> roles = employeeService.findAllRoles();
@@ -68,7 +69,7 @@ public class EmployeeController {
     }
 
 
-    @PostMapping("/employee/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteEmployee(@PathVariable int id, RedirectAttributes redirectAttributes) {
         try {
             employeeService.deleteEmployee(id);
@@ -80,7 +81,7 @@ public class EmployeeController {
     }
 
 
-    @GetMapping("/employee/add")
+    @GetMapping("/add")
     public String showEmployeeAddPage(Model model) {
         List<Role> roles = employeeService.findAllRoles();
         NewEmployeeDto newEmployee = new NewEmployeeDto();
@@ -90,7 +91,7 @@ public class EmployeeController {
         return "employee_management/employee_add";
     }
 
-    @PostMapping("/employee/add")
+    @PostMapping("/add")
     public String addNewEmployee(@Valid @ModelAttribute("newEmployee") NewEmployeeDto dto, BindingResult result, Model model) {
         if (!dto.getPassword().equals(dto.getPassword_check())) {
             result.rejectValue("password_check", null, "Passwort stimmt nicht überein");
