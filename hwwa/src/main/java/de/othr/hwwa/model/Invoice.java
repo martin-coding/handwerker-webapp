@@ -33,10 +33,10 @@ public class Invoice implements Serializable {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    // Invoice → Client (Many invoices → One client)
-    @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
+    private String clientName;
+    private String clientEmail;
+    private Address clientAddress;
+
     private float TotalAmount;
 
     public Invoice() {
@@ -46,7 +46,9 @@ public class Invoice implements Serializable {
         this.createdByUser = createdByUser;
         this.task = task;
         this.company = company;
-        this.client = client;
+        this.clientName = client.getName();
+        this.clientEmail = client.getEmail();
+        this.clientAddress = client.getAddress();
         this.invoiceCreationDate = LocalDate.now();
         this.invoiceIssuedDate = LocalDate.now().plusDays(28);
     }
@@ -99,12 +101,20 @@ public class Invoice implements Serializable {
         this.company = company;
     }
 
-    public Client getClient() {
-        return client;
+    public String getClientName() {return clientName;}
+
+    public void setClientName(String clientName) {this.clientName = clientName;}
+
+    public String getClientEmail() {return clientEmail;}
+
+    public void setClientEmail(String clientEmail) {this.clientEmail = clientEmail;}
+
+    public Address getClientAddress() {
+        return clientAddress;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClientAddress(Address clientAddress) {
+        this.clientAddress = clientAddress;
     }
 
     public float getTotalAmount() {

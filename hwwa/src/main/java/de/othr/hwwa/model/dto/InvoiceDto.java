@@ -37,9 +37,9 @@ public class InvoiceDto {
         this.createdByEmail = invoice.getCreatedByUser().getEmail();
         this.companyName = invoice.getCompany().getName();
         this.companyAddress = invoice.getCompany().getAddress();
-        this.clientName = invoice.getClient().getName();
-        this.clientEmail = invoice.getClient().getEmail();
-        this.clientAddress = invoice.getClient().getAddress();
+        this.clientName = invoice.getClientName();
+        this.clientEmail = invoice.getClientEmail();
+        this.clientAddress = invoice.getClientAddress();
         for (InvoiceMaterial material : materials) {
             this.materials.add(new InvoiceMaterialDto(material));
             this.total += material.getTotal();
