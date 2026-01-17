@@ -11,17 +11,7 @@ import java.util.Optional;
 
 public interface TaskServiceI {
 
-    List<Task> getAllTasks();
-
-    Task saveTask(Task task);
-
-    Optional<Task> getTaskById(Long id);
-
-    Task updateTask(Task task);
-
     void delete(Task task);
-
-    List<Task> findTasksByTitle(String title);
 
     List<Task> getAssignedTasksForUser();
 

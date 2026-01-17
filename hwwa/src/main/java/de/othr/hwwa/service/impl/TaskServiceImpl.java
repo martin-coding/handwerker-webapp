@@ -100,39 +100,9 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
     }
 
     @Override
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
-    }
-
-    @Override
-    @Transactional
-    public Task saveTask(Task task) {
-        return taskRepository.save(task);
-    }
-
-    @Override
-    public Optional<Task> getTaskById(Long id) {
-        return taskRepository.findById(id);
-    }
-
-    @Override
-    @Transactional
-    public Task updateTask(Task task) {
-        if (task.getId() == null || !taskRepository.existsById(task.getId())) {
-            throw new IllegalArgumentException("Task not found: " + task.getId());
-        }
-        return taskRepository.save(task);
-    }
-
-    @Override
     @Transactional
     public void delete(Task task) {
         taskRepository.delete(task);
-    }
-
-    @Override
-    public List<Task> findTasksByTitle(String title) {
-        return taskRepository.findByTitleContainingIgnoreCase(title);
     }
 
     @Override
