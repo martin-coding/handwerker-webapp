@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ClientRepositoryI extends JpaRepository<Client, Long> {
     @Query("""
@@ -21,9 +23,10 @@ public interface ClientRepositoryI extends JpaRepository<Client, Long> {
           )
     """)
     Page<Client> search(
-        @Param("companyId") Long companyId,
-        @Param("keyword") String keyword,
-        Pageable pageable
+            @Param("companyId") Long companyId,
+            @Param("keyword") String keyword,
+            Pageable pageable
     );
-}
 
+    List<Client> findByCompanyIdOrderByNameAsc(Long companyId);
+}

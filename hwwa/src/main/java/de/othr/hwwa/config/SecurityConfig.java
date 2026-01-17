@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .requestMatchers("/webjars/**", "/css/**", "/js/**").permitAll()
                 .requestMatchers("/h2-console/**", "/login", "/logout", "/registration").permitAll()
                 .requestMatchers("/", "/home").hasAuthority("basic")
-                .requestMatchers("/tasks").hasAuthority("tasks")
+                .requestMatchers("/tasks/**").hasAuthority("tasks")
                 .requestMatchers("/employee/**").hasAuthority("manageEmployees")
                 .requestMatchers("/profile/company/edit/**").hasAuthority("updateCompanyData")
                 .requestMatchers("/clients/**").hasAuthority("manageClients")
@@ -91,9 +91,7 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
         );
-
         http.httpBasic(Customizer.withDefaults());
-
         return http.build();
     }
 }

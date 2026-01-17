@@ -3,5 +3,8 @@ package de.othr.hwwa.repository;
 import de.othr.hwwa.model.Material;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MaterialRepositoryI extends JpaRepository<Material,Long> {
+import java.util.List;
+
+public interface MaterialRepositoryI extends JpaRepository<Material, Long> {
+    List<Material> findByTaskIdOrderByIdAsc(long taskId);
 }

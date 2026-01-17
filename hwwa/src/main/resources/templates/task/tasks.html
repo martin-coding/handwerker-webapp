@@ -11,7 +11,6 @@
     <link rel="stylesheet" th:href="@{/css/table.css}">
     <link rel="stylesheet" th:href="@{/css/input_fields_and_icons.css}">
     <link rel="stylesheet" th:href="@{/css/cards.css}">
-
 </head>
 
 <body class="d-flex flex-column min-vh-100 bg-light">
@@ -32,7 +31,6 @@
 
         <!-- Stats + Button row -->
         <div class="row align-items-end g-4 mb-4">
-
             <div class="col-md-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
@@ -41,11 +39,15 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-md-8 text-md-end">
+                <a th:if="${canManageTasks}" th:href="@{/tasks/add}" class="btn btn-primary">
+                    Neuer Task
+                </a>
             </div>
         </div>
 
-        <!-- Search bar (optional - aktuell ohne Backend-Filter) -->
+        <!-- Search bar -->
         <form th:action="@{/tasks}" method="get"
               class="card shadow-sm p-3 d-flex flex-column flex-md-row align-items-center gap-3 mb-3">
 
@@ -108,7 +110,6 @@
                                    th:if="${task.startDateTime != null and task.endDateTime != null}"
                                    th:text="${#temporals.format(task.startDateTime, 'dd.MM.yyyy HH:mm')} + ' - ' + ${#temporals.format(task.endDateTime, 'dd.MM.yyyy HH:mm')}">
                             </small>
-
                         </td>
                         <td class="d-none d-lg-table-cell">
                             <small class="text-muted" th:text="${task.description}">Beschreibung</small>
@@ -123,14 +124,6 @@
                                    class="btn btn-sm btn-outline-primary">
                                     Details
                                 </a>
-
-                                <!-- Optional: später Edit/Delete -->
-                                <!--
-                                <a th:href="@{/tasks/edit/{id}(id=${task.id})}"
-                                   class="btn btn-sm btn-outline-secondary">
-                                    Edit
-                                </a>
-                                -->
                             </div>
                         </td>
                     </tr>
@@ -138,7 +131,6 @@
                 </table>
             </div>
 
-            <!-- Pagination (nur Anzeige; funktioniert erst, wenn Controller Page<Task> liefert) -->
             <div class="card-footer d-flex justify-content-between align-items-center px-3 py-2">
                 <p class="text-muted mb-0">
                     <span>1</span> – <span th:text="${tasks.size()}">0</span> von

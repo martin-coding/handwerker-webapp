@@ -2,6 +2,7 @@ package de.othr.hwwa.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -27,7 +28,7 @@ public class Task implements Serializable {
     @Column(nullable = false, length = 2000)
     private String description;
 
-    // NEU: Status (wird in tasks.html verwendet)
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private TaskStatus status = TaskStatus.PLANNED;
@@ -48,15 +49,19 @@ public class Task implements Serializable {
     )
     private List<Material> materials = new ArrayList<>();
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TaskAssignment> taskAssignments = new ArrayList<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "client_id", nullable = false)
     private Client client;
     private long companyId;
 
-    // ---- Convenience ----
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TaskAssignment> taskAssignments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Todo> todos = new ArrayList<>();
+
+    public Task() {}
+
     public List<User> getAssignedUsers() {
         return taskAssignments.stream().map(TaskAssignment::getUser).toList();
     }
@@ -81,9 +86,11 @@ public class Task implements Serializable {
     public void setEndDateTime(LocalDateTime endDateTime) { this.endDateTime = endDateTime; }
 
     public User getCreatedBy() { return createdBy; }
+
     public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
 
     public List<TaskAssignment> getTaskAssignments() { return taskAssignments; }
+
     public void setTaskAssignments(List<TaskAssignment> taskAssignments) { this.taskAssignments = taskAssignments; }
 
     public Client getClient() {return client;}
@@ -97,6 +104,10 @@ public class Task implements Serializable {
     public List<Material> getMaterials() {return materials;}
 
     public void setMaterials(List<Material> materials) {this.materials = materials;}
+
+    public List<Todo> getTodos() { return todos; }
+
+    public void setTodos(List<Todo> todos) { this.todos = todos; }
 
     public static long getSerialversionuid() { return serialVersionUID; }
 

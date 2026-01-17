@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface TaskRepositoryI extends JpaRepository<Task, Long> {
     List<Task> findByTitleContainingIgnoreCase(String title);
+
+    List<Task> findByClientCompanyIdOrderByIdAsc(Long companyId);
     Optional<Task> findById(Long id);
     List<Task> findByCompanyIdAndStatus(long companyId, TaskStatus status);
 }
