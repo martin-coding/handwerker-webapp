@@ -24,10 +24,9 @@
             <span class="material-symbols-outlined">arrow_back</span>
         </a>
     </div>
-    <h2 class="mb-0">Set up Two-Factor Authentication</h2>
+    <h2 class="mb-0" th:text="#{tfa_setup_header}"></h2>
     <p>
-        Scan the QR code using Authy or Google Authenticator,
-        then enter the 6-digit code to confirm.
+        <span th:text="#{tfa_setup_subheader}"></span>
     </p>
 
     <div class="qr">
@@ -48,11 +47,10 @@
             <div class="invalid-feedback" th:errors="*{secret}"></div>
         </div>
 
-        <button class="btn-custom mb-3 mt-3" type="submit">2FA aktivieren</button>
+        <button class="btn-custom mb-3 mt-3" type="submit" th:text="#{tfa_activate}"></button>
     </form>
 
-    <div class="text-center small text-secondary">
-        Didn’t work? Make sure your device time is correct.
+    <div class="text-center small text-secondary" th:text="#{tfa_question}">
     </div>
 </div>
 

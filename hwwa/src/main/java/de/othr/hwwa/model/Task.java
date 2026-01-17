@@ -41,8 +41,20 @@ public class Task implements Serializable {
     @JoinColumn(name = "created_by_user_id")
     private User createdBy;
 
+    @OneToMany(
+            mappedBy = "task",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Material> materials = new ArrayList<>();
+
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TaskAssignment> taskAssignments = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", referencedColumnName = "id", nullable = false)
+    private Client client;
+    private long companyId;
 
     // ---- Convenience ----
     public List<User> getAssignedUsers() {
@@ -74,5 +86,27 @@ public class Task implements Serializable {
     public List<TaskAssignment> getTaskAssignments() { return taskAssignments; }
     public void setTaskAssignments(List<TaskAssignment> taskAssignments) { this.taskAssignments = taskAssignments; }
 
+    public Client getClient() {return client;}
+
+    public void setClient(Client client) {this.client = client;}
+
+    public long getCompanyId() {return companyId;}
+
+    public void setCompanyId(long companyId) {this.companyId = companyId;}
+
+    public List<Material> getMaterials() {return materials;}
+
+    public void setMaterials(List<Material> materials) {this.materials = materials;}
+
     public static long getSerialversionuid() { return serialVersionUID; }
+
+    public void addMaterial(Material material) {
+        materials.add(material);        // add to collection
+        material.setTask(this);         // set owning side
+    }
+
+    public void removeMaterial(Material material) {
+        materials.remove(material);
+        material.setTask(null);         // unset owning side
+    }
 }

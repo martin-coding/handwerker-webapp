@@ -33,6 +33,8 @@ public class Client implements Serializable {
 
     private String data;
 
+    private Address address;
+
     private Collection<Task> pastTasks;
 
     private Collection<Task> activeTasks;
@@ -87,6 +89,12 @@ public class Client implements Serializable {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public Address getAddress() {return address;}
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public Collection<Task> getPastTasks() {

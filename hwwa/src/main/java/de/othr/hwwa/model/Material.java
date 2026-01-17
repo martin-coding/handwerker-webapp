@@ -1,45 +1,37 @@
 package de.othr.hwwa.model;
 
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 
 @Entity
 @Table(name="material")
 @Inheritance(strategy=InheritanceType.JOINED)
-public class Material {
+public class Material implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
-
-    String data;
-
+    private String description;
+    private int count;
     @ManyToOne
     @JoinColumn(name = "task_id", referencedColumnName = "id", nullable = false)
     private Task task;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Material() {}
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() {return id;}
 
-    public String getData() {
-        return data;
-    }
+    public String getDescription() {return description;}
 
-    public void setData(String data) {
-        this.data = data;
-    }
+    public void setDescription(String description) {this.description = description;}
 
-    public Task getTask() {
-        return task;
-    }
+    public int getCount() {return count;}
 
-    public void setTask(Task task) {
-        this.task = task;
-    }
+    public void setCount(int count) {this.count = count;}
+
+    public Task getTask() {return task;}
+
+    public void setTask(Task task) {this.task = task;}
 }

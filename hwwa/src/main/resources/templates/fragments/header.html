@@ -28,7 +28,7 @@
                             <span class="material-symbols-outlined">check_box</span> Aufgaben
                         </a>
 
-                        <a class="btn btn-sm d-flex align-items-center gap-2"
+                        <a class="btn btn-sm d-flex align-items-center gap-2" sec:authorize="hasAuthority('manageInvoices')"
                            th:href="@{/invoices}"
                            th:classappend="${currentUri.startsWith('/invoices') ? 'btn-primary text-white' : 'btn-light'}">
                             <span class="material-symbols-outlined">receipt_long</span> Rechnungen
@@ -50,12 +50,6 @@
                            th:href="@{/calendar}"
                            th:classappend="${currentUri.startsWith('/calendar') ? 'btn-primary text-white' : 'btn-light'}">
                             <span class="material-symbols-outlined">calendar_today</span> Kalender
-                        </a>
-
-                        <a class="btn btn-sm d-flex align-items-center gap-2"
-                           th:href="@{/settings}"
-                           th:classappend="${currentUri.startsWith('/settings') ? 'btn-primary text-white' : 'btn-light'}">
-                            <span class="material-symbols-outlined">settings</span> Einstellungen
                         </a>
                     </nav>
                 </div>

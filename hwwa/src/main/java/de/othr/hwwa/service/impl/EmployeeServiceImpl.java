@@ -1,6 +1,5 @@
 package de.othr.hwwa.service.impl;
 
-import de.othr.hwwa.config.MyUserDetails;
 import de.othr.hwwa.exceptions.EqualUserException;
 import de.othr.hwwa.exceptions.UserDoesNotExistsException;
 import de.othr.hwwa.model.*;
@@ -96,7 +95,7 @@ public class EmployeeServiceImpl extends SecurityServiceImpl implements Employee
             // Kann nur auftreten, wenn schädlicher Nutzer versucht das System zu sabotieren, daher ist es nicht notwendig dies extra in der GUI anzuzeigen.
             throw new IllegalArgumentException("Role nicht gefunden");
         }
-        User newUser  = new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()), dto.getHourlyRate(), role, getCurrentCompany());
+        User newUser  = new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()), dto.getHourlyRate(), role, getCurrentCompany(), LocalDateTime.now());
 
 
         if (newUser.getCreatedAt() == null) {

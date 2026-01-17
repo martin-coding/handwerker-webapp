@@ -22,8 +22,8 @@
     <div class="container-xl py-4">
 
 
-        <h1>Mitarbeiterdetails bearbeiten</h1>
-        <p>Bearbeiten Sie die persönlichen Daten, Rolle und Berechtigungen des Mitarbeiters.</p>
+        <h1 th:text="#{employee_edit_header}"></h1>
+        <p th:text="#{employee_edit_subheader}"></p>
 
         <!-- Profil -->
         <div class="profile-card">
@@ -33,7 +33,7 @@
             <div>
                 <h2 th:text="${employee.firstName} + ' ' + ${employee.lastName}">Max Mustermann</h2>
                 <small>Mitarbeiter seit 2021</small><br>
-                <button class="profil-button">Profilbild ändern</button>
+                <button class="profil-button" th:text="#{change_profile_picture}"></button>
             </div>
         </div>
 
@@ -41,7 +41,7 @@
             <form th:object="${employeeChanged}" th:action="@{/employee/edit/{id}(id=${employee.id})}" method="post">
                 <div class="row g-4">
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Email</label>
+                        <label class="form-label fw-medium" th:text="#{email}"></label>
                         <select class="input-field input-field-employee" th:field="*{roleName}">
                             <option th:each="r : ${roles}"
                                     th:value="${r.name}"
@@ -52,7 +52,7 @@
                     </div>
 
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Stundenlohn</label>
+                        <label class="form-label fw-medium" th:text="#{rate}"></label>
                         <div class="input-group">
                             <input type="number"
                                    step="any"
@@ -71,12 +71,9 @@
 
                 <div class="button-right-orientated">
                     <div>
-                        <button type="button"
-                                class="btn btn-light me-2"
-                                onclick="history.back()">
-                            Abbrechen
-                        </button>
-                        <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+                        <a th:href="@{/employee}" class="btn btn-light me-2" th:text="#{cancel}">
+                        </a>
+                        <button type="submit" class="btn btn-primary" th:text="#{save_changes}"></button>
                     </div>
                 </div>
             </form>

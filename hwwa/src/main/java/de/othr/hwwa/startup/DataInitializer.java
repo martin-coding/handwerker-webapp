@@ -1,13 +1,8 @@
 package de.othr.hwwa.startup;
 
 import de.othr.hwwa.model.*;
-import de.othr.hwwa.repository.AuthorityRepositoryI;
-import de.othr.hwwa.repository.ClientRepositoryI;
-import de.othr.hwwa.repository.CompanyRepositoryI;
-import de.othr.hwwa.repository.RoleRepositoryI;
-import de.othr.hwwa.repository.UserRepositoryI;
-import de.othr.hwwa.repository.TaskRepositoryI;
-import de.othr.hwwa.repository.TaskAssignmentRepository;
+import de.othr.hwwa.model.jwt.ApiUser;
+import de.othr.hwwa.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -27,6 +22,8 @@ public class DataInitializer implements CommandLineRunner {
     private final ClientRepositoryI clientRepository;
     private final TaskRepositoryI taskRepository;
     private final TaskAssignmentRepository taskAssignmentRepository;
+    private final MaterialRepositoryI materialRepository;
+    private final ApiUserRepositoryI apiUserRepository;
 
     public DataInitializer(
             RoleRepositoryI roleRepository,
@@ -36,7 +33,9 @@ public class DataInitializer implements CommandLineRunner {
             ClientRepositoryI clientRepository,
             CompanyRepositoryI companyRepository,
             TaskRepositoryI taskRepository,
-            TaskAssignmentRepository taskAssignmentRepository
+            TaskAssignmentRepository taskAssignmentRepository,
+            MaterialRepositoryI materialRepository,
+            ApiUserRepositoryI apiUserRepository
     ) {
         this.roleRepository = roleRepository;
         this.authorityRepository = authorityRepository;
@@ -46,11 +45,13 @@ public class DataInitializer implements CommandLineRunner {
         this.clientRepository = clientRepository;
         this.taskRepository = taskRepository;
         this.taskAssignmentRepository = taskAssignmentRepository;
+        this.materialRepository = materialRepository;
+        this.apiUserRepository = apiUserRepository;
     }
 
     @Override
     public void run(String... args) {
-        // Check if authorities exist
+        //Create authorities
         Authority tasks = authorityRepository.findByName("tasks")
                 .orElseGet(() -> authorityRepository.save(new Authority("tasks")));
         Authority basic = authorityRepository.findByName("basic")
@@ -63,8 +64,10 @@ public class DataInitializer implements CommandLineRunner {
                 .orElseGet(() -> authorityRepository.save(new Authority("updateCompanyData")));
         Authority manageClients = authorityRepository.findByName("manageClients")
                 .orElseGet(() -> authorityRepository.save(new Authority("manageClients")));
+        Authority manageInvoices = authorityRepository.findByName("manageInvoices")
+                .orElseGet(() -> authorityRepository.save(new Authority("manageInvoices")));
 
-        // Check if role exists
+        //Create roles with authorities
         Role employee = roleRepository.findByName("Employee")
                 .orElseGet(() -> {
                     Role r = new Role();
@@ -83,17 +86,20 @@ public class DataInitializer implements CommandLineRunner {
                 .orElseGet(() -> {
                     Role r = new Role();
                     r.setName("Owner");
-                    r.setAuthorities(Set.of(tasks, createUser,manageEmployees, basic, updateCompanyData, manageClients));
+                    r.setAuthorities(Set.of(tasks, createUser,manageEmployees, basic, updateCompanyData, manageClients, manageInvoices));
                     return roleRepository.save(r);
                 });
 
 
+        //Create companies
         Company company = new Company("Schreiner Test", new Address("Sonnenweg", "München", "94921", "Deutschland"));
         companyRepository.save(company);
         Company company01 = new Company("def", new Address("def", "def", "456", "def"));
         companyRepository.save(company01);
+        Company company_02 = new Company("bc", new Address("bc", "bc", "223", "bc"));
+        companyRepository.save(company_02);
 
-        //Check if dummy user exists
+        //Create users
         User user1 = userRepository.findUserByEmailIgnoreCase("thomas.test@abc.com")
                 .orElseGet(() -> {
                     User user = new User();
@@ -103,9 +109,9 @@ public class DataInitializer implements CommandLineRunner {
                     user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(owner);
                     user.setCompany(company);
+                    user.setCreatedAt(LocalDateTime.now());
                     return userRepository.save(user);
                 });
-        seedTasks(user1);
         User user2 = userRepository.findUserByEmailIgnoreCase("sarah.mueller@abc.com")
                 .orElseGet(() -> {
                     User user = new User();
@@ -115,6 +121,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
+                    user.setCreatedAt(LocalDateTime.now());
                     return userRepository.save(user);
                 });
         User user3 = userRepository.findUserByEmailIgnoreCase("lea.meier@abc.com")
@@ -126,6 +133,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(manager);
                     user.setCompany(company);
+                    user.setCreatedAt(LocalDateTime.now());
                     return userRepository.save(user);
                 });
         User user4 = userRepository.findUserByEmailIgnoreCase("hans.zimmer@abc.com")
@@ -137,6 +145,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
+                    user.setCreatedAt(LocalDateTime.now());
                     return userRepository.save(user);
                 });
         User user5 = userRepository.findUserByEmailIgnoreCase("johann.fuchs@abc.com")
@@ -148,6 +157,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
+                    user.setCreatedAt(LocalDateTime.now());
                     return userRepository.save(user);
                 });
         User user6 = userRepository.findUserByEmailIgnoreCase("michael.pauli@abc.com")
@@ -159,6 +169,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
+                    user.setCreatedAt(LocalDateTime.now());
                     return userRepository.save(user);
                 });
         User user7 = userRepository.findUserByEmailIgnoreCase("juergen.zimmerer@abc.com")
@@ -170,6 +181,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
+                    user.setCreatedAt(LocalDateTime.now());
                     return userRepository.save(user);
                 });
         User user8 = userRepository.findUserByEmailIgnoreCase("thomas.fuchs@abc.com")
@@ -181,11 +193,11 @@ public class DataInitializer implements CommandLineRunner {
                     user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company);
+                    user.setCreatedAt(LocalDateTime.now());
                     return userRepository.save(user);
                 });
 
-        Company company_02 = new Company("bc", new Address("bc", "bc", "223", "bc"));
-        companyRepository.save(company_02);
+
         User user9 = userRepository.findUserByEmailIgnoreCase("anna.beier@abc.com")
                 .orElseGet(() -> {
                     User user = new User();
@@ -195,6 +207,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(employee);
                     user.setCompany(company_02);
+                    user.setCreatedAt(LocalDateTime.now());
                     return userRepository.save(user);
                 });
         User user10 = userRepository.findUserByEmailIgnoreCase("bernd.becker@abc.com")
@@ -206,100 +219,155 @@ public class DataInitializer implements CommandLineRunner {
                     user.setPassword(passwordEncoder.encode("12345678"));
                     user.setRole(owner);
                     user.setCompany(company_02);
+                    user.setCreatedAt(LocalDateTime.now());
                     return userRepository.save(user);
                 });
-        Client client1 = new Client();
-        client1.setName("Alice");
-        client1.setEmail("alice@abc.de");
-        client1.setPhone("123");
-        client1.setCompany(company);
-        client1.setCreatedAt(LocalDateTime.now());
-        clientRepository.save(client1);
 
-        Client client2 = new Client();
-        client2.setName("Bob");
-        client2.setEmail("bob@def.de");
-        client2.setPhone("456");
-        client2.setCompany(company01);
-        client2.setCreatedAt(LocalDateTime.now());
-        clientRepository.save(client2);
-    }
 
-    private void seedTasks(User user) {
-        LocalDateTime now = LocalDateTime.now();
+        //Create clients for company
+        Client client1 = clientRepository.findById((long)1)
+                .orElseGet(() -> {
+                    Client client = new Client();
+                    client.setName("Alexa Müller");
+                    client.setEmail("jan.hoepfl@st.oth-regensburg.de");
+                    client.setPhone("123");
+                    client.setCompany(company);
+                    client.setCreatedAt(LocalDateTime.now());
+                    client.setAddress(new Address("Sonnenweg", "München", "94921", "Deutschland"));
+                    return clientRepository.save(client);
+                });
 
-        Task t1 = createTaskIfMissing(
-                "Angebot erstellen",
-                "Angebot für Kunde Muster GmbH vorbereiten und kalkulieren.",
-                TaskStatus.IN_PROGRESS,
-                now.minusDays(1).withHour(9).withMinute(0).withSecond(0).withNano(0),
-                now.minusDays(1).withHour(12).withMinute(0).withSecond(0).withNano(0),
-                user
-        );
+        Client client2 = clientRepository.findById((long)2)
+                .orElseGet(() -> {
+                    Client client = new Client();
+                    client.setName("Bob Schäffer");
+                    client.setEmail("bob@gmx.de");
+                    client.setPhone("456");
+                    client.setCompany(company);
+                    client.setCreatedAt(LocalDateTime.now());
+                    client.setAddress(new Address("Sonnenweg", "München", "94921", "Deutschland"));
+                    return clientRepository.save(client);
+                });
 
-        Task t2 = createTaskIfMissing(
-                "Material bestellen",
-                "Materialliste prüfen und fehlende Positionen bestellen.",
-                TaskStatus.PLANNED,
-                now.plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0),
-                now.plusDays(1).withHour(11).withMinute(30).withSecond(0).withNano(0),
-                user
-        );
+        Client client3 = clientRepository.findById((long)3)
+                .orElseGet(() -> {
+                    Client client = new Client();
+                    client.setName("Tom Meier");
+                    client.setEmail("tom@gmx.de");
+                    client.setPhone("+49 034 55783");
+                    client.setCompany(company01);
+                    client.setCreatedAt(LocalDateTime.now());
+                    client.setAddress(new Address("Sonnenweg", "München", "94921", "Deutschland"));
+                    return clientRepository.save(client);
+                });
 
-        Task t3 = createTaskIfMissing(
-                "Baustelle prüfen",
-                "Vor-Ort Termin zur Einschätzung, Fotos machen, Risiken notieren.",
-                TaskStatus.DONE,
-                now.minusDays(3).withHour(14).withMinute(0).withSecond(0).withNano(0),
-                now.minusDays(3).withHour(16).withMinute(0).withSecond(0).withNano(0),
-                user
-        );
+        //Create tasks
+        Task task1 = taskRepository.findById((long)1)
+                .orElseGet(() -> {
+                    Task task = new Task();
+                    task.setTitle("Gartenarbeiten");
+                    task.setDescription("Stützmauer muss aufgestellt werden");
+                    task.setStartDateTime(LocalDateTime.now().minusDays(1).withHour(9));
+                    task.setEndDateTime(LocalDateTime.now().minusDays(1).withHour(12));
+                    task.setCreatedBy(user1);
+                    task.setCompanyId(user1.getCompany().getId());
+                    task.setClient(client1);
+                    task.setStatus(TaskStatus.DONE);
+                    return taskRepository.save(task);
+                });
 
-        assignIfMissing(user, t1, 90);
-        assignIfMissing(user, t2, 45);
-        assignIfMissing(user, t3, 120);
-    }
+        Task task2 = taskRepository.findById((long)2)
+                .orElseGet(() -> {
+                    Task task = new Task();
+                    task.setTitle("Pflastern");
+                    task.setDescription("Pflaster muss vor Garage verlegt werden.");
+                    task.setStartDateTime(LocalDateTime.now().minusDays(1).withHour(9));
+                    task.setEndDateTime(LocalDateTime.now().minusDays(1).withHour(12));
+                    task.setCreatedBy(user1);
+                    task.setCompanyId(user1.getCompany().getId());
+                    task.setClient(client1);
+                    task.setStatus(TaskStatus.DONE);
+                    return taskRepository.save(task);
+                });
 
-    private Task createTaskIfMissing(String title,
-                                     String description,
-                                     TaskStatus status,
-                                     LocalDateTime start,
-                                     LocalDateTime end,
-                                     User createdBy) {
+        Task task3 = taskRepository.findById((long)3)
+                .orElseGet(() -> {
+                    Task task = new Task();
+                    task.setTitle("Schrank bauen");
+                    task.setDescription("Holzschrank in Wohnzimmer aufbauen");
+                    task.setStartDateTime(LocalDateTime.now().minusDays(1).withHour(9));
+                    task.setEndDateTime(LocalDateTime.now().minusDays(1).withHour(12));
+                    task.setCreatedBy(user1);
+                    task.setCompanyId(user1.getCompany().getId());
+                    task.setClient(client2);
+                    task.setStatus(TaskStatus.DONE);
+                    return taskRepository.save(task);
+                });
 
-        List<Task> existing = taskRepository.findByTitleContainingIgnoreCase(title);
-        for (Task t : existing) {
-            if (t.getTitle() != null && t.getTitle().equalsIgnoreCase(title)) {
+        //Create materials
+        Material material1 = materialRepository.findById((long) 1)
+                .orElseGet(() -> {
+                    Material material = new Material();
+                    material.setDescription("1qm Rollrasen");
+                    material.setCount(120);
+                    material.setTask(task1);
+                    return materialRepository.save(material);
+                });
 
-                if (t.getStatus() == null) t.setStatus(status);
-                if (t.getStartDateTime() == null) t.setStartDateTime(start);
-                if (t.getEndDateTime() == null) t.setEndDateTime(end);
-                if (t.getCreatedBy() == null) t.setCreatedBy(createdBy);
+        Material material2 = materialRepository.findById((long) 2)
+                .orElseGet(() -> {
+                    Material material = new Material();
+                    material.setDescription("1t Erde");
+                    material.setCount(10);
+                    material.setTask(task1);
+                    return materialRepository.save(material);
+                });
 
-                return taskRepository.save(t);
-            }
-        }
+        //Assign users to tasks
+        TaskAssignment assignment1 = taskAssignmentRepository.findByUserIdAndTaskId(user2.getId(), task1.getId())
+                .orElseGet(() -> {
+                    TaskAssignment taskAssignment = new TaskAssignment(user2, task1);
+                    taskAssignment.setMinutesWorked(90);
+                    return taskAssignmentRepository.save(taskAssignment);
+                });
 
-        Task task = new Task();
-        task.setTitle(title);
-        task.setDescription(description);
-        task.setStatus(status);
-        task.setStartDateTime(start);
-        task.setEndDateTime(end);
-        task.setCreatedBy(createdBy);
-        return taskRepository.save(task);
+        TaskAssignment assignment2 = taskAssignmentRepository.findByUserIdAndTaskId(user3.getId(), task1.getId())
+                .orElseGet(() -> {
+                    TaskAssignment taskAssignment = new TaskAssignment(user2, task1);
+                    taskAssignment.setMinutesWorked(90);
+                    return taskAssignmentRepository.save(taskAssignment);
+                });
 
-    }
+        TaskAssignment assignment3 = taskAssignmentRepository.findByUserIdAndTaskId(user4.getId(), task1.getId())
+                .orElseGet(() -> {
+                    TaskAssignment taskAssignment = new TaskAssignment(user4, task1);
+                    taskAssignment.setMinutesWorked(90);
+                    return taskAssignmentRepository.save(taskAssignment);
+                });
 
-    private void assignIfMissing(User user, Task task, int initialMinutes) {
-        boolean exists = taskAssignmentRepository
-                .findByUserIdAndTaskId(user.getId(), task.getId())
-                .isPresent();
+        TaskAssignment assignment4 = taskAssignmentRepository.findByUserIdAndTaskId(user2.getId(), task2.getId())
+                .orElseGet(() -> {
+                    TaskAssignment taskAssignment = new TaskAssignment(user2, task2);
+                    taskAssignment.setMinutesWorked(90);
+                    return taskAssignmentRepository.save(taskAssignment);
+                });
 
-        if (!exists) {
-            TaskAssignment assignment = new TaskAssignment(user, task);
-            assignment.setMinutesWorked(initialMinutes);
-            taskAssignmentRepository.save(assignment);
-        }
+        TaskAssignment assignment5 = taskAssignmentRepository.findByUserIdAndTaskId(user2.getId(), task3.getId())
+                .orElseGet(() -> {
+                    TaskAssignment taskAssignment = new TaskAssignment(user2, task3);
+                    taskAssignment.setMinutesWorked(90);
+                    return taskAssignmentRepository.save(taskAssignment);
+                });
+
+
+        //Create account for apiUser
+        ApiUser apiUser_01 = apiUserRepository.findById((long) 1)
+                .orElseGet(()->{
+                    ApiUser apiUser = new ApiUser();
+                    apiUser.setEmail("max.meier@abc.com");
+                    apiUser.setPassword(passwordEncoder.encode("12345678"));
+                    apiUser.setCompanyId(user1.getCompany().getId());
+                    return apiUserRepository.save(apiUser);
+        });
     }
 }

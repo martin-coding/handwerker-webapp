@@ -23,25 +23,24 @@
     <div class="container-xl py-4">
 
 
-        <h1>Neuen Mitarbeiter erstellen</h1>
-        <p>Füllen Sie das Formular aus um einen neuen Mitarbeiter zum System hinzuzufügen.<br> Der neue Mitarbeiter erhält eine Email zur Bestätigung. </p>
-
+        <h1 th:text="#{employee_add_header}"></h1>
+        <p ><span th:text="#{employee_add_subheader_01}"></span><br><span th:text="#{employee_add_subheader_02}"></span></p>
         <div class="card form-card">
             <form th:object="${newEmployee}" th:action="@{/employee/add}" method="post">
                 <div>
                     <!-- Rollen -->
                     <div class="pb-3 fw-medium">
-                        <label>Rolle zuweisen</label>
+                        <label th:text="#{employee_select_role}"></label>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="role-card">
                                 <div class="role-header">
-                                    <input type="radio" name="role"d th:field="*{roleName}" value="Employee"/>
+                                    <input type="radio" name="role" th:field="*{roleName}" value="Employee"/>
                                     <span class="material-symbols-outlined">engineering</span>
-                                    <strong>Mitarbeiter</strong>
+                                    <strong>Employee</strong>
                                 </div>
-                                <p>Zugriff auf Aufgaben und Zeiterfassung.</p>
+                                <p><span th:text="#{role_employee_permission}"></span><p>
                             </label>
                         </div>
                         <div class="col-md-4">
@@ -51,7 +50,7 @@
                                     <span class="material-symbols-outlined">manage_accounts</span>
                                     <strong>Manager</strong>
                                 </div>
-                                <p>Kann Aufgaben und Rechnungen verwalten.</p>
+                                <p><span th:text="#{role_manager_permission}"></span></p>
                             </label>
                         </div>
                         <div class="col-md-4">
@@ -59,9 +58,9 @@
                                 <div class="role-header">
                                     <input type="radio" name="role" th:field="*{roleName}" value="Owner">
                                     <span class="material-symbols-outlined">verified_user</span>
-                                    <strong>Inhaber</strong>
+                                    <strong>Owner</strong>
                                 </div>
-                                <p>Vollzugriff auf alle Systeme.</p>
+                                <p><span th:text="#{role_owner_permission}"></span></p>
                             </label>
                         </div>
                     </div>
@@ -71,7 +70,7 @@
 
                 <div class="row g-4">
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Vorname</label>
+                        <label class="form-label fw-medium" th:text="#{firstName}"></label>
                         <input type="text"
                                th:field="*{firstName}"
                                th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'"
@@ -81,7 +80,7 @@
                         <div class="invalid-feedback" th:errors="*{firstName}"></div>
                     </div>
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Nachname</label>
+                        <label class="form-label fw-medium" th:text="#{lastName}"></label>
                         <input type="text"
                                th:field="*{lastName}"
                                th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'"
@@ -91,7 +90,7 @@
                         <div class="invalid-feedback" th:errors="*{lastName}"></div>
                     </div>
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Email</label>
+                        <label class="form-label fw-medium" th:text="#{email}"></label>
                         <input type="email"
                                th:field="*{email}"
                                th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
@@ -101,7 +100,7 @@
                         <div class="invalid-feedback" th:errors="*{email}"></div>
                     </div>
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Stundenlohn</label>
+                        <label class="form-label fw-medium" th:text="#{rate}"></label>
                         <div class="input-group">
                             <input type="number"
                                    step="any"
@@ -115,7 +114,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Passwort</label>
+                        <label class="form-label fw-medium" th:text="#{password}"></label>
                         <input type="password"
                                th:field="*{password}"
                                th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
@@ -126,7 +125,7 @@
                         <div class="invalid-feedback" th:errors="*{password}"></div>
                     </div>
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Passwort bestätigen</label>
+                        <label class="form-label fw-medium" th:text="#{confirm_password}"></label>
                         <input type="password"
                                th:field="*{password_check}"
                                th:classappend="${#fields.hasErrors('password_check')} ? 'is-invalid'"
@@ -139,12 +138,9 @@
                 </div>
                 <div class="button-right-orientated">
                     <div>
-                        <button type="button"
-                                class="btn btn-light me-2"
-                                onclick="history.back()">
-                            Abbrechen
-                        </button>
-                        <button type="submit" class="btn btn-primary">Mitarbeiteraccount erstellen</button>
+                        <a th:href="@{/employee}" class="btn btn-light me-2" th:text="#{cancel}">
+                        </a>
+                        <button type="submit" class="btn btn-primary" th:text="#{create_account}"></button>
                     </div>
                 </div>
             </form>
