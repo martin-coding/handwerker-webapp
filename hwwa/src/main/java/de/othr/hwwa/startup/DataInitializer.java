@@ -3,14 +3,14 @@ package de.othr.hwwa.startup;
 import de.othr.hwwa.model.*;
 import de.othr.hwwa.repository.AuthorityRepositoryI;
 import de.othr.hwwa.repository.ClientRepositoryI;
-import de.othr.hwwa.repository.CompanyRepositoryI;
-import de.othr.hwwa.repository.RoleRepositoryI;
-import de.othr.hwwa.repository.UserRepositoryI;
-import de.othr.hwwa.repository.TaskRepositoryI;
-import de.othr.hwwa.repository.TaskAssignmentRepository;
-import de.othr.hwwa.repository.MaterialRepositoryI;
-import de.othr.hwwa.repository.TodoRepositoryI;
 import de.othr.hwwa.repository.CommentRepositoryI;
+import de.othr.hwwa.repository.CompanyRepositoryI;
+import de.othr.hwwa.repository.MaterialRepositoryI;
+import de.othr.hwwa.repository.RoleRepositoryI;
+import de.othr.hwwa.repository.TaskAssignmentRepository;
+import de.othr.hwwa.repository.TaskRepositoryI;
+import de.othr.hwwa.repository.TodoRepositoryI;
+import de.othr.hwwa.repository.UserRepositoryI;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -62,58 +62,31 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Authority tasks = authorityRepository.findByName("tasks")
-                .orElseGet(() -> authorityRepository.save(new Authority("tasks")));
-        Authority basic = authorityRepository.findByName("basic")
-                .orElseGet(() -> authorityRepository.save(new Authority("basic")));
-        Authority createUser = authorityRepository.findByName("createUser")
-                .orElseGet(() -> authorityRepository.save(new Authority("createUser")));
-        Authority manageEmployees = authorityRepository.findByName("manageEmployees")
-                .orElseGet(() -> authorityRepository.save(new Authority("manageEmployees")));
-        Authority updateCompanyData = authorityRepository.findByName("updateCompanyData")
-                .orElseGet(() -> authorityRepository.save(new Authority("updateCompanyData")));
-        Authority manageClients = authorityRepository.findByName("manageClients")
-                .orElseGet(() -> authorityRepository.save(new Authority("manageClients")));
+        Authority tasks = ensureAuthority("tasks");
+        Authority basic = ensureAuthority("basic");
+        Authority createUser = ensureAuthority("createUser");
+        Authority manageEmployees = ensureAuthority("manageEmployees");
+        Authority updateCompanyData = ensureAuthority("updateCompanyData");
+        Authority manageClients = ensureAuthority("manageClients");
 
-        Role employee = roleRepository.findByName("Employee")
-                .orElseGet(() -> {
-                    Role r = new Role();
-                    r.setName("Employee");
-                    r.setAuthorities(Set.of(tasks, basic));
-                    return roleRepository.save(r);
-                });
-        Role manager = roleRepository.findByName("Manager")
-                .orElseGet(() -> {
-                    Role r = new Role();
-                    r.setName("Manager");
-                    r.setAuthorities(Set.of(tasks, basic, manageClients));
-                    return roleRepository.save(r);
-                });
-        Role owner = roleRepository.findByName("Owner")
-                .orElseGet(() -> {
-                    Role r = new Role();
-                    r.setName("Owner");
-                    r.setAuthorities(Set.of(tasks, createUser, manageEmployees, basic, updateCompanyData, manageClients));
-                    return roleRepository.save(r);
-                });
+        Role employee = ensureRole("Employee", Set.of(tasks, basic));
+        Role manager = ensureRole("Manager", Set.of(tasks, basic, manageClients));
+        Role owner = ensureRole("Owner", Set.of(tasks, createUser, manageEmployees, basic, updateCompanyData, manageClients));
 
-        Company company = new Company(
+        Company company = upsertCompany(
                 "Schreinerei Sonnenschein",
                 new Address("Sonnenweg 12", "München", "80331", "Deutschland")
         );
-        companyRepository.save(company);
 
-        Company company01 = new Company(
+        Company company01 = upsertCompany(
                 "Elektro Beier GmbH",
                 new Address("Industriestraße 5", "München", "80995", "Deutschland")
         );
-        companyRepository.save(company01);
 
-        Company company_02 = new Company(
+        Company company_02 = upsertCompany(
                 "Malerbetrieb Farbklecks",
                 new Address("Hauptstraße 7", "Augsburg", "86150", "Deutschland")
         );
-        companyRepository.save(company_02);
 
         User user1 = userRepository.findUserByEmailIgnoreCase("thomas.test@abc.com")
                 .orElseGet(() -> {
@@ -248,29 +221,29 @@ public class DataInitializer implements CommandLineRunner {
 
         LocalDateTime now = LocalDateTime.now();
 
-        Client client1 = new Client();
-        client1.setName("Familie Schneider – Altbauwohnung");
-        client1.setEmail("schneider@example.de");
-        client1.setPhone("089 9012345");
-        client1.setCompany(company);
-        client1.setCreatedAt(now.minusDays(10));
-        clientRepository.save(client1);
+        Client client1 = upsertClient(
+                company,
+                "Familie Schneider – Altbauwohnung",
+                "schneider@example.de",
+                "089 9012345",
+                now.minusDays(10)
+        );
 
-        Client client2 = new Client();
-        client2.setName("Musterbau GmbH – Neubau EFH");
-        client2.setEmail("kontakt@musterbau.de");
-        client2.setPhone("089 9090909");
-        client2.setCompany(company);
-        client2.setCreatedAt(now.minusDays(5));
-        clientRepository.save(client2);
+        Client client2 = upsertClient(
+                company,
+                "Musterbau GmbH – Neubau EFH",
+                "kontakt@musterbau.de",
+                "089 9090909",
+                now.minusDays(5)
+        );
 
-        Client client3 = new Client();
-        client3.setName("Elektro König KG – Büroausbau");
-        client3.setEmail("info@elektro-koenig.de");
-        client3.setPhone("0821 303030");
-        client3.setCompany(company_02);
-        client3.setCreatedAt(now.minusDays(7));
-        clientRepository.save(client3);
+        Client client3 = upsertClient(
+                company_02,
+                "Elektro König KG – Büroausbau",
+                "info@elektro-koenig.de",
+                "0821 303030",
+                now.minusDays(7)
+        );
 
         seedSchreinereiData(
                 user1,
@@ -287,8 +260,73 @@ public class DataInitializer implements CommandLineRunner {
         );
     }
 
+    private Authority ensureAuthority(String name) {
+        return authorityRepository.findByName(name)
+                .orElseGet(() -> authorityRepository.save(new Authority(name)));
+    }
+
+    private Role ensureRole(String name, Set<Authority> authorities) {
+        return roleRepository.findByName(name)
+                .map(existing -> {
+                    existing.setName(name);
+                    existing.setAuthorities(authorities);
+                    return roleRepository.save(existing);
+                })
+                .orElseGet(() -> {
+                    Role r = new Role();
+                    r.setName(name);
+                    r.setAuthorities(authorities);
+                    return roleRepository.save(r);
+                });
+    }
+
+    private Company upsertCompany(String name, Address address) {
+        Company existing = companyRepository.findAll().stream()
+                .filter(c -> c.getName() != null && c.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
+
+        if (existing == null) {
+            return companyRepository.save(new Company(name, address));
+        }
+
+        existing.setName(name);
+        existing.setAddress(address);
+        return companyRepository.save(existing);
+    }
+
+    private Client upsertClient(Company company,
+                                String name,
+                                String email,
+                                String phone,
+                                LocalDateTime createdAt) {
+
+        Client existing = clientRepository.findByCompanyIdOrderByNameAsc(company.getId()).stream()
+                .filter(c -> c.getName() != null && c.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
+
+        if (existing == null) {
+            Client c = new Client();
+            c.setName(name);
+            c.setEmail(email);
+            c.setPhone(phone);
+            c.setCompany(company);
+            c.setCreatedAt(createdAt);
+            return clientRepository.save(c);
+        }
+
+        existing.setName(name);
+        existing.setEmail(email);
+        existing.setPhone(phone);
+        existing.setCompany(company);
+        existing.setCreatedAt(createdAt);
+        return clientRepository.save(existing);
+    }
+
     private void ensureUserMeta(User user, float hourlyRate, String phoneNumber) {
         boolean changed = false;
+
         if (user.getHourlyRate() == 0f) {
             user.setHourlyRate(hourlyRate);
             changed = true;
