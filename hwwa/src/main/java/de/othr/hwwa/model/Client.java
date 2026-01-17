@@ -32,8 +32,6 @@ public class Client implements Serializable {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    private String data;
-
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
     private List<Task> tasks = new ArrayList<>();
 
@@ -89,14 +87,6 @@ public class Client implements Serializable {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
     }
 
     public List<Task> getTasks() {

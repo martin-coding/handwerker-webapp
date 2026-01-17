@@ -6,7 +6,9 @@ import com.lowagie.text.pdf.*;
 import de.othr.hwwa.model.Material;
 import de.othr.hwwa.model.Task;
 import de.othr.hwwa.model.User;
-import de.othr.hwwa.service.TaskPdfServiceI;
+import de.othr.hwwa.service.MaterialServiceI;
+import de.othr.hwwa.service.PdfServiceI;
+import de.othr.hwwa.service.TaskServiceI;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
@@ -14,10 +16,26 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 @Service
-public class TaskPdfServiceImpl implements TaskPdfServiceI {
+public class PdfServiceImpl extends SecurityServiceImpl implements PdfServiceI {
+
+    private final TaskServiceI taskService;
+    private final MaterialServiceI materialService;
+
+    public PdfServiceImpl(TaskServiceI taskService, MaterialServiceI materialService) {
+        this.taskService = taskService;
+        this.materialService = materialService;
+    }
 
     @Override
-    public byte[] buildTaskPdf(User currentUser, Task task, List<Material> materials) {
+    public byte[] buildTaskPdf(long taskId) {
+        User currentUser = getCurrentUser();
+        Task task = taskService.getAssignedTaskById(taskId).orElse(null);
+        List<Material> materials = materialService.getMaterialsForTask(taskId);
+
+        if (task == null) {
+            throw new RuntimeException("Task with id " + taskId + " not found");
+        }
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         Document doc = new Document(PageSize.A4, 36, 36, 48, 36);
@@ -68,8 +86,8 @@ public class TaskPdfServiceImpl implements TaskPdfServiceI {
         } else {
             for (Material m : materials) {
                 table.addCell(bodyCell(safe(m.getName())));
-                table.addCell(bodyCell(m.getQuantity() != null ? m.getQuantity().toPlainString() : "-"));
-                table.addCell(bodyCell(m.getUnitPrice() != null ? m.getUnitPrice().toPlainString() : "-"));
+                table.addCell(bodyCell(m.getQuantity() >= 0 ? String.valueOf(m.getQuantity()) : "-"));
+                table.addCell(bodyCell(m.getUnitPrice() >= 0 ? String.valueOf(m.getUnitPrice()) : "-"));
             }
         }
 

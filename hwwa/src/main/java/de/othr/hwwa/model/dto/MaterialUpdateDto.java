@@ -3,25 +3,23 @@ package de.othr.hwwa.model.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.math.BigDecimal;
-
 public class MaterialUpdateDto {
 
     @NotBlank(message = "name is mandatory")
     private String name;
 
     @NotNull(message = "unitPrice is mandatory")
-    private BigDecimal unitPrice;
+    private float unitPrice;
 
     @NotNull(message = "quantity is mandatory")
-    private BigDecimal quantity;
+    private float quantity;
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public BigDecimal getUnitPrice() { return unitPrice; }
-    public void setUnitPrice(BigDecimal unitPrice) { this.unitPrice = unitPrice; }
+    public float getUnitPrice() { return unitPrice; }
+    public void setUnitPrice(float unitPrice) { this.unitPrice = unitPrice; }
 
-    public BigDecimal getQuantity() { return quantity; }
-    public void setQuantity(BigDecimal quantity) { this.quantity = quantity; }
+    public float getQuantity() { return quantity; }
+    public void setQuantity(float quantity) { this.quantity = quantity; }
 }

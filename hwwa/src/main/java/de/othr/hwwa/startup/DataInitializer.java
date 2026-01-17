@@ -15,7 +15,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -424,32 +423,32 @@ public class DataInitializer implements CommandLineRunner {
         createMaterialIfMissing(
                 montageTreppenstufen,
                 "Massivholz-Treppenstufe Eiche",
-                new BigDecimal("14.000"),
-                new BigDecimal("95.00")
+                14,
+                95
         );
         createMaterialIfMissing(
                 montageTreppenstufen,
                 "Handlauf Eiche geölt",
-                new BigDecimal("7.500"),
-                new BigDecimal("45.00")
+                7.5F,
+                45
         );
         createMaterialIfMissing(
                 montageTreppenstufen,
                 "Schrauben und Dübel Set",
-                new BigDecimal("1.000"),
-                new BigDecimal("35.00")
+                1,
+                35
         );
         createMaterialIfMissing(
                 angebotKueche,
                 "Korpusse Spanplatte weiß",
-                new BigDecimal("6.000"),
-                new BigDecimal("120.00")
+                6,
+                120
         );
         createMaterialIfMissing(
                 materialBestellen,
                 "Arbeitsplatte Eiche geölt",
-                new BigDecimal("3.600"),
-                new BigDecimal("210.00")
+                3.6F,
+                210
         );
 
         createCommentIfMissing(
@@ -534,20 +533,20 @@ public class DataInitializer implements CommandLineRunner {
         createMaterialIfMissing(
                 bueroStreichen,
                 "Dispersionsfarbe weiß, 12l",
-                new BigDecimal("3.000"),
-                new BigDecimal("65.00")
+                3,
+                65
         );
         createMaterialIfMissing(
                 bueroStreichen,
                 "Abdeckfolie und Malerkrepp",
-                new BigDecimal("1.000"),
-                new BigDecimal("25.00")
+                1,
+                25
         );
         createMaterialIfMissing(
                 lackArbeiten,
                 "Lack seidenmatt, RAL‑Farbe",
-                new BigDecimal("2.000"),
-                new BigDecimal("80.00")
+                2,
+                80
         );
 
         createCommentIfMissing(
@@ -638,8 +637,8 @@ public class DataInitializer implements CommandLineRunner {
 
     private Material createMaterialIfMissing(Task task,
                                              String name,
-                                             BigDecimal quantity,
-                                             BigDecimal unitPrice) {
+                                             float quantity,
+                                             float unitPrice) {
         List<Material> existing = materialRepository.findByTaskIdOrderByIdAsc(task.getId());
         for (Material m : existing) {
             if (m.getName() != null && m.getName().equalsIgnoreCase(name)) {

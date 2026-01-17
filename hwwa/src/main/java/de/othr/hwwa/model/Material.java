@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "material")
@@ -22,12 +21,12 @@ public class Material implements Serializable {
     private String name;
 
     @NotNull(message = "unitPrice is mandatory")
-    @Column(nullable = false, precision = 19, scale = 2)
-    private BigDecimal unitPrice;
+    @Column(nullable = false)
+    private float unitPrice;
 
     @NotNull(message = "quantity is mandatory")
-    @Column(nullable = false, precision = 19, scale = 3)
-    private BigDecimal quantity;
+    @Column(nullable = false)
+    private float quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", nullable = false)
@@ -39,11 +38,11 @@ public class Material implements Serializable {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public BigDecimal getUnitPrice() { return unitPrice; }
-    public void setUnitPrice(BigDecimal unitPrice) { this.unitPrice = unitPrice; }
+    public float getUnitPrice() { return unitPrice; }
+    public void setUnitPrice(float unitPrice) { this.unitPrice = unitPrice; }
 
-    public BigDecimal getQuantity() { return quantity; }
-    public void setQuantity(BigDecimal quantity) { this.quantity = quantity; }
+    public float getQuantity() { return quantity; }
+    public void setQuantity(float quantity) { this.quantity = quantity; }
 
     public Task getTask() { return task; }
     public void setTask(Task task) { this.task = task; }
