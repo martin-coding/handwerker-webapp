@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+  <link rel="stylesheet" th:href="@{/css/table.css}">
+  <link rel="stylesheet" th:href="@{/css/input_fields_and_icons.css}">
+  <link rel="stylesheet" th:href="@{/css/cards.css}">
+</head>
+
+<body class="d-flex flex-column min-vh-100 bg-light">
+<div th:insert="~{fragments/header :: siteHeader}"></div>
+
+<main class="flex-grow-1">
+  <div class="container-xxl py-4">
+
+    <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+      <div>
+        <h1 class="mb-1" th:text="${task.title}">Task Title</h1>
+        <p class="text-muted mb-0">
+          ID: <span th:text="${task.id}">1</span>
+          <span class="mx-2">•</span>
+          Status:
+          <span class="badge text-bg-secondary"
+                th:text="${task.status != null ? task.status : '-'}">PLANNED</span>
+        </p>
+
+        <div class="mt-2">
+          <small class="text-muted"
+                 th:if="${task.startDateTime != null and task.endDateTime != null}"
+                 th:text="${#temporals.format(task.startDateTime, 'dd.MM.yyyy HH:mm')} + ' - ' + ${#temporals.format(task.endDateTime, 'dd.MM.yyyy HH:mm')}">
+          </small>
+          <small class="text-muted" th:if="${task.startDateTime == null or task.endDateTime == null}">
+            Kein Zeitraum gesetzt.
+          </small>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <a th:href="@{/tasks}" class="btn btn-outline-secondary">Zurück</a>
+
+        <form th:if="${canManageTasks}" th:action="@{/tasks/{id}/delete(id=${task.id})}" method="post">
+          <button type="submit" class="btn btn-outline-danger"
+                  onclick="return confirm('Task wirklich löschen?');">
+            Löschen
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-8">
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <strong>Beschreibung</strong>
+            <small class="text-muted" th:if="${!canManageTasks}">Nur Ansicht</small>
+          </div>
+
+          <div class="card-body">
+            <p class="mb-3" th:text="${task.description}">Beschreibung...</p>
+
+            <div th:if="${canManageTasks}">
+              <hr>
+              <h5 class="mb-3">Task bearbeiten</h5>
+
+              <form th:object="${taskUpdate}" th:action="@{/tasks/{id}/edit(id=${task.id})}" method="post">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Titel</label>
+                    <input class="form-control"
+                           th:field="*{title}"
+                           th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:errors="*{title}"></div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Status</label>
+                    <select class="form-select"
+                            th:field="*{status}"
+                            th:classappend="${#fields.hasErrors('status')} ? 'is-invalid'">
+                      <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:errors="*{status}"></div>
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label">Beschreibung</label>
+                    <textarea class="form-control" rows="4"
+                              th:field="*{description}"
+                              th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"></textarea>
+                    <div class="invalid-feedback" th:errors="*{description}"></div>
+                  </div>
+
+                  <div class="col-md-8">
+                    <label class="form-label">Kunde</label>
+                    <select class="form-select"
+                            th:field="*{clientId}"
+                            th:classappend="${#fields.hasErrors('clientId')} ? 'is-invalid'">
+                      <option value="" disabled>Bitte wählen...</option>
+                      <option th:each="c : ${clients}" th:value="${c.id}" th:text="${c.name}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:errors="*{clientId}"></div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Start</label>
+                    <input type="datetime-local" class="form-control" th:field="*{startDateTime}">
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Ende</label>
+                    <input type="datetime-local" class="form-control" th:field="*{endDateTime}">
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <strong>Ort / Karte</strong>
+            <small class="text-muted">Platzhalter</small>
+          </div>
+          <div class="card-body">
+            <div class="bg-light border rounded p-4 text-muted"
+                 style="min-height: 240px; display:flex; align-items:center; justify-content:center;">
+              Karten-Komponente kommt später hier rein
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <strong>Materialien</strong>
+            <a th:href="@{/tasks/{taskId}/materials/add(taskId=${task.id})}"
+               class="btn btn-sm btn-outline-primary">
+              + Material
+            </a>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+              <thead class="table-light">
+              <tr>
+                <th>Name</th>
+                <th style="width: 140px;">Menge</th>
+                <th style="width: 160px;">Preis/Einheit</th>
+                <th style="width: 120px;" class="text-end">Aktionen</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr th:if="${materials == null or materials.isEmpty()}">
+                <td colspan="4" class="text-muted">Keine Materialien erfasst.</td>
+              </tr>
+
+              <tr th:each="m : ${materials}">
+                <td th:text="${m.name}">Kabel</td>
+                <td th:text="${m.quantity}">1.000</td>
+                <td th:text="${m.unitPrice}">10.00</td>
+                <td class="text-end">
+                  <a class="btn btn-sm btn-outline-primary"
+                     th:href="@{/tasks/{taskId}/materials/{id}(taskId=${task.id}, id=${m.id})}">
+                    Details
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <strong>ToDos</strong>
+            <a th:href="@{/tasks/{taskId}/todos/add(taskId=${task.id})}"
+               class="btn btn-sm btn-outline-primary">
+              + Todo
+            </a>
+          </div>
+
+          <div class="card-body">
+            <div th:if="${todos == null or todos.isEmpty()}" class="text-muted">
+              Keine ToDos vorhanden.
+            </div>
+
+            <div th:if="${todos != null and !todos.isEmpty()}" class="vstack gap-2">
+              <div th:each="t : ${todos}" class="d-flex align-items-start gap-2">
+                <input class="form-check-input mt-1" type="checkbox" th:checked="${t.done}" disabled>
+
+                <div class="flex-grow-1">
+                  <a class="text-decoration-none fw-semibold"
+                     th:href="@{/tasks/{taskId}/todos/{id}(taskId=${task.id}, id=${t.id})}"
+                     th:text="${t.title}">
+                    Todo Titel
+                  </a>
+
+                  <div>
+                    <small class="text-muted"
+                           th:text="${t.description != null ? t.description : ''}"></small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card shadow-sm">
+          <div class="card-header bg-white">
+            <strong>Quick Info</strong>
+          </div>
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <span class="text-muted">Todos</span>
+              <span th:text="${todos != null ? todos.size() : 0}">0</span>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+              <span class="text-muted">Materialien</span>
+              <span th:text="${materials != null ? materials.size() : 0}">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div th:insert="~{fragments/footer :: siteFooter}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

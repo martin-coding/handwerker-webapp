@@ -8,5 +8,8 @@ import java.util.List;
 
 @Repository
 public interface TaskRepositoryI extends JpaRepository<Task, Long> {
+
     List<Task> findByTitleContainingIgnoreCase(String title);
+
+    List<Task> findByClientCompanyIdOrderByIdAsc(Long companyId);
 }

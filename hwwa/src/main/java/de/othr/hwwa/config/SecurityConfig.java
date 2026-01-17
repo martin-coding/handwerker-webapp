@@ -36,10 +36,10 @@ public class SecurityConfig {
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/webjars/**", "/css/**", "/js/**").permitAll()        // <-- wichtig für CSS/JS
+                .requestMatchers("/webjars/**", "/css/**", "/js/**").permitAll()
                 .requestMatchers("/h2-console/**", "/login", "/logout", "/registration").permitAll()
                 .requestMatchers("/", "/home").hasAuthority("basic")
-                .requestMatchers("/tasks").hasAuthority("tasks")
+                .requestMatchers("/tasks/**").hasAuthority("tasks")
                 .requestMatchers("/employee/**").hasAuthority("manageEmployees")
                 .requestMatchers("/profile/company/edit/**").hasAuthority("updateCompanyData")
                 .requestMatchers("/clients/**").hasAuthority("manageClients")
@@ -55,12 +55,12 @@ public class SecurityConfig {
         );
 
         http.logout(logout -> logout
-                .logoutSuccessUrl("/login?logout") // redirect after logout
+                .logoutSuccessUrl("/login?logout")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
         );
-        http.httpBasic(Customizer.withDefaults());
 
+        http.httpBasic(Customizer.withDefaults());
         return http.build();
     }
 }

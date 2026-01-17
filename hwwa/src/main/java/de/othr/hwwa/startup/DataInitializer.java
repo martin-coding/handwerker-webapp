@@ -83,7 +83,7 @@ public class DataInitializer implements CommandLineRunner {
                 .orElseGet(() -> {
                     Role r = new Role();
                     r.setName("Owner");
-                    r.setAuthorities(Set.of(tasks, createUser,manageEmployees, basic, updateCompanyData, manageClients));
+                    r.setAuthorities(Set.of(tasks, createUser, manageEmployees, basic, updateCompanyData, manageClients));
                     return roleRepository.save(r);
                 });
 
@@ -105,7 +105,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setCompany(company);
                     return userRepository.save(user);
                 });
-        seedTasks(user1);
+
         User user2 = userRepository.findUserByEmailIgnoreCase("sarah.mueller@abc.com")
                 .orElseGet(() -> {
                     User user = new User();
@@ -208,6 +208,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setCompany(company_02);
                     return userRepository.save(user);
                 });
+
         Client client1 = new Client();
         client1.setName("Alice");
         client1.setEmail("alice@abc.de");
@@ -223,9 +224,11 @@ public class DataInitializer implements CommandLineRunner {
         client2.setCompany(company01);
         client2.setCreatedAt(LocalDateTime.now());
         clientRepository.save(client2);
+
+        seedTasks(user1, client1);
     }
 
-    private void seedTasks(User user) {
+    private void seedTasks(User user, Client client) {
         LocalDateTime now = LocalDateTime.now();
 
         Task t1 = createTaskIfMissing(
@@ -234,7 +237,8 @@ public class DataInitializer implements CommandLineRunner {
                 TaskStatus.IN_PROGRESS,
                 now.minusDays(1).withHour(9).withMinute(0).withSecond(0).withNano(0),
                 now.minusDays(1).withHour(12).withMinute(0).withSecond(0).withNano(0),
-                user
+                user,
+                client
         );
 
         Task t2 = createTaskIfMissing(
@@ -243,7 +247,8 @@ public class DataInitializer implements CommandLineRunner {
                 TaskStatus.PLANNED,
                 now.plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0),
                 now.plusDays(1).withHour(11).withMinute(30).withSecond(0).withNano(0),
-                user
+                user,
+                client
         );
 
         Task t3 = createTaskIfMissing(
@@ -252,7 +257,8 @@ public class DataInitializer implements CommandLineRunner {
                 TaskStatus.DONE,
                 now.minusDays(3).withHour(14).withMinute(0).withSecond(0).withNano(0),
                 now.minusDays(3).withHour(16).withMinute(0).withSecond(0).withNano(0),
-                user
+                user,
+                client
         );
 
         assignIfMissing(user, t1, 90);
@@ -265,7 +271,8 @@ public class DataInitializer implements CommandLineRunner {
                                      TaskStatus status,
                                      LocalDateTime start,
                                      LocalDateTime end,
-                                     User createdBy) {
+                                     User createdBy,
+                                     Client client) {
 
         List<Task> existing = taskRepository.findByTitleContainingIgnoreCase(title);
         for (Task t : existing) {
@@ -275,6 +282,7 @@ public class DataInitializer implements CommandLineRunner {
                 if (t.getStartDateTime() == null) t.setStartDateTime(start);
                 if (t.getEndDateTime() == null) t.setEndDateTime(end);
                 if (t.getCreatedBy() == null) t.setCreatedBy(createdBy);
+                if (t.getClient() == null) t.setClient(client);
 
                 return taskRepository.save(t);
             }
@@ -287,8 +295,9 @@ public class DataInitializer implements CommandLineRunner {
         task.setStartDateTime(start);
         task.setEndDateTime(end);
         task.setCreatedBy(createdBy);
-        return taskRepository.save(task);
+        task.setClient(client);
 
+        return taskRepository.save(task);
     }
 
     private void assignIfMissing(User user, Task task, int initialMinutes) {
