@@ -3,12 +3,14 @@ package de.othr.hwwa.service.impl;
 import de.othr.hwwa.model.Client;
 import de.othr.hwwa.model.Task;
 import de.othr.hwwa.model.TaskAssignment;
+import de.othr.hwwa.model.TaskAssignmentId;
 import de.othr.hwwa.model.User;
 import de.othr.hwwa.model.dto.TaskCreateDto;
 import de.othr.hwwa.model.dto.TaskUpdateDto;
 import de.othr.hwwa.repository.ClientRepositoryI;
 import de.othr.hwwa.repository.TaskAssignmentRepository;
 import de.othr.hwwa.repository.TaskRepositoryI;
+import de.othr.hwwa.repository.UserRepositoryI;
 import de.othr.hwwa.service.TaskServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,14 +27,17 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
     private final TaskRepositoryI taskRepository;
     private final TaskAssignmentRepository taskAssignmentRepository;
     private final ClientRepositoryI clientRepository;
+    private final UserRepositoryI userRepository;
 
     @Autowired
     public TaskServiceImpl(TaskRepositoryI taskRepository,
                            TaskAssignmentRepository taskAssignmentRepository,
-                           ClientRepositoryI clientRepository) {
+                           ClientRepositoryI clientRepository,
+                           UserRepositoryI userRepository) {
         this.taskRepository = taskRepository;
         this.taskAssignmentRepository = taskAssignmentRepository;
         this.clientRepository = clientRepository;
+        this.userRepository = userRepository;
     }
 
     private boolean isOwnerOrManager() {
@@ -46,10 +51,15 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
         }
     }
 
-    private void assertCurrentUserAssignedToTask(long taskId) {
+    private void assertCurrentUserAssignedToTask(Long taskId) {
+        if (taskId == null) {
+            throw new IllegalArgumentException("Task id must not be null");
+        }
+
         boolean assigned = taskAssignmentRepository
                 .findByUserIdAndTaskId(getCurrentUserId(), taskId)
                 .isPresent();
+
         if (!assigned) {
             throw new AccessDeniedException("Access denied");
         }
@@ -106,7 +116,7 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
     @Override
     @Transactional
     public Task updateTask(Task task) {
-        if (!taskRepository.existsById(task.getId())) {
+        if (task.getId() == null || !taskRepository.existsById(task.getId())) {
             throw new IllegalArgumentException("Task not found: " + task.getId());
         }
         return taskRepository.save(task);
@@ -136,7 +146,11 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
     }
 
     @Override
-    public Optional<Task> getAssignedTaskById(long taskId) {
+    public Optional<Task> getAssignedTaskById(Long taskId) {
+        if (taskId == null) {
+            return Optional.empty();
+        }
+
         if (isOwnerOrManager()) {
             Task task = taskRepository.findById(taskId)
                     .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
@@ -149,7 +163,11 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
     }
 
     @Override
-    public Optional<Task> getTaskForMaterialTodoAccess(long taskId) {
+    public Optional<Task> getTaskForMaterialTodoAccess(Long taskId) {
+        if (taskId == null) {
+            return Optional.empty();
+        }
+
         Optional<Task> taskOpt = taskRepository.findById(taskId);
         taskOpt.ifPresent(this::assertCanAccessTaskForMaterialTodo);
         return taskOpt;
@@ -182,8 +200,12 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
 
     @Override
     @Transactional
-    public Task updateAssignedTask(long taskId, TaskUpdateDto dto) {
+    public Task updateAssignedTask(Long taskId, TaskUpdateDto dto) {
         assertCurrentUserCanManageTasks();
+
+        if (taskId == null) {
+            throw new IllegalArgumentException("Task not found: null");
+        }
 
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
@@ -204,8 +226,12 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
 
     @Override
     @Transactional
-    public void deleteAssignedTask(long taskId) {
+    public void deleteAssignedTask(Long taskId) {
         assertCurrentUserCanManageTasks();
+
+        if (taskId == null) {
+            throw new IllegalArgumentException("Task not found: null");
+        }
 
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
@@ -217,10 +243,68 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
 
     @Override
     @Transactional
-    public void assignUserToTask(User user, Task task, int initialMinutes) {
-        if (taskAssignmentRepository.findByUserIdAndTaskId(user.getId(), task.getId()).isPresent()) {
+    public void addWorkHours(Long taskId, Long userId, int minutes) {
+        if (taskId == null || userId == null) {
+            throw new IllegalArgumentException("TaskId/UserId must not be null");
+        }
+
+        if (minutes <= 0) {
+            throw new IllegalArgumentException("Minutes must be > 0");
+        }
+
+        Long currentUserId = getCurrentUserId();
+        if (!currentUserId.equals(userId)) {
+            throw new AccessDeniedException("Cannot book work hours for other users");
+        }
+
+        TaskAssignment assignment = taskAssignmentRepository
+                .findByUserIdAndTaskId(userId, taskId)
+                .orElseThrow(() -> new IllegalArgumentException("No assignment found"));
+
+        assignment.setMinutesWorked(assignment.getMinutesWorked() + minutes);
+        taskAssignmentRepository.save(assignment);
+    }
+
+    @Override
+    public List<TaskAssignment> getAssignmentsForTask(Long taskId) {
+        getAssignedTaskById(taskId).orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
+        return taskAssignmentRepository.findByTaskId(taskId);
+    }
+
+    @Override
+    @Transactional
+    public void assignUserToTask(Long taskId, Long userId, int initialMinutes) {
+        assertCurrentUserCanManageTasks();
+
+        if (taskId == null || userId == null) {
+            throw new IllegalArgumentException("TaskId/UserId must not be null");
+        }
+
+        if (initialMinutes < 0) {
+            throw new IllegalArgumentException("Initial minutes must be >= 0");
+        }
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
+        assertTaskBelongsToCurrentCompany(task);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+
+        if (!user.isActive()) {
+            throw new IllegalArgumentException("User is inactive: " + userId);
+        }
+
+        Long currentCompanyId = getCurrentCompany().getId();
+        Long userCompanyId = user.getCompany() != null ? user.getCompany().getId() : null;
+        if (userCompanyId == null || !userCompanyId.equals(currentCompanyId)) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        if (taskAssignmentRepository.findByUserIdAndTaskId(userId, taskId).isPresent()) {
             throw new IllegalStateException("User already assigned to task");
         }
+
         TaskAssignment assignment = new TaskAssignment(user, task);
         assignment.setMinutesWorked(initialMinutes);
         taskAssignmentRepository.save(assignment);
@@ -228,10 +312,45 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
 
     @Override
     @Transactional
-    public void addWorkHours(Long taskId, Long userId, int minutes) {
-        TaskAssignment assignment = taskAssignmentRepository.findByUserIdAndTaskId(userId, taskId)
-                .orElseThrow(() -> new IllegalArgumentException("No assignment found"));
-        assignment.setMinutesWorked(assignment.getMinutesWorked() + minutes);
+    public void unassignUserFromTask(Long taskId, Long userId) {
+        assertCurrentUserCanManageTasks();
+
+        if (taskId == null || userId == null) {
+            throw new IllegalArgumentException("TaskId/UserId must not be null");
+        }
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
+        assertTaskBelongsToCurrentCompany(task);
+
+        TaskAssignmentId id = new TaskAssignmentId(userId, taskId);
+        if (!taskAssignmentRepository.existsById(id)) {
+            throw new IllegalArgumentException("No assignment found");
+        }
+        taskAssignmentRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void assignUserToTask(User user, Task task, int initialMinutes) {
+        if (user == null || task == null) {
+            throw new IllegalArgumentException("User/Task must not be null");
+        }
+
+        if (initialMinutes < 0) {
+            throw new IllegalArgumentException("Initial minutes must be >= 0");
+        }
+
+        if (user.getId() == null || task.getId() == null) {
+            throw new IllegalArgumentException("User/Task must be persisted (id != null)");
+        }
+
+        if (taskAssignmentRepository.findByUserIdAndTaskId(user.getId(), task.getId()).isPresent()) {
+            throw new IllegalStateException("User already assigned to task");
+        }
+
+        TaskAssignment assignment = new TaskAssignment(user, task);
+        assignment.setMinutesWorked(initialMinutes);
         taskAssignmentRepository.save(assignment);
     }
 }

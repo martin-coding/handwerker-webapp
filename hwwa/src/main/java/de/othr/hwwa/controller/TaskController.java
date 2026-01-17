@@ -6,9 +6,11 @@ import de.othr.hwwa.model.Company;
 import de.othr.hwwa.model.Task;
 import de.othr.hwwa.model.TaskStatus;
 import de.othr.hwwa.model.User;
+import de.othr.hwwa.model.dto.CommentCreateDto;
 import de.othr.hwwa.model.dto.TaskCreateDto;
 import de.othr.hwwa.model.dto.TaskUpdateDto;
 import de.othr.hwwa.repository.ClientRepositoryI;
+import de.othr.hwwa.service.CommentServiceI;
 import de.othr.hwwa.service.MaterialServiceI;
 import de.othr.hwwa.service.TaskServiceI;
 import de.othr.hwwa.service.TodoServiceI;
@@ -29,15 +31,49 @@ public class TaskController {
     private final TodoServiceI todoService;
     private final MaterialServiceI materialService;
     private final ClientRepositoryI clientRepository;
+    private final CommentServiceI commentService;
 
     public TaskController(TaskServiceI taskService,
                           TodoServiceI todoService,
                           MaterialServiceI materialService,
-                          ClientRepositoryI clientRepository) {
+                          ClientRepositoryI clientRepository, CommentServiceI commentService) {
         this.taskService = taskService;
         this.todoService = todoService;
         this.materialService = materialService;
         this.clientRepository = clientRepository;
+        this.commentService = commentService;
+    }
+
+    private void validateTimeRange(TaskCreateDto dto, BindingResult bindingResult) {
+        if (dto.getStartDateTime() == null && dto.getEndDateTime() == null) return;
+
+        if (dto.getStartDateTime() == null) {
+            bindingResult.rejectValue("startDateTime", "invalid", "Start muss gesetzt sein, wenn Ende gesetzt ist.");
+            return;
+        }
+        if (dto.getEndDateTime() == null) {
+            bindingResult.rejectValue("endDateTime", "invalid", "Ende muss gesetzt sein, wenn Start gesetzt ist.");
+            return;
+        }
+        if (!dto.getStartDateTime().isBefore(dto.getEndDateTime())) {
+            bindingResult.rejectValue("endDateTime", "invalid", "Ende muss nach Start liegen.");
+        }
+    }
+
+    private void validateTimeRange(TaskUpdateDto dto, BindingResult bindingResult) {
+        if (dto.getStartDateTime() == null && dto.getEndDateTime() == null) return;
+
+        if (dto.getStartDateTime() == null) {
+            bindingResult.rejectValue("startDateTime", "invalid", "Start muss gesetzt sein, wenn Ende gesetzt ist.");
+            return;
+        }
+        if (dto.getEndDateTime() == null) {
+            bindingResult.rejectValue("endDateTime", "invalid", "Ende muss gesetzt sein, wenn Start gesetzt ist.");
+            return;
+        }
+        if (!dto.getStartDateTime().isBefore(dto.getEndDateTime())) {
+            bindingResult.rejectValue("endDateTime", "invalid", "Ende muss nach Start liegen.");
+        }
     }
 
     private User getCurrentUser() {
@@ -97,6 +133,8 @@ public class TaskController {
             throw new AccessDeniedException("Access denied");
         }
 
+        validateTimeRange(dto, bindingResult);
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("clients", loadClientsForCurrentCompany());
             model.addAttribute("statuses", TaskStatus.values());
@@ -109,9 +147,9 @@ public class TaskController {
     }
 
     @GetMapping("/tasks/{id}")
-    public String taskDetails(@PathVariable("id") long id, Model model) {
+    public String taskDetails(@PathVariable long id, Model model) {
         Task task = taskService.getAssignedTaskById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Task not found " + id));
 
         TaskUpdateDto updateDto = new TaskUpdateDto();
         updateDto.setTitle(task.getTitle());
@@ -128,12 +166,16 @@ public class TaskController {
         model.addAttribute("clients", loadClientsForCurrentCompany());
         model.addAttribute("statuses", TaskStatus.values());
         model.addAttribute("canManageTasks", canManageTasks());
+        model.addAttribute("assignments", taskService.getAssignmentsForTask(id));
+        model.addAttribute("comments", commentService.getCommentsForTask(id));
+        model.addAttribute("commentCreate", new CommentCreateDto());
+        model.addAttribute("currentUserId", getCurrentUser().getId());
 
         return "task/task_details";
     }
 
     @PostMapping("/tasks/{id}/edit")
-    public String editTask(@PathVariable("id") long id,
+    public String editTask(@PathVariable long id,
                            @Valid @ModelAttribute("taskUpdate") TaskUpdateDto dto,
                            BindingResult bindingResult,
                            Model model) {
@@ -142,9 +184,11 @@ public class TaskController {
             throw new AccessDeniedException("Access denied");
         }
 
+        validateTimeRange(dto, bindingResult);
+
         if (bindingResult.hasErrors()) {
             Task task = taskService.getAssignedTaskById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Task not found: " + id));
+                    .orElseThrow(() -> new IllegalArgumentException("Task not found " + id));
 
             model.addAttribute("task", task);
             model.addAttribute("todos", todoService.getTodosForTask(id));
@@ -152,6 +196,11 @@ public class TaskController {
             model.addAttribute("clients", loadClientsForCurrentCompany());
             model.addAttribute("statuses", TaskStatus.values());
             model.addAttribute("canManageTasks", true);
+            model.addAttribute("assignments", taskService.getAssignmentsForTask(id));
+            model.addAttribute("comments", commentService.getCommentsForTask(id));
+            model.addAttribute("commentCreate", new CommentCreateDto());
+            model.addAttribute("currentUserId", getCurrentUser().getId());
+
             return "task/task_details";
         }
 

@@ -32,7 +32,7 @@
         <div class="mt-2">
           <small class="text-muted"
                  th:if="${task.startDateTime != null and task.endDateTime != null}"
-                 th:text="${#temporals.format(task.startDateTime, 'dd.MM.yyyy HH:mm')} + ' - ' + ${#temporals.format(task.endDateTime, 'dd.MM.yyyy HH:mm')}">
+                 th:text="${#temporals.format(task.startDateTime, 'dd.MM.yyyy HH:mm') + ' - ' + #temporals.format(task.endDateTime, 'dd.MM.yyyy HH:mm')}">
           </small>
           <small class="text-muted" th:if="${task.startDateTime == null or task.endDateTime == null}">
             Kein Zeitraum gesetzt.
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="d-flex gap-2">
+      <div class="d-flex flex-wrap gap-2 justify-content-end">
         <a th:href="@{/tasks}" class="btn btn-outline-secondary">Zurück</a>
 
         <form th:if="${canManageTasks}" th:action="@{/tasks/{id}/delete(id=${task.id})}" method="post">
@@ -49,6 +49,8 @@
             Löschen
           </button>
         </form>
+
+        <a th:href="@{/tasks/{id}/pdf(id=${task.id})}" class="btn btn-outline-secondary">PDF</a>
       </div>
     </div>
 
@@ -132,9 +134,57 @@
             <small class="text-muted">Platzhalter</small>
           </div>
           <div class="card-body">
-            <div class="bg-light border rounded p-4 text-muted"
-                 style="min-height: 240px; display:flex; align-items:center; justify-content:center;">
+            <div class="bg-light border rounded p-4 text-muted d-flex align-items-center justify-content-center"
+                 style="min-height: 240px;">
               Karten-Komponente kommt später hier rein
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <strong>Wetter am Arbeitsort</strong>
+            <small class="text-muted">Platzhalter</small>
+          </div>
+
+          <div class="card-body">
+            <div class="bg-light border rounded p-4" style="min-height: 200px;">
+              <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                  <div class="fw-semibold">Wetterdaten</div>
+                  <div class="text-muted small">Komponente kommt später hier rein</div>
+                </div>
+                <span class="badge text-bg-secondary">Bald verfügbar</span>
+              </div>
+
+              <hr class="my-3">
+
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <div class="text-muted small mb-1">Ort</div>
+                  <div class="placeholder-glow">
+                    <span class="placeholder col-10"></span>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="text-muted small mb-1">Temperatur</div>
+                  <div class="placeholder-glow">
+                    <span class="placeholder col-6"></span>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="text-muted small mb-1">Niederschlag</div>
+                  <div class="placeholder-glow">
+                    <span class="placeholder col-8"></span>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="text-muted small mb-1">Hinweis</div>
+                  <div class="placeholder-glow">
+                    <span class="placeholder col-12"></span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -183,6 +233,7 @@
       </div>
 
       <div class="col-lg-4">
+
         <div class="card shadow-sm mb-4">
           <div class="card-header bg-white d-flex justify-content-between align-items-center">
             <strong>ToDos</strong>
@@ -219,6 +270,104 @@
           </div>
         </div>
 
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white">
+            <strong>Kommentare</strong>
+          </div>
+
+          <div class="card-body">
+            <form th:object="${commentCreate}"
+                  th:action="@{/tasks/{taskId}/comments/add(taskId=${task.id})}"
+                  method="post" class="mb-3">
+              <div class="mb-2">
+                <textarea class="form-control" rows="3" th:field="*{text}" placeholder="Kommentar schreiben..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-sm btn-primary">Posten</button>
+            </form>
+
+            <div th:if="${comments == null or comments.isEmpty()}" class="text-muted">
+              Keine Kommentare vorhanden.
+            </div>
+
+            <div th:if="${comments != null and !comments.isEmpty()}" class="vstack gap-3">
+              <div th:each="c : ${comments}" class="border rounded p-3 bg-light">
+
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <div class="fw-semibold"
+                         th:text="${c.createdByUser.lastName + ', ' + c.createdByUser.firstName}">
+                      Mustermann, Max
+                    </div>
+                    <small class="text-muted"
+                           th:text="${#temporals.format(c.createdAt, 'dd.MM.yyyy HH:mm')}"></small>
+                  </div>
+
+                  <div class="d-flex gap-2 flex-wrap justify-content-end">
+                    <a th:if="${currentUserId == c.createdByUser.id}"
+                       class="btn btn-sm btn-outline-secondary"
+                       th:href="@{/tasks/{taskId}/comments/{id}(taskId=${task.id}, id=${c.id})}">
+                      Bearbeiten
+                    </a>
+
+                    <form th:if="${currentUserId == c.createdByUser.id or canManageTasks}"
+                          th:action="@{/tasks/{taskId}/comments/{id}/delete(taskId=${task.id}, id=${c.id})}"
+                          method="post">
+                      <button type="submit"
+                              class="btn btn-sm btn-outline-danger"
+                              onclick="return confirm('Kommentar wirklich löschen?');">
+                        Löschen
+                      </button>
+                    </form>
+                  </div>
+                </div>
+
+                <div class="mt-2" th:text="${c.text}">
+                  Kommentartext...
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <strong>Zugewiesene Mitarbeiter</strong>
+            <a th:if="${canManageTasks}"
+               th:href="@{/tasks/{taskId}/assignments/add(taskId=${task.id})}"
+               class="btn btn-sm btn-outline-primary">
+              + Zuweisen
+            </a>
+          </div>
+
+          <div class="card-body">
+            <div th:if="${assignments == null or assignments.isEmpty()}" class="text-muted">
+              Keine Mitarbeiter zugewiesen.
+            </div>
+
+            <div th:if="${assignments != null and !assignments.isEmpty()}" class="vstack gap-2">
+              <div th:each="a : ${assignments}" class="d-flex justify-content-between align-items-start gap-2">
+                <div>
+                  <div class="fw-semibold"
+                       th:text="${a.user.lastName + ', ' + a.user.firstName}">
+                    Mustermann, Max
+                  </div>
+                  <small class="text-muted" th:text="${'Minuten: ' + a.minutesWorked}"></small>
+                </div>
+
+                <form th:if="${canManageTasks}"
+                      th:action="@{/tasks/{taskId}/assignments/{userId}/delete(taskId=${task.id}, userId=${a.user.id})}"
+                      method="post">
+                  <button type="submit" class="btn btn-sm btn-outline-danger"
+                          onclick="return confirm('Mitarbeiter wirklich entfernen?');">
+                    Entfernen
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="card shadow-sm">
           <div class="card-header bg-white">
             <strong>Quick Info</strong>
@@ -234,6 +383,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
 

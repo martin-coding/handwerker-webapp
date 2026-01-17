@@ -1,6 +1,7 @@
 package de.othr.hwwa.service;
 
 import de.othr.hwwa.model.Task;
+import de.othr.hwwa.model.TaskAssignment;
 import de.othr.hwwa.model.User;
 import de.othr.hwwa.model.dto.TaskCreateDto;
 import de.othr.hwwa.model.dto.TaskUpdateDto;
@@ -24,17 +25,23 @@ public interface TaskServiceI {
 
     List<Task> getAssignedTasksForUser();
 
-    Optional<Task> getAssignedTaskById(long taskId);
+    Optional<Task> getAssignedTaskById(Long taskId);
 
-    Optional<Task> getTaskForMaterialTodoAccess(long taskId);
+    Optional<Task> getTaskForMaterialTodoAccess(Long taskId);
 
     Task createTask(TaskCreateDto dto);
 
-    Task updateAssignedTask(long taskId, TaskUpdateDto dto);
+    Task updateAssignedTask(Long taskId, TaskUpdateDto dto);
 
-    void deleteAssignedTask(long taskId);
-
-    void assignUserToTask(User user, Task task, int initialMinutes);
+    void deleteAssignedTask(Long taskId);
 
     void addWorkHours(Long taskId, Long userId, int minutes);
+
+    List<TaskAssignment> getAssignmentsForTask(Long taskId);
+
+    void assignUserToTask(Long taskId, Long userId, int initialMinutes);
+
+    void unassignUserFromTask(Long taskId, Long userId);
+
+    void assignUserToTask(User user, Task task, int initialMinutes);
 }

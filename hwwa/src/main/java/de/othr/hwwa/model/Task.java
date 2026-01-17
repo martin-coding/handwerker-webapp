@@ -18,7 +18,7 @@ public class Task implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotBlank(message = "title is mandatory")
     @Column(nullable = false)
@@ -59,8 +59,13 @@ public class Task implements Serializable {
         return taskAssignments.stream().map(TaskAssignment::getUser).toList();
     }
 
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }

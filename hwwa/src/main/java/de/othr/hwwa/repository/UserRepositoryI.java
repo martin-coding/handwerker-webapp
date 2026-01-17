@@ -31,4 +31,6 @@ public interface UserRepositoryI extends JpaRepository<User, Long> {
     );
 
     User getUsersById(Long id);
+
+    List<User> findByCompanyIdAndActiveTrueOrderByLastNameAscFirstNameAsc(Long companyId);
 }
