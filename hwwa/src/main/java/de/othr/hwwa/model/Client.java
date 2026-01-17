@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "clients")
@@ -31,11 +32,10 @@ public class Client implements Serializable {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    private String data;
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
+    private List<Task> tasks = new ArrayList<>();
 
-    private Collection<Task> pastTasks;
-
-    private Collection<Task> activeTasks;
+    public Client() {}
 
     public static long getSerialversionuid() {
         return serialVersionUID;
@@ -47,6 +47,14 @@ public class Client implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public String getName() {
@@ -81,36 +89,11 @@ public class Client implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public String getData() {
-        return data;
+    public List<Task> getTasks() {
+        return tasks;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
-
-    public Collection<Task> getPastTasks() {
-        return pastTasks;
-    }
-
-    public void setPastTasks(Collection<Task> pastTasks) {
-        this.pastTasks = pastTasks;
-    }
-
-    public Collection<Task> getActiveTasks() {
-        return activeTasks;
-    }
-
-    public void setActiveTasks(Collection<Task> activeTasks) {
-        this.activeTasks = activeTasks;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
 }

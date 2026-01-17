@@ -2,6 +2,7 @@ package de.othr.hwwa.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ public class Task implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotBlank(message = "title is mandatory")
     @Column(nullable = false)
@@ -27,31 +28,44 @@ public class Task implements Serializable {
     @Column(nullable = false, length = 2000)
     private String description;
 
-    // NEU: Status (wird in tasks.html verwendet)
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private TaskStatus status = TaskStatus.PLANNED;
 
-    // NEU: Start/Ende (optional in HTML, aber du wolltest es im Modell)
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
 
-    // NEU: Ersteller (wenn du es schon brauchst)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_user_id")
     private User createdBy;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<TaskAssignment> taskAssignments = new ArrayList<>();
 
-    // ---- Convenience ----
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Material> materials = new ArrayList<>();
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Todo> todos = new ArrayList<>();
+
+    public Task() {}
+
     public List<User> getAssignedUsers() {
         return taskAssignments.stream().map(TaskAssignment::getUser).toList();
     }
 
-    // ---- Getter/Setter ----
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -71,8 +85,17 @@ public class Task implements Serializable {
     public User getCreatedBy() { return createdBy; }
     public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
 
+    public Client getClient() { return client; }
+    public void setClient(Client client) { this.client = client; }
+
     public List<TaskAssignment> getTaskAssignments() { return taskAssignments; }
     public void setTaskAssignments(List<TaskAssignment> taskAssignments) { this.taskAssignments = taskAssignments; }
+
+    public List<Material> getMaterials() { return materials; }
+    public void setMaterials(List<Material> materials) { this.materials = materials; }
+
+    public List<Todo> getTodos() { return todos; }
+    public void setTodos(List<Todo> todos) { this.todos = todos; }
 
     public static long getSerialversionuid() { return serialVersionUID; }
 }

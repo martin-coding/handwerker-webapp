@@ -1,4 +1,3 @@
-// TaskAssignment.java
 package de.othr.hwwa.model;
 
 import jakarta.persistence.*;
