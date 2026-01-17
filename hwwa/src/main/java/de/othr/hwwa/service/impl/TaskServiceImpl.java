@@ -1,16 +1,11 @@
 package de.othr.hwwa.service.impl;
 
-import de.othr.hwwa.model.Client;
-import de.othr.hwwa.model.Task;
-import de.othr.hwwa.model.TaskAssignment;
-import de.othr.hwwa.model.TaskAssignmentId;
-import de.othr.hwwa.model.User;
+import de.othr.hwwa.model.*;
 import de.othr.hwwa.model.dto.TaskCreateDto;
 import de.othr.hwwa.model.dto.TaskUpdateDto;
-import de.othr.hwwa.repository.ClientRepositoryI;
-import de.othr.hwwa.repository.TaskAssignmentRepository;
-import de.othr.hwwa.repository.TaskRepositoryI;
-import de.othr.hwwa.repository.UserRepositoryI;
+import de.othr.hwwa.repository.*;
+import de.othr.hwwa.service.CommentServiceI;
+import de.othr.hwwa.service.MaterialServiceI;
 import de.othr.hwwa.service.TaskServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -28,16 +23,23 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
     private final TaskAssignmentRepository taskAssignmentRepository;
     private final ClientRepositoryI clientRepository;
     private final UserRepositoryI userRepository;
+    private final TodoRepositoryI todoRepository;
+    private final CommentRepositoryI commentRepository;
+    private final MaterialRepositoryI materialRepository;
 
     @Autowired
     public TaskServiceImpl(TaskRepositoryI taskRepository,
                            TaskAssignmentRepository taskAssignmentRepository,
                            ClientRepositoryI clientRepository,
-                           UserRepositoryI userRepository) {
+                           UserRepositoryI userRepository, TodoRepositoryI todoRepository,
+                           CommentRepositoryI commentRepository, MaterialRepositoryI materialRepository) {
         this.taskRepository = taskRepository;
         this.taskAssignmentRepository = taskAssignmentRepository;
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
+        this.todoRepository = todoRepository;
+        this.commentRepository = commentRepository;
+        this.materialRepository = materialRepository;
     }
 
     private boolean isOwnerOrManager() {
@@ -237,6 +239,14 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
 
         assertTaskBelongsToCurrentCompany(task);
+
+        List<Material> materials = materialRepository.findByTaskIdOrderByIdAsc(taskId);
+        List<Comment> comments = commentRepository.findByTaskIdOrderByCreatedAtDesc(taskId);
+        List<Todo> todos = todoRepository.findByTaskIdOrderByDoneAscIdAsc(taskId);
+
+        materialRepository.deleteAll(materials);
+        commentRepository.deleteAll(comments);
+        todoRepository.deleteAll(todos);
 
         taskRepository.delete(task);
     }
