@@ -51,7 +51,7 @@ public class MaterialController {
         }
 
         Material m = new Material();
-        m.setName(dto.getName());
+        m.setDescription(dto.getDescription());
         m.setUnitPrice(dto.getUnitPrice());
         m.setQuantity(dto.getQuantity());
         m.setTask(task);
@@ -75,7 +75,7 @@ public class MaterialController {
         }
 
         MaterialUpdateDto updateDto = new MaterialUpdateDto();
-        updateDto.setName(material.getName());
+        updateDto.setDescription(material.getDescription());
         updateDto.setUnitPrice(material.getUnitPrice());
         updateDto.setQuantity(material.getQuantity());
 
@@ -107,7 +107,7 @@ public class MaterialController {
             return "task/material_details";
         }
 
-        material.setName(dto.getName());
+        material.setDescription(dto.getDescription());
         material.setUnitPrice(dto.getUnitPrice());
         material.setQuantity(dto.getQuantity());
 

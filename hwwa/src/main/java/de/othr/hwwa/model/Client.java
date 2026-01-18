@@ -36,6 +36,7 @@ public class Client implements Serializable {
     private List<Task> tasks = new ArrayList<>();
 
     public Client() {}
+    private Address address;
 
     public static long getSerialversionuid() {
         return serialVersionUID;
@@ -47,14 +48,6 @@ public class Client implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
     }
 
     public String getName() {
@@ -89,6 +82,14 @@ public class Client implements Serializable {
         this.createdAt = createdAt;
     }
 
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
     public List<Task> getTasks() {
         return tasks;
     }
@@ -96,4 +97,11 @@ public class Client implements Serializable {
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
+
+    public Address getAddress() {return address;}
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
 }

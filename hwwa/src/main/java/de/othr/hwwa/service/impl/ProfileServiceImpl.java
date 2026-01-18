@@ -30,7 +30,7 @@ public class ProfileServiceImpl extends SecurityServiceImpl implements ProfileSe
     @Override
     public ProfileDto getCurrentProfileDto() {
         User currentUser = getCurrentUser();
-        return new ProfileDto(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getEmail(), currentUser.getPhoneNumber());
+        return new ProfileDto(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getEmail(), currentUser.getPhoneNumber(), currentUser.getCreatedAt().toLocalDate());
     }
 
     @Override

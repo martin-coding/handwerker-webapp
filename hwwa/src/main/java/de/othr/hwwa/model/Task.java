@@ -33,25 +33,34 @@ public class Task implements Serializable {
     @Column(nullable = false, length = 20)
     private TaskStatus status = TaskStatus.PLANNED;
 
+    // NEU: Start/Ende (optional in HTML, aber du wolltest es im Modell)
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
 
+    // NEU: Ersteller (wenn du es schon brauchst)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_user_id")
     private User createdBy;
 
+    @OneToMany(
+            mappedBy = "task",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Material> materials = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
+    private long companyId;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<TaskAssignment> taskAssignments = new ArrayList<>();
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Material> materials = new ArrayList<>();
-
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Todo> todos = new ArrayList<>();
+
+    private boolean deleted = false;
 
     public Task() {}
 
@@ -59,13 +68,9 @@ public class Task implements Serializable {
         return taskAssignments.stream().map(TaskAssignment::getUser).toList();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // ---- Getter/Setter ----
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -83,19 +88,33 @@ public class Task implements Serializable {
     public void setEndDateTime(LocalDateTime endDateTime) { this.endDateTime = endDateTime; }
 
     public User getCreatedBy() { return createdBy; }
+
     public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
 
-    public Client getClient() { return client; }
-    public void setClient(Client client) { this.client = client; }
-
     public List<TaskAssignment> getTaskAssignments() { return taskAssignments; }
+
     public void setTaskAssignments(List<TaskAssignment> taskAssignments) { this.taskAssignments = taskAssignments; }
 
-    public List<Material> getMaterials() { return materials; }
-    public void setMaterials(List<Material> materials) { this.materials = materials; }
+    public Client getClient() {return client;}
+
+    public void setClient(Client client) {this.client = client;}
+
+    public long getCompanyId() {return companyId;}
+
+    public void setCompanyId(long companyId) {this.companyId = companyId;}
+
+    public List<Material> getMaterials() {return materials;}
+
+    public void setMaterials(List<Material> materials) {this.materials = materials;}
 
     public List<Todo> getTodos() { return todos; }
+
     public void setTodos(List<Todo> todos) { this.todos = todos; }
 
     public static long getSerialversionuid() { return serialVersionUID; }
+
+    public boolean isDeleted() {return deleted;}
+
+    public void setDeleted(boolean deleted) {this.deleted = deleted;}
+
 }

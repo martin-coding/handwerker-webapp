@@ -36,7 +36,7 @@ public class MaterialServiceImpl extends SecurityServiceImpl implements Material
 
     private void assertCanAccessTask(long taskId) {
         if (isOwnerOrManager()) {
-            Task task = taskRepository.findById(taskId)
+            Task task = taskRepository.findByIdAndDeletedIsFalse(taskId)
                     .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
 
             Long currentCompanyId = getCurrentCompany().getId();

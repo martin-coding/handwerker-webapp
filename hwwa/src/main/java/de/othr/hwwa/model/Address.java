@@ -2,8 +2,11 @@ package de.othr.hwwa.model;
 
 import jakarta.persistence.Embeddable;
 
+import java.io.Serializable;
+
 @Embeddable
-public class Address {
+public class Address implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String street;
     private String city;
     private String postalCode;

@@ -1,6 +1,7 @@
 package de.othr.hwwa.service.impl;
 
 import de.othr.hwwa.config.MyUserDetails;
+import de.othr.hwwa.model.Address;
 import de.othr.hwwa.model.Company;
 import de.othr.hwwa.model.User;
 import de.othr.hwwa.service.SecurityServiceI;
@@ -17,6 +18,14 @@ public class SecurityServiceImpl implements SecurityServiceI {
 
     public Company getCurrentCompany(){
         return getCurrentUser().getCompany();
+    }
+
+    public Address getCurrentCompanyAddress(){
+        return getCurrentUser().getCompany().getAddress();
+    }
+
+    public Long getCurrentCompanyId(){
+        return getCurrentUser().getCompany().getId();
     }
 
     @Override
