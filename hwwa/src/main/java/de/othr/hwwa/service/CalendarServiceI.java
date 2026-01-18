@@ -6,6 +6,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CalendarServiceI {
-    List<Task> getMyAssignedTasksInRange(LocalDateTime rangeStartInclusive, LocalDateTime rangeEndExclusive);
-    List<Task> getMyAssignedTasksWithoutDates();
+    List<Task> getMyAssignedTasksInRange(LocalDateTime startInclusive, LocalDateTime endExclusive);
 }

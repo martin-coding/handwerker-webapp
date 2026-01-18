@@ -1,6 +1,5 @@
 package de.othr.hwwa.controller;
 
-import de.othr.hwwa.model.Task;
 import de.othr.hwwa.service.CalendarServiceI;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -8,9 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
-import java.util.List;
 
 @Controller
 public class CalendarController {
@@ -32,7 +32,9 @@ public class CalendarController {
         LocalDate rangeStartDate;
         LocalDate rangeEndDateExclusive;
 
-        switch (view.toLowerCase()) {
+        String v = view == null ? "week" : view.toLowerCase();
+
+        switch (v) {
             case "day" -> {
                 rangeStartDate = base;
                 rangeEndDateExclusive = base.plusDays(1);
@@ -41,7 +43,7 @@ public class CalendarController {
                 rangeStartDate = base.withDayOfMonth(1);
                 rangeEndDateExclusive = base.with(TemporalAdjusters.firstDayOfNextMonth());
             }
-            default -> { // week
+            default -> {
                 rangeStartDate = base.with(DayOfWeek.MONDAY);
                 rangeEndDateExclusive = rangeStartDate.plusDays(7);
             }
@@ -50,15 +52,11 @@ public class CalendarController {
         LocalDateTime start = rangeStartDate.atStartOfDay();
         LocalDateTime endExclusive = rangeEndDateExclusive.atStartOfDay();
 
-        List<Task> tasks = calendarService.getMyAssignedTasksInRange(start, endExclusive);
-        List<Task> undated = calendarService.getMyAssignedTasksWithoutDates();
-
-        model.addAttribute("view", view.toLowerCase());
+        model.addAttribute("view", v);
         model.addAttribute("date", base);
         model.addAttribute("rangeStart", rangeStartDate);
         model.addAttribute("rangeEndExclusive", rangeEndDateExclusive);
-        model.addAttribute("tasks", tasks);
-        model.addAttribute("undatedTasks", undated);
+        model.addAttribute("initialView", v.equals("day") ? "timeGridDay" : v.equals("month") ? "dayGridMonth" : "timeGridWeek");
 
         return "calendar/calendar";
     }

@@ -40,6 +40,8 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**", "/login", "/logout", "/registration").permitAll()
                 .requestMatchers("/", "/home").hasAuthority("basic")
                 .requestMatchers("/tasks/**").hasAuthority("tasks")
+                .requestMatchers("/calendar", "/calendar/**").hasAuthority("tasks")
+                .requestMatchers("/api/calendar", "/api/calendar/**").hasAuthority("tasks")
                 .requestMatchers("/employee/**").hasAuthority("manageEmployees")
                 .requestMatchers("/profile/company/edit/**").hasAuthority("updateCompanyData")
                 .requestMatchers("/clients/**").hasAuthority("manageClients")
