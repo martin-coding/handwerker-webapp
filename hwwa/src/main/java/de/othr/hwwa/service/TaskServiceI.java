@@ -1,8 +1,6 @@
 package de.othr.hwwa.service;
 
-import de.othr.hwwa.model.Task;
-import de.othr.hwwa.model.TaskAssignment;
-import de.othr.hwwa.model.User;
+import de.othr.hwwa.model.*;
 import de.othr.hwwa.model.dto.TaskCreateDto;
 import de.othr.hwwa.model.dto.TaskUpdateDto;
 
@@ -34,4 +32,6 @@ public interface TaskServiceI {
     void unassignUserFromTask(Long taskId, Long userId);
 
     void assignUserToTask(User user, Task task, int initialMinutes);
+
+    public Coordinates getTaskCoordinates(Long taskId);
 }
