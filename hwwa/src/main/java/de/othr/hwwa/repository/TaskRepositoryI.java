@@ -10,9 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface TaskRepositoryI extends JpaRepository<Task, Long> {
-    List<Task> findByTitleContainingIgnoreCase(String title);
+    List<Task> findByTitleContainingIgnoreCaseAndDeletedIsFalse(String title);
 
-    List<Task> findByClientCompanyIdOrderByIdAsc(Long companyId);
-    Optional<Task> findById(Long id);
-    List<Task> findByCompanyIdAndStatus(long companyId, TaskStatus status);
+    List<Task> findByClientCompanyIdAndDeletedIsFalseOrderByIdAsc(Long companyId);
+    Optional<Task> findByIdAndDeletedIsFalse(Long id);
+    List<Task> findByCompanyIdAndStatusAndDeletedIsFalse(long companyId, TaskStatus status);
 }

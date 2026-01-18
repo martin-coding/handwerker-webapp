@@ -20,7 +20,7 @@
 
         <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
             <div>
-                <h1 class="mb-1" th:text="${material.name}">Material</h1>
+                <h1 class="mb-1" th:text="${material.description}">Material</h1>
                 <p class="text-muted mb-0">
                     ID: <span th:text="${material.id}">1</span>
                     <span class="mx-2">•</span>
@@ -70,11 +70,11 @@
 
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Name</label>
+                                    <label class="form-label">Beschreibung</label>
                                     <input class="form-control"
-                                           th:field="*{name}"
-                                           th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
-                                    <div class="invalid-feedback" th:errors="*{name}"></div>
+                                           th:field="*{description}"
+                                           th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'">
+                                    <div class="invalid-feedback" th:errors="*{description}"></div>
                                 </div>
 
                                 <div class="col-md-3">

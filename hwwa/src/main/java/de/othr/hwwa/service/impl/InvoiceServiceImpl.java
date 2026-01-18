@@ -39,7 +39,7 @@ public class InvoiceServiceImpl extends SecurityServiceImpl implements InvoiceSe
     public List<TaskForInvoiceDto> getAllDoneTasks(){
         Long companyId = getCurrentCompanyId();
         TaskStatus done = TaskStatus.DONE;
-        List<Task> tasks =  taskRepository.findByCompanyIdAndStatus(companyId, done);
+        List<Task> tasks =  taskRepository.findByCompanyIdAndStatusAndDeletedIsFalse(companyId, done);
         List<TaskForInvoiceDto> taskForInvoiceDtos = new ArrayList<>();
         for (Task task : tasks) {
             taskForInvoiceDtos.add(new TaskForInvoiceDto(task.getId(), task.getTitle(), task.getClient().getName()));
@@ -125,6 +125,9 @@ public class InvoiceServiceImpl extends SecurityServiceImpl implements InvoiceSe
 
         invoiceWorkCostRepository.deleteInvoiceWorkCostByInvoice(invoice);
         invoiceMaterialRepository.deleteInvoiceMaterialByInvoice(invoice);
+        if (invoice.getTask().isDeleted()){
+            taskRepository.delete(invoice.getTask());
+        }
         invoiceRepository.delete(invoice);
     }
 

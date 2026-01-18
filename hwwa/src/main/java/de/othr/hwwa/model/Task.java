@@ -18,7 +18,7 @@ public class Task implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotBlank(message = "title is mandatory")
     @Column(nullable = false)
@@ -60,6 +60,8 @@ public class Task implements Serializable {
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Todo> todos = new ArrayList<>();
 
+    private boolean deleted = false;
+
     public Task() {}
 
     public List<User> getAssignedUsers() {
@@ -67,8 +69,8 @@ public class Task implements Serializable {
     }
 
     // ---- Getter/Setter ----
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -111,13 +113,8 @@ public class Task implements Serializable {
 
     public static long getSerialversionuid() { return serialVersionUID; }
 
-    public void addMaterial(Material material) {
-        materials.add(material);        // add to collection
-        material.setTask(this);         // set owning side
-    }
+    public boolean isDeleted() {return deleted;}
 
-    public void removeMaterial(Material material) {
-        materials.remove(material);
-        material.setTask(null);         // unset owning side
-    }
+    public void setDeleted(boolean deleted) {this.deleted = deleted;}
+
 }

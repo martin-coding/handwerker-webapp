@@ -25,7 +25,7 @@ public class Invoice implements Serializable {
 
     // Invoice → Task (1–1)
     @OneToOne
-    @JoinColumn(name = "task_id", nullable = false, unique = true)
+    @JoinColumn(name = "task_id", nullable = true, unique = true)
     private Task task;
 
     // Invoice → Company (Many invoices → One company)

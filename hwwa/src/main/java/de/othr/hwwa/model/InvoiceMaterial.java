@@ -28,7 +28,7 @@ public class InvoiceMaterial implements Serializable {
 
     public InvoiceMaterial(Material material, Invoice invoice) {
         this.description = material.getDescription();
-        this.count = material.getCount();
+        this.count = material.getQuantity();
         this.total = this.pricePerStock * this.count;
         this.invoice = invoice;
     }

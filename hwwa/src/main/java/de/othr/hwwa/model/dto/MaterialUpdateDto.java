@@ -5,17 +5,22 @@ import jakarta.validation.constraints.NotNull;
 
 public class MaterialUpdateDto {
 
-    @NotBlank(message = "name is mandatory")
-    private String name;
+    @NotBlank(message = "Beschreibung ist notwendig")
+    private String description;
 
-    @NotNull(message = "unitPrice is mandatory")
+    @NotNull(message = "Stückpreis darf nicht leer bleiben")
     private float unitPrice;
 
-    @NotNull(message = "quantity is mandatory")
+    @NotNull(message = "Anzahl muss angeben werden")
     private float quantity;
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public float getUnitPrice() { return unitPrice; }
     public void setUnitPrice(float unitPrice) { this.unitPrice = unitPrice; }
