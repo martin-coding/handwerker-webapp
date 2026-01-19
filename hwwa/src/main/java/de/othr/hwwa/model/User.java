@@ -115,6 +115,8 @@ public class User implements Serializable{
 
     public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
 
+    public String getRoleName() {return role.getName();}
+
     public Role getRole() {return role;}
 
     public void setRole(Role role) {this.role = role;}

@@ -6,6 +6,8 @@ import de.othr.hwwa.model.dto.UserDto;
 import de.othr.hwwa.service.EmployeeServiceI;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,7 +35,15 @@ public class EmployeeController {
             @RequestParam(value = "keyword", required = false) String keyword,
             Model model
     ) {
-        Page<User> employeePage = employeeService.getEmployeeList(page, size, sort, dir, keyword);
+        Sort.Direction direction =
+                dir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Sort sortOrder = Sort.by(direction, sort);
+        if ("lastName".equals(sort)) {
+            sortOrder = Sort.by(direction, "lastName").and(Sort.by(direction, "firstName"));
+        }
+        PageRequest pageable = PageRequest.of(page, size, sortOrder);
+        Page<User> employeePage = employeeService.getEmployeeList(pageable, keyword);
 
         model.addAttribute("employees", employeePage);
         model.addAttribute("currentPage", page);
