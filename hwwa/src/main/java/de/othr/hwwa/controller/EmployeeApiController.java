@@ -8,6 +8,7 @@ import de.othr.hwwa.service.EmployeeServiceI;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,8 +24,11 @@ public class EmployeeApiController {
     }
 
     @GetMapping
-    public Page<UserDto> getAllEmployees(@PageableDefault(size = 20, sort = "lastName")Pageable pageable, @RequestParam(required = false) String keyword) {
-        return employeeService.getEmployeeList(pageable, keyword).map(this::toDto);
+    public PagedModel<UserDto> getAllEmployees(
+            @PageableDefault(size = 20, sort = "lastName")Pageable pageable,
+            @RequestParam(required = false) String keyword) {
+        Page<UserDto> page = employeeService.getEmployeeList(pageable, keyword).map(this::toDto);
+        return new PagedModel<>(page);
     }
 
     @GetMapping("/{employeeId}")
