@@ -1,6 +1,10 @@
 package de.othr.hwwa.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -21,13 +25,24 @@ public class Client implements Serializable {
     @JoinColumn(name = "company_id", referencedColumnName = "id", nullable = false)
     private Company company;
 
+    @NotBlank(message = "{client.name.not.blank}")
     @Column(nullable = false)
     private String name;
 
+    @Email(message = "{client.email.valid}")
+    @NotBlank(message = "{client.email.not.blank}")
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Pattern(
+        regexp = "^\\+?[0-9 /]{7,20}$",
+        message = "{client.phone.pattern}"
+    )
     private String phone;
+
+    @Embedded
+    @Valid
+    private Address address;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -36,7 +51,6 @@ public class Client implements Serializable {
     private List<Task> tasks = new ArrayList<>();
 
     public Client() {}
-    private Address address;
 
     public static long getSerialversionuid() {
         return serialVersionUID;
