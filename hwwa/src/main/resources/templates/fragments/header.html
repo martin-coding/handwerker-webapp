@@ -40,7 +40,7 @@
                             <span class="material-symbols-outlined">group</span> Mitarbeiter
                         </a>
 
-                        <a class="btn btn-sm d-flex align-items-center gap-2"
+                        <a class="btn btn-sm d-flex align-items-center gap-2" sec:authorize="hasAuthority('manageClients')"
                            th:href="@{/clients}"
                            th:classappend="${currentUri.startsWith('/clients') ? 'btn-primary text-white' : 'btn-light'}">
                             <span class="material-symbols-outlined">person_book</span> Kunden
