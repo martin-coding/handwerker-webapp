@@ -1,11 +1,15 @@
 package de.othr.hwwa.service.impl;
 
 import de.othr.hwwa.model.EmailDetails;
+import de.othr.hwwa.model.Todo;
 import de.othr.hwwa.model.User;
 import de.othr.hwwa.model.dto.InvoiceDto;
 import de.othr.hwwa.service.EmailServiceI;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
@@ -95,5 +99,41 @@ public class EmailServiceImpl implements EmailServiceI {
 
         helper.setText(msgBody);
         return helper;
+    }
+
+    @Async
+    @Override
+    public void sendTodoNotification(List<User> recipients, Todo todo) {
+        for (User user : recipients) {
+            try {
+                SimpleMailMessage mailMessage = new SimpleMailMessage();
+                mailMessage.setFrom(sender);
+                mailMessage.setTo(user.getEmail());
+
+                mailMessage.setSubject("TODO Completed - " + todo.getTitle());
+                
+                String emailText = String.format(
+                        "Hello %s %s,\n\n" +
+                        "This is a quick notification to let you know that the following todo has been completed:\n\n" +
+                        "Todo name:\n%s\n\n" +
+                        "Description:\n%s\n\n" +
+                        "Great job keeping things up to date! ✅\n\n" +
+                        "Best regards,\n" +
+                        "Your Todo App Team",
+                        user.getFirstName(),
+                        user.getLastName(),
+                        todo.getTitle(),
+                        todo.getDescription()
+                );
+
+                mailMessage.setText(emailText);
+
+                mailSender.send(mailMessage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("All mails sent successfully...");
     }
 }

@@ -2,9 +2,11 @@ package de.othr.hwwa.service.impl;
 
 import de.othr.hwwa.model.Task;
 import de.othr.hwwa.model.Todo;
+import de.othr.hwwa.model.User;
 import de.othr.hwwa.repository.TaskAssignmentRepository;
 import de.othr.hwwa.repository.TaskRepositoryI;
 import de.othr.hwwa.repository.TodoRepositoryI;
+import de.othr.hwwa.service.EmailServiceI;
 import de.othr.hwwa.service.TodoServiceI;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -17,16 +19,19 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class TodoServiceImpl extends SecurityServiceImpl implements TodoServiceI {
 
+    private final EmailServiceI emailService;
+
     private final TodoRepositoryI todoRepository;
     private final TaskAssignmentRepository taskAssignmentRepository;
     private final TaskRepositoryI taskRepository;
 
     public TodoServiceImpl(TodoRepositoryI todoRepository,
                            TaskAssignmentRepository taskAssignmentRepository,
-                           TaskRepositoryI taskRepository) {
+                           TaskRepositoryI taskRepository, EmailServiceI emailService) {
         this.todoRepository = todoRepository;
         this.taskAssignmentRepository = taskAssignmentRepository;
         this.taskRepository = taskRepository;
+        this.emailService = emailService;
     }
 
     private boolean isOwnerOrManager() {
@@ -79,6 +84,11 @@ public class TodoServiceImpl extends SecurityServiceImpl implements TodoServiceI
             throw new IllegalArgumentException("Todo.task must not be null");
         }
         assertCanAccessTask(todo.getTask().getId());
+
+        if (todo.isDone()) {
+            List<User> recipients = todo.getTask().getAssignedUsers();
+            emailService.sendTodoNotification(recipients, todo);
+        }
         return todoRepository.save(todo);
     }
 

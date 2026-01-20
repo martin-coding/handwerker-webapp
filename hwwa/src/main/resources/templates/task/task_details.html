@@ -260,7 +260,14 @@
 
             <div th:if="${todos != null and !todos.isEmpty()}" class="vstack gap-2">
               <div th:each="t : ${todos}" class="d-flex align-items-start gap-2">
-                <input class="form-check-input mt-1" type="checkbox" th:checked="${t.done}" disabled>
+                <form th:action="@{/tasks/{taskId}/todos/{id}/toggle(taskId=${task.id}, id=${t.id})}"
+                  method="post">
+
+                <input type="checkbox"
+                      th:checked="${t.done}"
+                      onchange="this.form.submit()">
+
+            </form>
 
                 <div class="flex-grow-1">
                   <a class="text-decoration-none fw-semibold"
