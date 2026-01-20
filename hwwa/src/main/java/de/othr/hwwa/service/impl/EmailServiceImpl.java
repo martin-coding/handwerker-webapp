@@ -103,27 +103,23 @@ public class EmailServiceImpl implements EmailServiceI {
 
     @Async
     @Override
-    public void sendTodoNotification(List<User> recipients, Todo todo) {
-        for (User user : recipients) {
+    public void sendTodoNotification(List<String> recipients, String task_title) {
+        for (String user_mail : recipients) {
             try {
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 mailMessage.setFrom(sender);
-                mailMessage.setTo(user.getEmail());
+                mailMessage.setTo(user_mail);
 
-                mailMessage.setSubject("TODO Completed - " + todo.getTitle());
+                mailMessage.setSubject("All TODOs on task completed - " + task_title);
                 
                 String emailText = String.format(
-                        "Hello %s %s,\n\n" +
-                        "This is a quick notification to let you know that the following todo has been completed:\n\n" +
-                        "Todo name:\n%s\n\n" +
-                        "Description:\n%s\n\n" +
-                        "Great job keeping things up to date! ✅\n\n" +
+                        "Hello,\n\n" +
+                        "This is a quick notification to let you know that all todos have been completed!\n\n" +
+                        "Task name:\n%s\n\n" +
+                        "Great job! ✅\n\n" +
                         "Best regards,\n" +
-                        "Your Todo App Team",
-                        user.getFirstName(),
-                        user.getLastName(),
-                        todo.getTitle(),
-                        todo.getDescription()
+                        "Your Notification Service",
+                        task_title
                 );
 
                 mailMessage.setText(emailText);

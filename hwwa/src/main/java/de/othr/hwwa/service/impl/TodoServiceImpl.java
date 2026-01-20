@@ -1,5 +1,6 @@
 package de.othr.hwwa.service.impl;
 
+import de.othr.hwwa.event.AllTodosDoneEvent;
 import de.othr.hwwa.model.Task;
 import de.othr.hwwa.model.Todo;
 import de.othr.hwwa.model.User;
@@ -8,6 +9,8 @@ import de.othr.hwwa.repository.TaskRepositoryI;
 import de.othr.hwwa.repository.TodoRepositoryI;
 import de.othr.hwwa.service.EmailServiceI;
 import de.othr.hwwa.service.TodoServiceI;
+
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,19 +22,18 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class TodoServiceImpl extends SecurityServiceImpl implements TodoServiceI {
 
-    private final EmailServiceI emailService;
-
     private final TodoRepositoryI todoRepository;
     private final TaskAssignmentRepository taskAssignmentRepository;
     private final TaskRepositoryI taskRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public TodoServiceImpl(TodoRepositoryI todoRepository,
                            TaskAssignmentRepository taskAssignmentRepository,
-                           TaskRepositoryI taskRepository, EmailServiceI emailService) {
+                           TaskRepositoryI taskRepository, EmailServiceI emailService, ApplicationEventPublisher eventPublisher) {
         this.todoRepository = todoRepository;
         this.taskAssignmentRepository = taskAssignmentRepository;
         this.taskRepository = taskRepository;
-        this.emailService = emailService;
+        this.eventPublisher = eventPublisher;
     }
 
     private boolean isOwnerOrManager() {
@@ -77,22 +79,40 @@ public class TodoServiceImpl extends SecurityServiceImpl implements TodoServiceI
         return todoOpt;
     }
 
-    @Override
+@Override
     @Transactional
     public Todo save(Todo todo) {
+
         if (todo.getTask() == null) {
             throw new IllegalArgumentException("Todo.task must not be null");
         }
-        Long taskId = todo.getTask().getId();
+
+        Task task = todo.getTask();
+        Long taskId = task.getId();
         assertCanAccessTask(taskId);
 
-        boolean allDone = !todoRepository.existsByTaskIdAndDoneFalse(taskId);
+        Todo saved = todoRepository.save(todo);
 
+        String task_name = task.getTitle();
+
+        // 2️⃣ Check AFTER saving
+        boolean allDone =
+            !todoRepository.existsByTaskIdAndDoneFalse(taskId);
+
+        // 3️⃣ Extract needed data while session is open
         if (allDone) {
-            List<User> recipients = todo.getTask().getAssignedUsers();
-            emailService.sendTodoNotification(recipients, todo);
+            List<String> emails =
+                saved.getTask().getAssignedUsers()
+                     .stream()
+                     .map(User::getEmail)
+                     .toList();
+
+            // 4️⃣ Publish event (no async here)
+            eventPublisher.publishEvent(
+                new AllTodosDoneEvent(emails, task_name)
+            );
         }
-        return todoRepository.save(todo);
+        return saved;
     }
 
     @Override
