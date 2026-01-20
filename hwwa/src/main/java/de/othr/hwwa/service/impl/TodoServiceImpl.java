@@ -83,9 +83,12 @@ public class TodoServiceImpl extends SecurityServiceImpl implements TodoServiceI
         if (todo.getTask() == null) {
             throw new IllegalArgumentException("Todo.task must not be null");
         }
-        assertCanAccessTask(todo.getTask().getId());
+        Long taskId = todo.getTask().getId();
+        assertCanAccessTask(taskId);
 
-        if (todo.isDone()) {
+        boolean allDone = !todoRepository.existsByTaskIdAndDoneFalse(taskId);
+
+        if (allDone) {
             List<User> recipients = todo.getTask().getAssignedUsers();
             emailService.sendTodoNotification(recipients, todo);
         }
