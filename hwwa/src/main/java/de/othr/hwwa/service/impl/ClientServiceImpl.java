@@ -35,7 +35,11 @@ public class ClientServiceImpl extends SecurityServiceImpl implements ClientServ
 
     @Override
     public Client findById(Long id) {
-        return clientRepository.findById(id).orElse(null);
+        Client client = clientRepository.findById(id).orElse(null);
+        if (client == null || !client.isActive()) {
+            return null;
+        }
+        return client;
     }
 
     @Override
