@@ -15,22 +15,6 @@ import java.util.List;
 @Repository
 public interface ClientRepositoryI extends JpaRepository<Client, Long> {
     @Query("""
-        SELECT c FROM Client c
-        WHERE c.company.id = :companyId
-          AND c.active
-          AND (
-              :keyword IS NULL
-              OR LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
-              OR LOWER(c.email) LIKE LOWER(CONCAT('%', :keyword, '%'))
-          )
-    """)
-    Page<Client> search(
-            @Param("companyId") Long companyId,
-            @Param("keyword") String keyword,
-            Pageable pageable
-    );
-
-    @Query("""
         SELECT 
             c.id AS id,
             c.name AS name,
