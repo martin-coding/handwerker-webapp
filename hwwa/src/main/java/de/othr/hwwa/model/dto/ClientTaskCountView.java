@@ -11,4 +11,5 @@ public interface ClientTaskCountView {
 
     long getOpenTasks();
     long getCompletedTasks();
+    float getTotalAmount();
 }

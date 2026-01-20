@@ -1,6 +1,5 @@
 package de.othr.hwwa.model.dto;
 
-import de.othr.hwwa.model.Client;
 import de.othr.hwwa.model.Material;
 
 import java.util.List;
