@@ -10,5 +10,5 @@ import java.util.Optional;
 
 public interface InvoiceRepositoryI extends JpaRepository<Invoice,  Long> {
     public Optional<Invoice> findInvoiceByTask(Task task);
-    public List<Invoice> findByCompany(Company company);
+    public List<Invoice> findByCompanyId(long companyId);
 }

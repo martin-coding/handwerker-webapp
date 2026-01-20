@@ -48,8 +48,8 @@ public class InvoiceServiceImpl extends SecurityServiceImpl implements InvoiceSe
     }
 
     public List<InvoiceDto> getAllDoneInvoices(){
-        Company company = getCurrentCompany();
-        List<Invoice> invoices = invoiceRepository.findByCompany(company);
+        long companyId = getCurrentCompanyId();
+        List<Invoice> invoices = invoiceRepository.findByCompanyId(companyId);
         List<InvoiceDto> invoiceDtos = new ArrayList<>();
         for (Invoice invoice : invoices) {
             invoiceDtos.add(new InvoiceDto(invoice, invoiceWorkCostRepository.findInvoiceWorkCostByInvoice(invoice), invoiceMaterialRepository.findInvoiceMaterialByInvoice(invoice)));
@@ -146,5 +146,19 @@ public class InvoiceServiceImpl extends SecurityServiceImpl implements InvoiceSe
         catch(Exception e){
             System.out.println("Fehler beim Erstellen der PDF: " + e.getMessage());
         }
+    }
+
+    public InvoiceDto getInvoice(long invoiceId){
+        long companyId = getCurrentCompanyId();
+        Invoice invoice = invoiceRepository.findById(invoiceId)
+                .orElseThrow(() ->
+                        new InvoiceDoesNotExistException("Invoice with this id does not exist")
+                );
+        if (!invoice.getCompany().getId().equals(companyId)){
+            throw new IllegalArgumentException("Api user has not the rights to access this invoice");
+        }
+        List<InvoiceWorkCost> workCosts = invoiceWorkCostRepository.findInvoiceWorkCostByInvoice(invoice);
+        List<InvoiceMaterial> invoiceMaterials = invoiceMaterialRepository.findInvoiceMaterialByInvoice(invoice);
+        return new InvoiceDto(invoice, workCosts, invoiceMaterials);
     }
 }
