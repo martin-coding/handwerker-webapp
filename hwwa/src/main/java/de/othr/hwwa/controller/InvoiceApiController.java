@@ -1,10 +1,11 @@
 package de.othr.hwwa.controller;
 
-import de.othr.hwwa.config.JwtAuthenticationToken;
+import de.othr.hwwa.exceptions.InvoiceDoesNotExistException;
 import de.othr.hwwa.model.dto.InvoiceDto;
-import de.othr.hwwa.service.InvoiceApiServiceI;
-import org.springframework.security.core.Authentication;
+import de.othr.hwwa.service.InvoiceServiceI;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -12,27 +13,27 @@ import java.util.List;
 @RequestMapping("/api/invoices")
 public class InvoiceApiController {
 
-    private final InvoiceApiServiceI invoiceApiService;
+    private final InvoiceServiceI invoiceService;
 
-    public InvoiceApiController(InvoiceApiServiceI invoiceApiService) {
-        this.invoiceApiService = invoiceApiService;
+    public InvoiceApiController(InvoiceServiceI invoiceService) {
+        this.invoiceService = invoiceService;
     }
 
     @GetMapping
-    public List<InvoiceDto> getInvoices(Authentication authentication) {
-
-        Long companyId =
-                ((JwtAuthenticationToken) authentication).getCompanyId();
-
-        return invoiceApiService.apiGetAllCompanyInvoices(companyId);
+    public List<InvoiceDto> getInvoices() {
+        return invoiceService.getAllDoneInvoices();
     }
 
     @GetMapping("/{invoiceId}")
-    public InvoiceDto getInvoice(@PathVariable long invoiceId, Authentication authentication) {
+    public InvoiceDto getInvoice(@PathVariable long invoiceId) {
+        try {
+            return invoiceService.getInvoice(invoiceId);
+        } catch (InvoiceDoesNotExistException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invoice does not exist");
+        }
+        catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You have no rights to access this invoice");
+        }
 
-        Long companyId =
-                ((JwtAuthenticationToken) authentication).getCompanyId();
-
-        return invoiceApiService.apiGetInvoice(companyId, invoiceId);
     }
 }
