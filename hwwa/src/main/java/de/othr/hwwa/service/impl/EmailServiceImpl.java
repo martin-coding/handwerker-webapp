@@ -1,7 +1,5 @@
 package de.othr.hwwa.service.impl;
 
-import de.othr.hwwa.model.EmailDetails;
-import de.othr.hwwa.model.Todo;
 import de.othr.hwwa.model.User;
 import de.othr.hwwa.model.dto.InvoiceDto;
 import de.othr.hwwa.service.EmailServiceI;

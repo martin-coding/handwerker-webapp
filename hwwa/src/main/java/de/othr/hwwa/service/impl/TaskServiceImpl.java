@@ -6,7 +6,6 @@ import de.othr.hwwa.model.dto.TaskUpdateDto;
 import de.othr.hwwa.repository.*;
 import de.othr.hwwa.service.GeocodingServiceI;
 import de.othr.hwwa.service.TaskServiceI;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -29,10 +28,8 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
     private final CommentRepositoryI commentRepository;
     private final MaterialRepositoryI materialRepository;
     private final InvoiceRepositoryI invoiceRepository;
-    private final CoordinatesRepositoryI coordinatesRepository;
     private final GeocodingServiceI geocodingService;
 
-    @Autowired
     public TaskServiceImpl(TaskRepositoryI taskRepository,
                            TaskAssignmentRepository taskAssignmentRepository,
                            ClientRepositoryI clientRepository,
@@ -41,7 +38,6 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
                            CommentRepositoryI commentRepository,
                            MaterialRepositoryI materialRepository,
                            InvoiceRepositoryI invoiceRepository,
-                           CoordinatesRepositoryI coordinatesRepository,
                            GeocodingServiceI geocodingService) {
         this.taskRepository = taskRepository;
         this.taskAssignmentRepository = taskAssignmentRepository;
@@ -51,7 +47,6 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
         this.commentRepository = commentRepository;
         this.materialRepository = materialRepository;
         this.invoiceRepository = invoiceRepository;
-        this.coordinatesRepository = coordinatesRepository;
         this.geocodingService = geocodingService;
     }
 
