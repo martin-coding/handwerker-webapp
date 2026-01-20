@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import de.othr.hwwa.model.Task;
 import de.othr.hwwa.model.TaskStatus;
-import de.othr.hwwa.service.EmployeeServiceI;
+import de.othr.hwwa.model.dto.EmployeeTaskDto;
+import de.othr.hwwa.service.DashboardServiceI;
 import de.othr.hwwa.service.TaskServiceI;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,16 +24,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
-    private final EmployeeServiceI employeeService;
+    private final DashboardServiceI dashboardService;
     private final TaskServiceI taskService;
 
-    public DashboardController(EmployeeServiceI employeeService,
+    public DashboardController(DashboardServiceI dashboardService,
                                TaskServiceI taskService) {
-        this.employeeService = employeeService;
+        this.dashboardService = dashboardService;
         this.taskService = taskService;
     }
 
-    @GetMapping
+    @GetMapping("/tasks")
     public String showDashboard(
             @RequestParam(defaultValue = "present") String tab,
             @RequestParam(defaultValue = "0") int page,
@@ -84,7 +85,31 @@ public class DashboardController {
         model.addAttribute("taskCountCanceled",
                 taskService.countByStatus(TaskStatus.CANCELED));
 
-        return "dashboard";
+        return "dashboard-task";
+    }
+
+    @GetMapping("/employee")
+    public String dashboard(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword,
+            Model model
+    ) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("assignedAt").descending());
+
+        Page<EmployeeTaskDto> taskPage =
+                dashboardService.getEmployeeTaskOverview(keyword, pageable);
+
+        model.addAttribute("taskPage", taskPage);
+        model.addAttribute("currentPage", taskPage.getNumber());
+        model.addAttribute("totalPages", taskPage.getTotalPages());
+        model.addAttribute("pageSize", taskPage.getSize());
+        model.addAttribute("search", keyword);
+
+        model.addAttribute("workTimes",
+                dashboardService.getEmployeeWorkTimes());
+
+        return "dashboard-employee";
     }
 }
-
