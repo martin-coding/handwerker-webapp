@@ -27,139 +27,134 @@
     <div class="container-xl py-4">
 
         <!-- Page heading -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Dashboard</h1>
+        <div class="page-header mb-4">
+            <div>
+                <h1>Dashboard</h1>
+                <P>Aufgabenübersicht</P>
+            </div>
         </div>
 
         <!-- Aufgabenübersicht -->
+
         <div class="card shadow-sm">
-            <div class="card-header">
-                <h5 class="mb-0">Aufgabenübersicht</h5>
-            </div>
+            <!-- Tabs -->
+            <ul class="nav nav-tabs mb-3 mt-3">
+                <li class="nav-item ms-3">
+                    <a class="nav-link"
+                        th:classappend="${activeTab == 'present'} ? 'active'"
+                        th:href="@{/dashboard(
+                            tab='present',
+                            page=0,
+                            sort=${sort},
+                            dir=${dir}
+                        )}">
+                        Aktuelle Aufgaben
+                    </a>
+                </li>
 
-            <div class="card-body">
+                <li class="nav-item">
+                    <a class="nav-link"
+                        th:classappend="${activeTab == 'past'} ? 'active'"
+                        th:href="@{/dashboard(
+                            tab='past',
+                            page=0,
+                            sort=${sort},
+                            dir=${dir}
+                        )}">
+                        Abgeschlossene Aufgaben
+                    </a>
+                </li>
+            </ul>
 
-                <!-- Tabs -->
-                <ul class="nav nav-tabs mb-3">
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           th:classappend="${activeTab == 'present'} ? 'active'"
-                           th:href="@{/dashboard(
-                                tab='present',
-                                page=0,
-                                sort=${sort},
-                                dir=${dir}
-                           )}">
-                            Aktuelle Aufgaben
-                        </a>
-                    </li>
+            <!-- Table -->
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Aufgabe</th>
+                        <th>Ersteller</th>
+                        <th>Status</th>
+                        <th th:text="${activeTab == 'present' ? 'Start' : 'Abgeschlossen am'}"></th>
+                        <th class="text-center">Details</th>
+                    </tr>
+                </thead>
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           th:classappend="${activeTab == 'past'} ? 'active'"
-                           th:href="@{/dashboard(
-                                tab='past',
-                                page=0,
-                                sort=${sort},
-                                dir=${dir}
-                           )}">
-                            Abgeschlossene Aufgaben
-                        </a>
-                    </li>
-                </ul>
+                <tbody>
+                    <tr th:each="task : ${tasks}">
+                        <td th:text="${task.title}"></td>
 
-                <!-- Table -->
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>Aufgabe</th>
-                            <th>Ersteller</th>
-                            <th>Status</th>
-                            <th th:text="${activeTab == 'present' ? 'Start' : 'Abgeschlossen am'}"></th>
-                            <th class="text-center">Details</th>
-                        </tr>
-                    </thead>
+                        <td th:text="${task.createdBy.firstName + ' ' + task.createdBy.lastName}">
+                            Max Müller
+                        </td>
 
-                    <tbody>
-                        <tr th:each="task : ${tasks}">
-                            <td th:text="${task.title}"></td>
+                        <td>
+                            <span class="badge bg-info"
+                                    th:text="${task.status}">
+                            </span>
+                        </td>
 
-                            <td th:text="${task.createdBy.firstName + ' ' + task.createdBy.lastName}">
-                                Max Müller
-                            </td>
+                        <td th:text="${#temporals.format(
+                                activeTab == 'present'
+                                    ? task.startDateTime
+                                    : task.endDateTime,
+                                'dd.MM.yy'
+                        )}">
+                        </td>
 
-                            <td>
-                                <span class="badge bg-info"
-                                      th:text="${task.status}">
-                                </span>
-                            </td>
+                        <td class="text-center">
+                            <a class="btn btn-sm btn-outline-primary"
+                                th:href="@{/tasks/{id}(id=${task.id})}">
+                                View
+                            </a>
+                        </td>
+                    </tr>
 
-                            <td th:text="${#temporals.format(
-                                    activeTab == 'present'
-                                        ? task.startDateTime
-                                        : task.endDateTime,
-                                    'dd.MM.yy'
-                            )}">
-                            </td>
+                    <tr th:if="${#lists.isEmpty(tasks)}">
+                        <td colspan="5"
+                            class="text-center text-muted py-4"
+                            th:text="${activeTab == 'present'
+                                ? 'No active tasks'
+                                : 'No completed tasks'}">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-                            <td class="text-center">
-                                <a class="btn btn-sm btn-outline-primary"
-                                   th:href="@{/tasks/{id}(id=${task.id})}">
-                                    View
-                                </a>
-                            </td>
-                        </tr>
+            <!-- Pagination -->
+            <div class="card-footer d-flex justify-content-between align-items-center px-3 py-2">
+                <p class="text-muted-custom mb-0">
+                    <span th:text="${taskPage.number * taskPage.size + 1}">1</span>
+                    -
+                    <span th:text="${taskPage.number * taskPage.size + taskPage.numberOfElements}">8</span>
+                    of
+                    <span th:text="${taskPage.totalElements}">24</span>
+                    Tasks
+                </p>
 
-                        <tr th:if="${#lists.isEmpty(tasks)}">
-                            <td colspan="5"
-                                class="text-center text-muted py-4"
-                                th:text="${activeTab == 'present'
-                                    ? 'No active tasks'
-                                    : 'No completed tasks'}">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="d-flex gap-2">
+                    <a class="btn btn-outline-secondary btn-sm"
+                        th:text="#{previous}"
+                        th:href="@{/dashboard(
+                            tab=${activeTab},
+                            page=${taskPage.number - 1},
+                            sort=${sort},
+                            dir=${dir}
+                        )}"
+                        th:classappend="${taskPage.first} ? 'disabled'">
+                    </a>
 
-                <!-- Pagination -->
-                <div class="card-footer d-flex justify-content-between align-items-center px-3 py-2">
-                    <p class="text-muted-custom mb-0">
-                        <span th:text="${taskPage.number * taskPage.size + 1}">1</span>
-                        -
-                        <span th:text="${taskPage.number * taskPage.size + taskPage.numberOfElements}">8</span>
-                        of
-                        <span th:text="${taskPage.totalElements}">24</span>
-                        Tasks
-                    </p>
-
-                    <div class="d-flex gap-2">
-                        <a class="btn btn-outline-secondary btn-sm"
-                           th:text="#{previous}"
-                           th:href="@{/dashboard(
-                                tab=${activeTab},
-                                page=${taskPage.number - 1},
-                                sort=${sort},
-                                dir=${dir}
-                           )}"
-                           th:classappend="${taskPage.first} ? 'disabled'">
-                        </a>
-
-                        <a class="btn btn-outline-secondary btn-sm"
-                           th:text="#{next}"
-                           th:href="@{/dashboard(
-                                tab=${activeTab},
-                                page=${taskPage.number + 1},
-                                sort=${sort},
-                                dir=${dir}
-                           )}"
-                           th:classappend="${taskPage.last} ? 'disabled'">
-                        </a>
-                    </div>
+                    <a class="btn btn-outline-secondary btn-sm"
+                        th:text="#{next}"
+                        th:href="@{/dashboard(
+                            tab=${activeTab},
+                            page=${taskPage.number + 1},
+                            sort=${sort},
+                            dir=${dir}
+                        )}"
+                        th:classappend="${taskPage.last} ? 'disabled'">
+                    </a>
                 </div>
-
             </div>
         </div>
-
     </div>
 </main>
 
