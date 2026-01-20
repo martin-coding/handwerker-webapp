@@ -1,11 +1,15 @@
 package de.othr.hwwa.service.impl;
 
 import de.othr.hwwa.model.EmailDetails;
+import de.othr.hwwa.model.Todo;
 import de.othr.hwwa.model.User;
 import de.othr.hwwa.model.dto.InvoiceDto;
 import de.othr.hwwa.service.EmailServiceI;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
@@ -95,5 +99,37 @@ public class EmailServiceImpl implements EmailServiceI {
 
         helper.setText(msgBody);
         return helper;
+    }
+
+    @Async
+    @Override
+    public void sendTodoNotification(List<String> recipients, String task_title) {
+        for (String user_mail : recipients) {
+            try {
+                SimpleMailMessage mailMessage = new SimpleMailMessage();
+                mailMessage.setFrom(sender);
+                mailMessage.setTo(user_mail);
+
+                mailMessage.setSubject("All TODOs on task completed - " + task_title);
+                
+                String emailText = String.format(
+                        "Hello,\n\n" +
+                        "This is a quick notification to let you know that all todos have been completed!\n\n" +
+                        "Task name:\n%s\n\n" +
+                        "Great job! ✅\n\n" +
+                        "Best regards,\n" +
+                        "Your Notification Service",
+                        task_title
+                );
+
+                mailMessage.setText(emailText);
+
+                mailSender.send(mailMessage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("All mails sent successfully...");
     }
 }
