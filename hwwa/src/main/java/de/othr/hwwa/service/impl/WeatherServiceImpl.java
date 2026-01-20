@@ -36,7 +36,7 @@ public class WeatherServiceImpl implements WeatherServiceI {
                         .queryParam("lon", coordinates.getLon())
                         .queryParam("appid", weatherApiKey)
                         .queryParam("units", "metric")
-                        .queryParam("lang", locale.getCountry())
+                        .queryParam("lang", locale.getLanguage())
                         .queryParam("limit", 1)
                         .build())
                 .retrieve()

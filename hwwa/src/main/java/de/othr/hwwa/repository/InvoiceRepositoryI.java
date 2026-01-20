@@ -1,6 +1,5 @@
 package de.othr.hwwa.repository;
 
-import de.othr.hwwa.model.Company;
 import de.othr.hwwa.model.Invoice;
 import de.othr.hwwa.model.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
