@@ -12,9 +12,11 @@
     <link rel="stylesheet" th:href="@{/css/homepage.css}">
     <link rel="stylesheet" th:href="@{/css/cards.css}">
     <link rel="stylesheet" th:href="@{/css/button.css}">
-
+    <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}" defer></script>
 </head>
+
 <script th:src="@{/js/scripts.js}"></script>
+
 <body class="app-body">
 
 <!-- Include header -->
@@ -29,167 +31,129 @@
             <h1>Dashboard</h1>
         </div>
 
-        <!-- KPI Cards -->
-        <div class="row g-3 mb-4">
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h6 class="text-muted">Mitarbeiter gesamt</h6>
-                        <h3>12</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h6 class="text-muted">Aktive Aufgaben</h6>
-                        <h3>8</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h6 class="text-muted">Abgeschlossene Aufgaben (30 Tage)</h6>
-                        <h3>21</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mitarbeiter Übersicht -->
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header">
-                <h5 class="mb-0">Mitarbeiter – aktueller Status</h5>
-            </div>
-            <div class="card-body table-responsive">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Aktuelle Aufgabe</th>
-                            <th>Status</th>
-                            <th>Seit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Max Müller</td>
-                            <td>Elektroinstallation Baustelle A</td>
-                            <td><span class="badge bg-success">Arbeitet</span></td>
-                            <td>08:15</td>
-                        </tr>
-                        <tr>
-                            <td>Anna Schmidt</td>
-                            <td>Wartung Heizanlage</td>
-                            <td><span class="badge bg-warning">Pausiert</span></td>
-                            <td>09:30</td>
-                        </tr>
-                        <tr>
-                            <td>Tom Becker</td>
-                            <td>–</td>
-                            <td><span class="badge bg-secondary">Nicht eingeloggt</span></td>
-                            <td>–</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Arbeitszeiten -->
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header">
-                <h5 class="mb-0">Vergangene Arbeitszeiten</h5>
-            </div>
-            <div class="card-body table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Mitarbeiter</th>
-                            <th>Datum</th>
-                            <th>Arbeitszeit</th>
-                            <th>Projekt</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Max Müller</td>
-                            <td>15.01.2026</td>
-                            <td>8h 15min</td>
-                            <td>Baustelle A</td>
-                        </tr>
-                        <tr>
-                            <td>Anna Schmidt</td>
-                            <td>15.01.2026</td>
-                            <td>7h 45min</td>
-                            <td>Heizanlage Kunde X</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
         <!-- Aufgabenübersicht -->
         <div class="card shadow-sm">
             <div class="card-header">
                 <h5 class="mb-0">Aufgabenübersicht</h5>
             </div>
+
             <div class="card-body">
 
                 <!-- Tabs -->
-                <ul class="nav nav-tabs mb-3" role="tablist">
+                <ul class="nav nav-tabs mb-3">
                     <li class="nav-item">
-                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#currentTasks">
+                        <a class="nav-link"
+                           th:classappend="${activeTab == 'present'} ? 'active'"
+                           th:href="@{/dashboard(
+                                tab='present',
+                                page=0,
+                                sort=${sort},
+                                dir=${dir}
+                           )}">
                             Aktuelle Aufgaben
-                        </button>
+                        </a>
                     </li>
+
                     <li class="nav-item">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#completedTasks">
+                        <a class="nav-link"
+                           th:classappend="${activeTab == 'past'} ? 'active'"
+                           th:href="@{/dashboard(
+                                tab='past',
+                                page=0,
+                                sort=${sort},
+                                dir=${dir}
+                           )}">
                             Abgeschlossene Aufgaben
-                        </button>
+                        </a>
                     </li>
                 </ul>
 
-                <!-- Tab Content -->
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="currentTasks">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Aufgabe</th>
-                                    <th>Mitarbeiter</th>
-                                    <th>Status</th>
-                                    <th>Start</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Elektroinstallation Baustelle A</td>
-                                    <td>Max Müller</td>
-                                    <td><span class="badge bg-info">In Bearbeitung</span></td>
-                                    <td>15.01.2026</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- Table -->
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Aufgabe</th>
+                            <th>Ersteller</th>
+                            <th>Status</th>
+                            <th th:text="${activeTab == 'present' ? 'Start' : 'Abgeschlossen am'}"></th>
+                            <th class="text-center">Details</th>
+                        </tr>
+                    </thead>
 
-                    <div class="tab-pane fade" id="completedTasks">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Aufgabe</th>
-                                    <th>Mitarbeiter</th>
-                                    <th>Abgeschlossen am</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Wartung Heizanlage Kunde Y</td>
-                                    <td>Anna Schmidt</td>
-                                    <td>14.01.2026</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <tbody>
+                        <tr th:each="task : ${tasks}">
+                            <td th:text="${task.title}"></td>
+
+                            <td th:text="${task.createdBy.firstName + ' ' + task.createdBy.lastName}">
+                                Max Müller
+                            </td>
+
+                            <td>
+                                <span class="badge bg-info"
+                                      th:text="${task.status}">
+                                </span>
+                            </td>
+
+                            <td th:text="${#temporals.format(
+                                    activeTab == 'present'
+                                        ? task.startDateTime
+                                        : task.endDateTime,
+                                    'dd.MM.yy'
+                            )}">
+                            </td>
+
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-outline-primary"
+                                   th:href="@{/tasks/{id}(id=${task.id})}">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(tasks)}">
+                            <td colspan="5"
+                                class="text-center text-muted py-4"
+                                th:text="${activeTab == 'present'
+                                    ? 'No active tasks'
+                                    : 'No completed tasks'}">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="card-footer d-flex justify-content-between align-items-center px-3 py-2">
+                    <p class="text-muted-custom mb-0">
+                        <span th:text="${taskPage.number * taskPage.size + 1}">1</span>
+                        -
+                        <span th:text="${taskPage.number * taskPage.size + taskPage.numberOfElements}">8</span>
+                        of
+                        <span th:text="${taskPage.totalElements}">24</span>
+                        Tasks
+                    </p>
+
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-outline-secondary btn-sm"
+                           th:text="#{previous}"
+                           th:href="@{/dashboard(
+                                tab=${activeTab},
+                                page=${taskPage.number - 1},
+                                sort=${sort},
+                                dir=${dir}
+                           )}"
+                           th:classappend="${taskPage.first} ? 'disabled'">
+                        </a>
+
+                        <a class="btn btn-outline-secondary btn-sm"
+                           th:text="#{next}"
+                           th:href="@{/dashboard(
+                                tab=${activeTab},
+                                page=${taskPage.number + 1},
+                                sort=${sort},
+                                dir=${dir}
+                           )}"
+                           th:classappend="${taskPage.last} ? 'disabled'">
+                        </a>
                     </div>
                 </div>
 
@@ -200,7 +164,7 @@
 </main>
 
 <!-- Include footer -->
-
 <div th:insert="~{fragments/footer :: siteFooter}"></div>
+
 </body>
 </html>

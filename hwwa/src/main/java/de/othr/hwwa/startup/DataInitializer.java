@@ -3,7 +3,7 @@ package de.othr.hwwa.startup;
 import de.othr.hwwa.model.*;
 import de.othr.hwwa.model.jwt.ApiUser;
 import de.othr.hwwa.repository.*;
-import de.othr.hwwa.repository.UserRepositoryI;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -42,10 +42,11 @@ public class DataInitializer implements CommandLineRunner {
         Authority updateCompanyData = helper.createAuthority("updateCompanyData");
         Authority manageClients = helper.createAuthority("manageClients");
         Authority manageInvoices = helper.createAuthority("manageInvoices");
+        Authority manageDashboard = helper.createAuthority("manageDashboard");
 
         Role employee = helper.createRole("Employee", Set.of(tasks, basic));
-        Role manager = helper.createRole("Manager", Set.of(tasks, basic, manageClients));
-        Role owner = helper.createRole("Owner", Set.of(tasks, createUser, manageEmployees, basic, updateCompanyData, manageClients, manageInvoices));
+        Role manager = helper.createRole("Manager", Set.of(tasks, basic, manageClients, manageDashboard));
+        Role owner = helper.createRole("Owner", Set.of(tasks, createUser, manageEmployees, basic, updateCompanyData, manageClients, manageInvoices, manageDashboard));
 
         Company company = helper.createCompany("Schreinerei Sonnenschein", new Address("Sonnenweg 12", "München", "80331", "Deutschland"));
         Company company1 = helper.createCompany("Elektro Beier GmbH", new Address("Industriestraße 5", "München", "80995", "Deutschland"));

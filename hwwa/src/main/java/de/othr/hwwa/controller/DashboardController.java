@@ -1,9 +1,18 @@
 package de.othr.hwwa.controller;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import de.othr.hwwa.model.Task;
+import de.othr.hwwa.model.TaskStatus;
 import de.othr.hwwa.service.EmployeeServiceI;
 import de.othr.hwwa.service.TaskServiceI;
 
@@ -22,14 +31,48 @@ public class DashboardController {
         this.employeeService = employeeService;
         this.taskService = taskService;
     }
-    @GetMapping
-    public String showDashboard(Model model) {
 
-        // model.addAttribute("employees", employeeService.findAll());
-        // model.addAttribute("activeTasks", taskService.findActiveTasks());
-        // model.addAttribute("completedTasks", taskService.findCompletedTasks());
-        // model.addAttribute("workTimes", workTimeService.findLastWorkTimes());
+    @GetMapping
+    public String showDashboard(
+            @RequestParam(defaultValue = "present") String tab,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(defaultValue = "startDateTime") String sort,
+            @RequestParam(defaultValue = "asc") String dir,
+            Model model) {
+
+        Sort sortObj = dir.equalsIgnoreCase("desc")
+                ? Sort.by(sort).descending()
+                : Sort.by(sort).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sortObj);
+
+        List<TaskStatus> presentStatuses = List.of(
+            TaskStatus.PLANNED,
+            TaskStatus.IN_PROGRESS
+        );
+
+        List<TaskStatus> pastStatuses = List.of(
+            TaskStatus.DONE,
+            TaskStatus.CANCELED
+        );
+
+        List<TaskStatus> statuses =
+            tab.equals("past") ? pastStatuses : presentStatuses;
+
+        Page<Task> taskPage = taskService.findAllTasks(pageable, statuses);
+
+        model.addAttribute("tasks", taskPage.getContent());
+        model.addAttribute("taskPage", taskPage);
+
+        model.addAttribute("currentPage", taskPage.getNumber());
+        model.addAttribute("totalPages", taskPage.getTotalPages());
+
+        model.addAttribute("sort", sort);
+        model.addAttribute("dir", dir);
+        model.addAttribute("activeTab", tab);
 
         return "dashboard";
     }
 }
+

@@ -7,10 +7,13 @@ import de.othr.hwwa.repository.*;
 import de.othr.hwwa.service.GeocodingServiceI;
 import de.othr.hwwa.service.TaskServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -356,5 +359,11 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
         Address address = task.getClient().getAddress();
 
         return geocodingService.getOrCreate(address);
+    }
+
+    @Override
+    public Page<Task> findAllTasks(Pageable pageable, Collection<TaskStatus> statuses) {
+        Long companyId = getCurrentCompanyId();
+        return taskRepository.findByCompanyIdAndDeletedFalseAndStatusIn(companyId, statuses, pageable);
     }
 }

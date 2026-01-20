@@ -4,10 +4,16 @@ import de.othr.hwwa.model.*;
 import de.othr.hwwa.model.dto.TaskCreateDto;
 import de.othr.hwwa.model.dto.TaskUpdateDto;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 public interface TaskServiceI {
+
+    Page<Task> findAllTasks(Pageable pageable, Collection<TaskStatus> statuses);
 
     void delete(Task task);
 
