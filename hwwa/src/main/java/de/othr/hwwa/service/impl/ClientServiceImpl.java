@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 import de.othr.hwwa.model.Client;
 import de.othr.hwwa.model.Company;
+import de.othr.hwwa.model.dto.ClientTaskCountView;
 import de.othr.hwwa.service.ClientServiceI;
 import de.othr.hwwa.repository.ClientRepositoryI;
 import de.othr.hwwa.repository.CompanyRepositoryI;
@@ -32,10 +33,14 @@ public class ClientServiceImpl extends SecurityServiceImpl implements ClientServ
     }
 
     public Page<Client> search(String keyword, Pageable pageable) {
-        Long currentUserId = getCurrentUserId();
-        Company company = companyRepository.getCompanyById(currentUserId);
-        Long companyId = company.getId();
+        Long companyId = getCurrentCompanyId();
         return clientRepository.search(companyId, keyword, pageable);
+    }
+
+    @Override
+    public Page<ClientTaskCountView> searchWithTaskCounts(String keyword, Pageable pageable) {
+        Long companyId = getCurrentCompanyId();
+        return clientRepository.findClientsWithTaskCounts(companyId, keyword, pageable);
     }
 
     @Override
@@ -52,6 +57,13 @@ public class ClientServiceImpl extends SecurityServiceImpl implements ClientServ
         Company company = companyRepository.getCompanyById(currentUserId);
         client.setCompany(company);
         return clientRepository.save(client);
+    }
+
+    @Override
+    public void softDeleteById(Long id) {
+        Client client = clientRepository.findById(id).orElse(null);
+        client.setActive(false);
+        clientRepository.save(client);
     }
 
     @Override
