@@ -3,17 +3,20 @@ package de.othr.hwwa.controller;
 import de.othr.hwwa.config.MyUserDetails;
 import de.othr.hwwa.model.Client;
 import de.othr.hwwa.model.Company;
+import de.othr.hwwa.model.Coordinates;
 import de.othr.hwwa.model.Task;
 import de.othr.hwwa.model.TaskStatus;
 import de.othr.hwwa.model.User;
 import de.othr.hwwa.model.dto.CommentCreateDto;
 import de.othr.hwwa.model.dto.TaskCreateDto;
 import de.othr.hwwa.model.dto.TaskUpdateDto;
+import de.othr.hwwa.model.dto.WeatherDto;
 import de.othr.hwwa.repository.ClientRepositoryI;
 import de.othr.hwwa.service.CommentServiceI;
 import de.othr.hwwa.service.MaterialServiceI;
 import de.othr.hwwa.service.TaskServiceI;
 import de.othr.hwwa.service.TodoServiceI;
+import de.othr.hwwa.service.WeatherServiceI;
 import jakarta.validation.Valid;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,16 +35,18 @@ public class TaskController {
     private final MaterialServiceI materialService;
     private final ClientRepositoryI clientRepository;
     private final CommentServiceI commentService;
+    private final WeatherServiceI weatherService;
 
     public TaskController(TaskServiceI taskService,
                           TodoServiceI todoService,
                           MaterialServiceI materialService,
-                          ClientRepositoryI clientRepository, CommentServiceI commentService) {
+                          ClientRepositoryI clientRepository, CommentServiceI commentService, WeatherServiceI weatherService) {
         this.taskService = taskService;
         this.todoService = todoService;
         this.materialService = materialService;
         this.clientRepository = clientRepository;
         this.commentService = commentService;
+        this.weatherService = weatherService;
     }
 
     private void validateTimeRange(TaskCreateDto dto, BindingResult bindingResult) {
@@ -150,6 +155,9 @@ public class TaskController {
     public String taskDetails(@PathVariable long id, Model model) {
         Task task = taskService.getAssignedTaskById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found " + id));
+        
+        Coordinates coordinates = taskService.getTaskCoordinates(task.getId());
+        WeatherDto weather = weatherService.getWeather(coordinates);
 
         TaskUpdateDto updateDto = new TaskUpdateDto();
         updateDto.setTitle(task.getTitle());
@@ -170,6 +178,7 @@ public class TaskController {
         model.addAttribute("comments", commentService.getCommentsForTask(id));
         model.addAttribute("commentCreate", new CommentCreateDto());
         model.addAttribute("currentUserId", getCurrentUser().getId());
+        model.addAttribute("weather", weather);
 
         return "task/task_details";
     }
