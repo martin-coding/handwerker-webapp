@@ -13,7 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/cards.css}">
 </head>
 
-<body class="d-flex flex-column min-vh-100 bg-light">
+<body class="d-flex flex-column min-vh-100 bg-body">
 
 <div th:insert="~{fragments/header :: siteHeader}"></div>
 
@@ -90,7 +90,7 @@
         <div th:if="${tasks != null and !tasks.isEmpty()}" class="card shadow-sm">
             <div class="table-responsive">
                 <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
+                    <thead class="bg-body-tertiary">
                     <tr>
                         <th style="width: 90px;">ID</th>
                         <th>Titel</th>

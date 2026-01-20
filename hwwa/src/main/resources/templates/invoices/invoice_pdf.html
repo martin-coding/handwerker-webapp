@@ -14,116 +14,116 @@
     <link rel="stylesheet" href="/css/invoice.css"/>
 </head>
 
-<body class="app-body">
+<body class="app-body bg-body">
 
 <div class="app-main-invoice">
     <main class="flex-grow-1">
         <div class="invoice-container">
 
-                <!-- Top section (display only, hidden fields already posted) -->
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4 th:text="${invoice.companyName}"></h4>
-                        <p>
-                            <span th:text="${invoice.companyAddress.street}"></span><br/>
-                            <span th:text="${invoice.companyAddress.city + ', ' + invoice.companyAddress.postalCode}"></span><br/>
-                            <span th:text="${invoice.createdByEmail}"></span>
-                        </p>
-                    </div>
-
-                    <div class="col-md-6 text-end">
-                        <h3 th:text="#{invoice}"></h3>
-                        <p>
-                            <strong th:text="#{invoice_reference}"></strong>
-                            <span th:text="'INV-' + ${invoice.id}"></span>
-                        </p>
-                        <p>
-                            <strong th:text="#{invoice_issued}"> </strong>
-                            <span th:text="${invoice.invoiceCreationDate}"></span>
-                            <br/>
-                            <strong th:text="#{invoice_due}"></strong>
-                            <span th:text="${invoice.invoiceIssuedDate}"></span>
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Bill To -->
-                <div class="mt-5">
-                    <h5 th:text="#{bill_to}"></h5>
+            <!-- Top section (display only, hidden fields already posted) -->
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 th:text="${invoice.companyName}"></h4>
                     <p>
-                        <span th:text="${invoice.clientName}"></span><br/>
-                        <span th:text="${invoice.clientAddress.street}"></span><br/>
-                        <span th:text="${invoice.clientAddress.city + ', ' + invoice.clientAddress.postalCode}"></span>
+                        <span th:text="${invoice.companyAddress.street}"></span><br/>
+                        <span th:text="${invoice.companyAddress.city + ', ' + invoice.companyAddress.postalCode}"></span><br/>
+                        <span th:text="${invoice.createdByEmail}"></span>
                     </p>
                 </div>
 
-                <!-- Job Reference -->
-                <div class="mt-5">
+                <div class="col-md-6 text-end">
+                    <h3 th:text="#{invoice}"></h3>
                     <p>
-                        <strong th:text="#{job_reference}"></strong>
-                        <span th:text="${invoice.taskReference}"></span>
+                        <strong th:text="#{invoice_reference}"></strong>
+                        <span th:text="'INV-' + ${invoice.id}"></span>
+                    </p>
+                    <p>
+                        <strong th:text="#{invoice_issued}"> </strong>
+                        <span th:text="${invoice.invoiceCreationDate}"></span>
+                        <br/>
+                        <strong th:text="#{invoice_due}"></strong>
+                        <span th:text="${invoice.invoiceIssuedDate}"></span>
                     </p>
                 </div>
+            </div>
 
-                <!-- Work Details -->
-                <div class="mt-4" style="padding-top: 30px;">
-                    <h3 th:text="#{work_details}"></h3>
-                    <table class="table invoice-table-transparent" id="workTable">
-                        <thead>
-                        <tr>
-                            <th style="width:50%" th:text="#{description}"></th>
-                            <th style="width:15%" th:text="#{hours}"></th>
-                            <th style="width:15%" th:text="#{rate}"></th>
-                            <th style="width:20%" th:text="#{total}"></th>
-                        </tr>
-                        </thead>
+            <!-- Bill To -->
+            <div class="mt-5">
+                <h5 th:text="#{bill_to}"></h5>
+                <p>
+                    <span th:text="${invoice.clientName}"></span><br/>
+                    <span th:text="${invoice.clientAddress.street}"></span><br/>
+                    <span th:text="${invoice.clientAddress.city + ', ' + invoice.clientAddress.postalCode}"></span>
+                </p>
+            </div>
+
+            <!-- Job Reference -->
+            <div class="mt-5">
+                <p>
+                    <strong th:text="#{job_reference}"></strong>
+                    <span th:text="${invoice.taskReference}"></span>
+                </p>
+            </div>
+
+            <!-- Work Details -->
+            <div class="mt-4" style="padding-top: 30px;">
+                <h3 th:text="#{work_details}"></h3>
+                <table class="table invoice-table-transparent" id="workTable">
+                    <thead class="bg-body-tertiary">
+                    <tr>
+                        <th style="width:50%" th:text="#{description}"></th>
+                        <th style="width:15%" th:text="#{hours}"></th>
+                        <th style="width:15%" th:text="#{rate}"></th>
+                        <th style="width:20%" th:text="#{total}"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="workCost : ${invoice.workCosts}">
+                        <td th:text="${workCost.description}">Painting walls</td>
+                        <td th:text="${workCost.hoursWorked}">10</td>
+                        <td th:text="${workCost.hourlyRate}">50</td>
+                        <td th:text="${workCost.total}">500</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Materials Used -->
+            <div class="mt-4" style="padding-top: 30px;">
+                <h3 th:text="#{materials_used}"></h3>
+                <table class="table invoice-table-transparent" id="materialTable">
+                    <thead class="bg-body-tertiary">
+                    <tr>
+                        <th style="width:50%" th:text="#{description}"></th>
+                        <th style="width:15%" th:text="#{quantity}"></th>
+                        <th style="width:15%" th:text="#{unit_price}"></th>
+                        <th style="width:20%" th:text="#{total}"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="material : ${invoice.materials}">
+                        <td th:text="${material.description}">Paint</td>
+                        <td th:text="${material.count}">5</td>
+                        <td th:text="${material.pricePerStock}">20</td>
+                        <td th:text="${material.total}">100</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row mt-4" style="padding-top: 30px;">
+                <div class="col-md-6"></div>
+                <div class="col-md-6 text-end">
+                    <table class="table invoice-table-transparent">
                         <tbody>
-                        <tr th:each="workCost : ${invoice.workCosts}">
-                            <td th:text="${workCost.description}">Painting walls</td>
-                            <td th:text="${workCost.hoursWorked}">10</td>
-                            <td th:text="${workCost.hourlyRate}">50</td>
-                            <td th:text="${workCost.total}">500</td>
+                        <tr class="invoice-total-row" >
+                            <td th:text="#{total}"></td>
+                            <td th:text="${invoice.total}">$805</td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-
-                <!-- Materials Used -->
-                <div class="mt-4" style="padding-top: 30px;">
-                    <h3 th:text="#{materials_used}"></h3>
-                    <table class="table invoice-table-transparent" id="materialTable">
-                        <thead>
-                        <tr>
-                            <th style="width:50%" th:text="#{description}"></th>
-                            <th style="width:15%" th:text="#{quantity}"></th>
-                            <th style="width:15%" th:text="#{unit_price}"></th>
-                            <th style="width:20%" th:text="#{total}"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="material : ${invoice.materials}">
-                            <td th:text="${material.description}">Paint</td>
-                            <td th:text="${material.count}">5</td>
-                            <td th:text="${material.pricePerStock}">20</td>
-                            <td th:text="${material.total}">100</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="row mt-4" style="padding-top: 30px;">
-                    <div class="col-md-6"></div>
-                    <div class="col-md-6 text-end">
-                        <table class="table invoice-table-transparent">
-                            <tbody>
-                            <tr class="invoice-total-row" >
-                                <td th:text="#{total}"></td>
-                                <td th:text="${invoice.total}">$805</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            </div>
         </div>
     </main>
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" class="light" xmlns:th="http://www.thymeleaf.org">
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Todo hinzufügen</title>
@@ -12,7 +12,7 @@
   <link rel="stylesheet" th:href="@{/css/button.css}">
 </head>
 
-<body class="app-body">
+<body class="app-body bg-body">
 <div th:insert="~{fragments/header :: siteHeader}"></div>
 
 <main class="flex-grow-1 app-main">
@@ -62,7 +62,7 @@
 
         <div class="button-right-orientated">
           <div>
-            <button type="button" class="btn btn-light me-2" onclick="history.back()">Abbrechen</button>
+            <button type="button" class="btn btn-outline-secondary me-2" onclick="history.back()">Abbrechen</button>
             <button type="submit" class="btn btn-primary">Speichern</button>
           </div>
         </div>

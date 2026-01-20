@@ -16,12 +16,12 @@
 
                 <!-- INVOICES HEADER -->
                 <div class="mb-2">
-                    <h6 class="text-dark text-uppercase" th:text="#{tasks_done}"></h6>
+                    <h6 class="text-body text-uppercase" th:text="#{tasks_done}"></h6>
                 </div>
                 <div th:each="task : ${tasks}" class="mb-3">
                     <a th:href="@{/invoices/{id}(id=${task.id})}"
-                       class="d-block text-decoration-none text-dark">
-                        <div class="border rounded p-2 bg-white">
+                       class="d-block text-decoration-none text-body">
+                        <div class="border rounded p-2 bg-body-tertiary">
                             <div class="d-flex justify-content-between align-items-start">
                                 <span class="fw-bold" th:text="'#' + ${task.id}">#402</span>
                                 <small class="text-muted" th:text="${task.client}">Smith Residence</small>
@@ -36,14 +36,14 @@
 
                 <!-- INVOICES HEADER -->
                 <div class="mt-4 mb-2">
-                    <h6 class="text-dark text-uppercase" th:text="#{invoices}"></h6>
+                    <h6 class="text-body text-uppercase" th:text="#{invoices}"></h6>
                 </div>
 
                 <!-- INVOICES -->
                 <div th:each="invoice : ${invoices}" class="mb-3">
                     <a th:href="@{/invoices/{id}(id=${invoice.taskId})}"
-                       class="d-block text-decoration-none text-dark">
-                        <div class="border rounded p-2 bg-white">
+                       class="d-block text-decoration-none text-body">
+                        <div class="border rounded p-2 bg-body-tertiary">
                             <div class="d-flex justify-content-between align-items-start">
                                 <span class="fw-bold"
                                       th:text="${invoice.id}">

@@ -1,9 +1,13 @@
 package de.othr.hwwa.controller.api;
 
+import de.othr.hwwa.config.MyUserDetails;
 import de.othr.hwwa.model.Task;
+import de.othr.hwwa.model.Vacation;
 import de.othr.hwwa.model.dto.CalendarEventDto;
 import de.othr.hwwa.service.CalendarServiceI;
 import de.othr.hwwa.service.HolidayServiceI;
+import de.othr.hwwa.service.VacationServiceI;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,11 +23,24 @@ public class CalendarEventsController {
 
     private final CalendarServiceI calendarService;
     private final HolidayServiceI holidayService;
+    private final VacationServiceI vacationService;
 
     public CalendarEventsController(CalendarServiceI calendarService,
-                                    HolidayServiceI holidayService) {
+                                    HolidayServiceI holidayService,
+                                    VacationServiceI vacationService) {
         this.calendarService = calendarService;
         this.holidayService = holidayService;
+        this.vacationService = vacationService;
+    }
+
+    private Long getCurrentUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ((MyUserDetails) principal).getLoggedInUser().getId();
+    }
+
+    private Long getCurrentCompanyId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ((MyUserDetails) principal).getLoggedInUser().getCompany().getId();
     }
 
     @GetMapping("/events")
@@ -57,6 +74,25 @@ public class CalendarEventsController {
                     true,
                     null,
                     "#6c757d"
+            ));
+        }
+
+        List<Vacation> vacations = vacationService.getVacationsForUser(
+                getCurrentCompanyId(),
+                getCurrentUserId(),
+                range.startDateInclusive(),
+                range.endDateExclusive()
+        );
+
+        for (Vacation v : vacations) {
+            out.add(new CalendarEventDto(
+                    "vacation-" + v.getId(),
+                    "Urlaub",
+                    v.getStartDate().toString(),
+                    v.getEndDateExclusive().toString(),
+                    true,
+                    null,
+                    "#198754"
             ));
         }
 

@@ -15,7 +15,7 @@
 
 </head>
 <script th:src="@{/js/scripts.js}"></script>
-<body class="app-body">
+<body class="app-body bg-body">
 
 <!-- Include header -->
 <div th:insert="~{fragments/header :: siteHeader}"></div>
@@ -105,8 +105,8 @@
                     </div>
 
                     <div class="d-flex gap-3 align-items-center mt-3 mt-md-0">
-                        <span class="badge bg-light-custom text-dark">Pending</span>
-                        <button class="btn btn-sm btn-light icon-btn"><span class="material-symbols-outlined">chevron_right</span></button>
+                        <span class="badge bg-body-tertiary text-body">Pending</span>
+                        <button class="btn btn-sm btn-outline-secondary icon-btn"><span class="material-symbols-outlined">chevron_right</span></button>
                     </div>
                 </div>
 
@@ -127,8 +127,8 @@
                     </div>
 
                     <div class="d-flex gap-3 align-items-center mt-3 mt-md-0">
-                        <span class="badge bg-light-custom text-dark">Unassigned</span>
-                        <button class="btn btn-sm btn-light icon-btn"><span class="material-symbols-outlined">chevron_right</span></button>
+                        <span class="badge bg-body-tertiary text-body">Unassigned</span>
+                        <button class="btn btn-sm btn-outline-secondary icon-btn"><span class="material-symbols-outlined">chevron_right</span></button>
                     </div>
                 </div>
 
@@ -150,7 +150,7 @@
 
                     <div class="d-flex gap-3 align-items-center mt-3 mt-md-0">
                         <span class="badge bg-success-custom text-white">Completed</span>
-                        <button class="btn btn-sm btn-light icon-btn"><span class="material-symbols-outlined">chevron_right</span></button>
+                        <button class="btn btn-sm btn-outline-secondary icon-btn"><span class="material-symbols-outlined">chevron_right</span></button>
                     </div>
                 </div>
             </div>

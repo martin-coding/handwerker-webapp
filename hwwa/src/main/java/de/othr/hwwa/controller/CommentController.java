@@ -32,7 +32,7 @@ public class CommentController {
             return "redirect:/tasks/" + taskId;
         }
 
-        commentService.createComment(taskId, dto.getText());
+        commentService.createComment(taskId, dto.getText(), dto.getNotificationScope());
         return "redirect:/tasks/" + taskId;
     }
 
