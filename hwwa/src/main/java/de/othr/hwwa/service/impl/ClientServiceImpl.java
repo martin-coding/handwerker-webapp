@@ -28,16 +28,6 @@ public class ClientServiceImpl extends SecurityServiceImpl implements ClientServ
     }
 
     @Override
-    public Page<Client> findAll(Pageable pageable) {
-        return clientRepository.findAll(pageable);
-    }
-
-    public Page<Client> search(String keyword, Pageable pageable) {
-        Long companyId = getCurrentCompanyId();
-        return clientRepository.search(companyId, keyword, pageable);
-    }
-
-    @Override
     public Page<ClientTaskCountView> searchWithTaskCounts(String keyword, Pageable pageable) {
         Long companyId = getCurrentCompanyId();
         return clientRepository.findClientsWithTaskCounts(companyId, keyword, pageable);
@@ -64,10 +54,5 @@ public class ClientServiceImpl extends SecurityServiceImpl implements ClientServ
         Client client = clientRepository.findById(id).orElse(null);
         client.setActive(false);
         clientRepository.save(client);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        clientRepository.deleteById(id);
     }
 }

@@ -8,10 +8,6 @@ import de.othr.hwwa.model.dto.ClientTaskCountView;
 
 public interface ClientServiceI {
 
-    Page<Client> findAll(Pageable pageable);
-
-    Page<Client> search(String keyword, Pageable pageable);
-
     Page<ClientTaskCountView> searchWithTaskCounts(String keyword, Pageable pageable);
 
     Client findById(Long id);
@@ -19,6 +15,4 @@ public interface ClientServiceI {
     Client save(Client client);
 
     void softDeleteById(Long id);
-
-    void deleteById(Long id);
 }
