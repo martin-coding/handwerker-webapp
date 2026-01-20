@@ -163,46 +163,36 @@
 
         <div class="card shadow-sm mb-4">
           <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <strong>Wetter am Arbeitsort</strong>
-            <small class="text-muted">Platzhalter</small>
+            <strong><span th:text="#{weather_header}"></span></strong>
           </div>
 
           <div class="card-body">
             <div class="bg-light border rounded p-4" style="min-height: 200px;">
               <div class="d-flex justify-content-between align-items-start gap-3">
                 <div>
-                  <div class="fw-semibold">Wetterdaten</div>
-                  <div class="text-muted small">Komponente kommt später hier rein</div>
+                  <div class="fw-semibold" th:text="#{weather_data}"></div>
                 </div>
-                <span class="badge text-bg-secondary">Bald verfügbar</span>
+                <span class="badge text-bg-secondary" th:text="#{weather_current}"></span>
               </div>
 
               <hr class="my-3">
 
               <div class="row g-3">
                 <div class="col-md-4">
-                  <div class="text-muted small mb-1">Ort</div>
-                  <div class="placeholder-glow">
-                    <span class="placeholder col-10"></span>
-                  </div>
+                  <div class="text-muted small mb-1" th:text="#{location}"></div>
+                  <div th:text="${weather.city}"></div>
                 </div>
                 <div class="col-md-4">
-                  <div class="text-muted small mb-1">Temperatur</div>
-                  <div class="placeholder-glow">
-                    <span class="placeholder col-6"></span>
-                  </div>
+                  <div class="text-muted small mb-1" th:text="#{temperature}"></div>
+                  <div><span th:text="${weather.temperature}"></span> °C</div>
                 </div>
                 <div class="col-md-4">
-                  <div class="text-muted small mb-1">Niederschlag</div>
-                  <div class="placeholder-glow">
-                    <span class="placeholder col-8"></span>
-                  </div>
+                  <div class="text-muted small mb-1" th:text="#{wind_speed}"></div>
+                  <div><span th:text="${weather.windSpeed}"></span> m/s</div>
                 </div>
                 <div class="col-12">
-                  <div class="text-muted small mb-1">Hinweis</div>
-                  <div class="placeholder-glow">
-                    <span class="placeholder col-12"></span>
-                  </div>
+                  <div class="text-muted small mb-1" th:text="#{weather}"></div>
+                  <div th:text="${weather.description}"></div>
                 </div>
               </div>
             </div>
