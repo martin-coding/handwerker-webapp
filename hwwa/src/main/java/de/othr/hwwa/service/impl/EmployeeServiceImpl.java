@@ -109,7 +109,7 @@ public class EmployeeServiceImpl extends SecurityServiceImpl implements Employee
             throw new UserDoesNotExistsException(null);
         }
         else{
-            return new UserDto(user.getId(), user.getFirstName(), user.getLastName(), user.getRole().getName(), user.getHourlyRate());
+            return new UserDto(user.getId(), user.getFirstName(), user.getLastName(), user.getRole().getName(), user.getHourlyRate(),user.getCreatedAt().toLocalDate());
         }
     }
 

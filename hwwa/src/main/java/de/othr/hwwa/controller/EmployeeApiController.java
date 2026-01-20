@@ -46,7 +46,8 @@ public class EmployeeApiController {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getRoleName(),
-                user.getHourlyRate()
+                user.getHourlyRate(),
+                user.getCreatedAt().toLocalDate()
         );
     }
 }
