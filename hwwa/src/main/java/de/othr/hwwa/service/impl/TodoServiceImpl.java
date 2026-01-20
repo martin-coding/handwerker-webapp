@@ -95,11 +95,10 @@ public class TodoServiceImpl extends SecurityServiceImpl implements TodoServiceI
 
         String task_name = task.getTitle();
 
-        // 2️⃣ Check AFTER saving
         boolean allDone =
             !todoRepository.existsByTaskIdAndDoneFalse(taskId);
 
-        // 3️⃣ Extract needed data while session is open
+        // Extract needed data while session is open
         if (allDone) {
             List<String> emails =
                 saved.getTask().getAssignedUsers()
@@ -107,7 +106,7 @@ public class TodoServiceImpl extends SecurityServiceImpl implements TodoServiceI
                      .map(User::getEmail)
                      .toList();
 
-            // 4️⃣ Publish event (no async here)
+            // Publish event inside transaction
             eventPublisher.publishEvent(
                 new AllTodosDoneEvent(emails, task_name)
             );
