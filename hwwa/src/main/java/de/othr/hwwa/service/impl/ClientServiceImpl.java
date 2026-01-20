@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 import de.othr.hwwa.model.Client;
 import de.othr.hwwa.model.Company;
+import de.othr.hwwa.model.dto.ClientTaskCountView;
 import de.othr.hwwa.service.ClientServiceI;
 import de.othr.hwwa.repository.ClientRepositoryI;
 import de.othr.hwwa.repository.CompanyRepositoryI;
@@ -27,20 +28,18 @@ public class ClientServiceImpl extends SecurityServiceImpl implements ClientServ
     }
 
     @Override
-    public Page<Client> findAll(Pageable pageable) {
-        return clientRepository.findAll(pageable);
-    }
-
-    public Page<Client> search(String keyword, Pageable pageable) {
-        Long currentUserId = getCurrentUserId();
-        Company company = companyRepository.getCompanyById(currentUserId);
-        Long companyId = company.getId();
-        return clientRepository.search(companyId, keyword, pageable);
+    public Page<ClientTaskCountView> searchWithTaskCounts(String keyword, Pageable pageable) {
+        Long companyId = getCurrentCompanyId();
+        return clientRepository.findClientsWithTaskCounts(companyId, keyword, pageable);
     }
 
     @Override
     public Client findById(Long id) {
-        return clientRepository.findById(id).orElse(null);
+        Client client = clientRepository.findById(id).orElse(null);
+        if (client == null || !client.isActive()) {
+            return null;
+        }
+        return client;
     }
 
     @Override
@@ -55,7 +54,9 @@ public class ClientServiceImpl extends SecurityServiceImpl implements ClientServ
     }
 
     @Override
-    public void deleteById(Long id) {
-        clientRepository.deleteById(id);
+    public void softDeleteById(Long id) {
+        Client client = clientRepository.findById(id).orElse(null);
+        client.setActive(false);
+        clientRepository.save(client);
     }
 }

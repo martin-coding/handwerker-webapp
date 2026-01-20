@@ -2,6 +2,7 @@ package de.othr.hwwa.controller;
 
 import de.othr.hwwa.model.Address;
 import de.othr.hwwa.model.Client;
+import de.othr.hwwa.model.dto.ClientTaskCountView;
 import de.othr.hwwa.service.ClientServiceI;
 import jakarta.validation.Valid;
 
@@ -43,9 +44,7 @@ public class ClientController {
 
         PageRequest pageable = PageRequest.of(page, size, sortObj);
 
-        Page<Client> clientPage;
-
-        clientPage = clientService.search(keyword, pageable);
+        Page<ClientTaskCountView> clientPage = clientService.searchWithTaskCounts(keyword, pageable);
 
         model.addAttribute("clientPage", clientPage);
         model.addAttribute("clients", clientPage.getContent());
@@ -83,7 +82,7 @@ public class ClientController {
 
     @PostMapping("/{id}/delete")
     public String deleteClient(@PathVariable Long id) {
-        clientService.deleteById(id);
+        clientService.softDeleteById(id);
         return "redirect:/clients";
     }
 
