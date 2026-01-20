@@ -51,6 +51,12 @@
                            th:classappend="${currentUri.startsWith('/calendar') ? 'btn-primary text-white' : 'btn-light'}">
                             <span class="material-symbols-outlined">calendar_today</span> Kalender
                         </a>
+
+                        <a class="btn btn-sm d-flex align-items-center gap-2" sec:authorize="hasAuthority('manageDashboard')"
+                           th:href="@{/dashboard/tasks}"
+                           th:classappend="${currentUri.startsWith('/dashboard') ? 'btn-primary text-white' : 'btn-light'}">
+                            <span class="material-symbols-outlined">dashboard</span> Dashboard
+                        </a>
                     </nav>
                 </div>
 
