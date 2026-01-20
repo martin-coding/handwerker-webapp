@@ -84,6 +84,7 @@ public class SecurityConfig {
                 .requestMatchers("/profile/company/edit/**").hasAuthority("updateCompanyData")
                 .requestMatchers("/clients/**").hasAuthority("manageClients")
                 .requestMatchers("/invoices/**").hasAuthority("manageInvoices")
+                .requestMatchers("/dashboard/**").hasAuthority("manageDashboard")
                 .anyRequest().authenticated()
         );
 

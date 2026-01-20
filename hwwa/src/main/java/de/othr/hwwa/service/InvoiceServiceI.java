@@ -12,4 +12,5 @@ public interface InvoiceServiceI {
     public List<InvoiceDto> getAllDoneInvoices();
     public void deleteInvoice(long invoiceId);
     public void sendInvoice(long invoiceId);
+    public InvoiceDto getInvoice(long invoiceId);
 }
