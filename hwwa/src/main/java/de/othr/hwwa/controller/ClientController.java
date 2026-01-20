@@ -1,10 +1,14 @@
 package de.othr.hwwa.controller;
 
+import de.othr.hwwa.model.Address;
 import de.othr.hwwa.model.Client;
+import de.othr.hwwa.model.dto.ClientTaskCountView;
 import de.othr.hwwa.service.ClientServiceI;
+import jakarta.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,9 +44,7 @@ public class ClientController {
 
         PageRequest pageable = PageRequest.of(page, size, sortObj);
 
-        Page<Client> clientPage;
-
-        clientPage = clientService.search(keyword, pageable);
+        Page<ClientTaskCountView> clientPage = clientService.searchWithTaskCounts(keyword, pageable);
 
         model.addAttribute("clientPage", clientPage);
         model.addAttribute("clients", clientPage.getContent());
@@ -56,25 +58,46 @@ public class ClientController {
     }
 
     @PostMapping
-    public String createClient(@ModelAttribute Client client) {
+    public String createClient(@Valid @ModelAttribute Client client,
+            BindingResult result) {
+
+        if (result.hasErrors()) {
+            if (client.getAddress() == null) {
+                client.setAddress(new Address());
+            }
+            return "client-form";
+        }
+
         clientService.save(client);
         return "redirect:/clients";
     }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("client", new Client());
+        Client client = new Client();
+        client.setAddress(new Address());
+        model.addAttribute("client", client);
         return "client-form";
     }
 
     @PostMapping("/{id}/delete")
     public String deleteClient(@PathVariable Long id) {
-        clientService.deleteById(id);
+        clientService.softDeleteById(id);
         return "redirect:/clients";
     }
 
     @PostMapping("/{id}")
-    public String editClient(@PathVariable Long id, @ModelAttribute Client client) {
+    public String editClient(@PathVariable Long id,
+            @Valid @ModelAttribute Client client,
+            BindingResult result) {
+
+        if (result.hasErrors()) {
+            if (client.getAddress() == null) {
+                client.setAddress(new Address());
+            }
+            return "client-form";
+        }
+
         client.setId(id);
         clientService.save(client);
         return "redirect:/clients";
@@ -85,6 +108,9 @@ public class ClientController {
         Client client = clientService.findById(id);
         if (client == null) {
             return "redirect:/clients";
+        }
+        if (client.getAddress() == null) {
+            client.setAddress(new Address());
         }
         model.addAttribute("client", client);
         return "client-form";

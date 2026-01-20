@@ -25,8 +25,8 @@
         <!-- Header (text only) -->
         <div class="page-header mb-4">
             <div>
-                <h1>Team Overview</h1>
-                <p>Manage your managers, field workers, and billing permissions.</p>
+                <h1 th:text="#{employee_header}"></h1>
+                <p th:text="#{employee_subheader}"></p>
             </div>
         </div>
 
@@ -35,7 +35,7 @@
 
             <div class="col-md-4">
                 <div class="stat-card">
-                    <p>Mitarbeiteranzahl</p>
+                    <p th:text="#{employee_count}"></p>
                     <h3 th:text="${employees.totalElements}">24</h3>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                 <a th:href="@{/employee/add}"
                    class="btn btn-primary d-inline-flex align-items-center gap-2">
                     <span class="material-symbols-outlined">add</span>
-                    <span>Neuen Mitarbeiter hinzufügen</span>
+                    <span th:text="#{add_new_employee}"></span>
                 </a>
             </div>
         </div>
@@ -66,15 +66,15 @@
         <div class="card shadow-sm">
             <div class="table-responsive">
                 <table class="table general-table mb-0">
-                    <thead>
+                    <thead class="bg-light-custom">
                     <tr>
                         <th class="col-name">
                             <a th:href="@{/employee(
                                     page=${currentPage},
                                     sort='lastName',
                                     dir=${sort == 'lastName' and dir == 'asc' ? 'desc' : 'asc'},
-                                    keyword=${keyword})}">
-                                Mitarbeiter
+                                    keyword=${keyword})}"
+                                    th:text="#{employee}">
                             </a>
                         </th>
                         <th class="col-role">
@@ -86,18 +86,18 @@
                                 Rolle
                             </a>
                         </th>
-                        <th class="col-email">Email</th>
-                        <th class="col-phoneNumber">Telefonnummer</th>
+                        <th class="col-email" th:text="#{email}"></th>
+                        <th class="col-phoneNumber" th:text="#{phoneNumber}"></th>
                         <th class="col-hourlyRate">
                             <a th:href="@{/employee(
                                     page=${currentPage},
                                     sort='hourlyRate',
                                     dir=${sort == 'hourlyRate' and dir == 'asc' ? 'desc' : 'asc'},
-                                    keyword=${keyword})}">
-                                Lohn
+                                    keyword=${keyword})}"
+                                    th:text="#{wage}">
                             </a>
                         </th>
-                        <th class="text-end col-action">Aktionen</th>
+                        <th class="text-end col-action" th:text="#{actions}"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -121,12 +121,11 @@
                                    class="btn btn-sm btn-icon btn-icon-edit">
                                     <span class="material-symbols-outlined">edit</span>
                                 </a>
-                                <form class="d-inline">
-                                    <button type="button" class="btn btn-sm btn-icon btn-icon-delete"
-                                            th:onclick="'openDeleteModal(' + ${employee.id} + ')'">
-                                        <span class="material-symbols-outlined">delete</span>
-                                    </button>
-                                </form>
+                                <button class="btn btn-sm btn-icon btn-icon-delete"
+                                        data-bs-toggle="modal"
+                                        th:data-bs-target="'#deleteModal-' + ${employee.id}">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -140,23 +139,23 @@
                     <span th:text="${employees.number * employees.size + 1}">1</span>
                     –
                     <span th:text="${employees.number * employees.size + employees.numberOfElements}">4</span>
-                    von
+                    <span th:text="#{of}"></span>
                     <span th:text="${employees.totalElements}">24</span>
-                    Mitarbeiter
+                    <span th:text="#{employee}"></span>
                 </p>
 
                 <div class="d-flex gap-2">
                     <a th:href="@{/employee(page=${currentPage - 1}, sort=${sort}, dir=${dir}, keyword=${keyword})}"
                        th:classappend="${employees.first} ? 'disabled' : ''"
                        class="btn btn-outline-secondary btn-sm"
-                       th:attr="aria-disabled=${employees.first}">
-                        Previous
+                       th:attr="aria-disabled=${employees.first}"
+                       th:text="#{previous}">
                     </a>
                     <a th:href="@{/employee(page=${currentPage + 1}, sort=${sort}, dir=${dir}, keyword=${keyword})}"
                        th:classappend="${employees.last} ? 'disabled' : ''"
                        class="btn btn-outline-secondary btn-sm"
-                       th:attr="aria-disabled=${employees.last}">
-                        Next
+                       th:attr="aria-disabled=${employees.last}"
+                       th:text="#{next}">
                     </a>
                 </div>
             </div>
@@ -165,22 +164,27 @@
 </main>
 
 <div th:insert="~{fragments/footer :: siteFooter}"></div>
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteEmployeeModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Mitarbeiter löschen</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="deleteModalBody">
-                Möchten Sie diesen Mitarbeiter wirklich löschen?
-            </div>
-            <div class="modal-footer">
-                <form id="deleteEmployeeForm" th:action="@{/employee/delete/__ID__}" method="post" class="d-inline">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                    <button type="submit" class="btn btn-danger">Löschen</button>
-                </form>
+<!-- Delete confirmation modals -->
+<div th:each="employee : ${employees}">
+    <div class="modal fade" th:id="'deleteModal-' + ${employee.id}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 th:text="#{delete_employee}" class="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body" th:text="#{delete_employee_question}">
+                </div>
+
+                <div class="modal-footer">
+                    <button th:text="#{cancel}" class="btn btn-secondary" data-bs-dismiss="modal"></button>
+
+                    <form th:action="@{/employee/delete/{id}(id=${employee.id})}" method="post">
+                        <button th:text="#{delete}" type="submit" class="btn btn-danger"></button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

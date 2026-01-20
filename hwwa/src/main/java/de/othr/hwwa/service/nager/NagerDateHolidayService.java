@@ -23,9 +23,13 @@ public class NagerDateHolidayService {
         Map<Integer, List<NagerHolidayDto>> byYear = cache.computeIfAbsent(cc, k -> new ConcurrentHashMap<>());
 
         return byYear.computeIfAbsent(year, y -> {
-            String url = "https://date.nager.at/api/v3/PublicHolidays/" + y + "/" + cc;
-            NagerHolidayDto[] arr = restTemplate.getForObject(url, NagerHolidayDto[].class);
-            return arr == null ? List.of() : Arrays.asList(arr);
+            try {
+                String url = "https://date.nager.at/api/v3/PublicHolidays/" + y + "/" + cc;
+                NagerHolidayDto[] arr = restTemplate.getForObject(url, NagerHolidayDto[].class);
+                return arr == null ? List.of() : Arrays.asList(arr);
+            } catch (Exception ex) {
+                return List.of();
+            }
         });
     }
 
@@ -40,13 +44,9 @@ public class NagerDateHolidayService {
         int startYear = startInclusive.getYear();
         int endYear = endExclusive.minusDays(1).getYear();
 
-        List<NagerHolidayDto> all;
-        if (startYear == endYear) {
-            all = getHolidaysForYear(startYear, countryCode);
-        } else {
-            all = new ArrayList<>();
-            all.addAll(getHolidaysForYear(startYear, countryCode));
-            all.addAll(getHolidaysForYear(endYear, countryCode));
+        List<NagerHolidayDto> all = new ArrayList<>();
+        for (int y = startYear; y <= endYear; y++) {
+            all.addAll(getHolidaysForYear(y, countryCode));
         }
 
         return all.stream()

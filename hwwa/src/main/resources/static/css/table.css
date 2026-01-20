@@ -40,6 +40,19 @@
 }
 
 
+.invoice-table-transparent {
+    background-color: transparent;
+}
+
+.invoice-table-transparent th, .invoice-table-transparent td {
+    border: 1px solid #000;
+}
+
+.invoice-total-row td {
+    font-weight: bold;
+}
+
+
 
 
 

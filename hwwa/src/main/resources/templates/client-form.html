@@ -21,7 +21,8 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h2 class="card-title mb-4"
-                            th:text="${client.id == null ? 'Neuen Kunden anlegen' : 'Kunden bearbeiten'}"></h2>
+                            th:text="${client.id == null} ? #{client.new} : #{client.edit}">
+                        </h2>
                         
                         <!-- Form for Creating/Editing Clients -->
                         <form th:action="${client.id == null ? '/clients' : '/clients/' + client.id}" 
@@ -30,32 +31,123 @@
                             <!-- Name -->
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
+
                                 <input
                                     type="text"
                                     id="name"
-                                    class="form-control"
                                     th:field="*{name}"
-                                    required>
+                                    class="form-control"
+                                    th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
+
+                                <div class="invalid-feedback"
+                                    th:if="${#fields.hasErrors('name')}"
+                                    th:errors="*{name}">
+                                </div>
                             </div>
 
                             <!-- Email -->
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
+
                                 <input
-                                    type="email"
                                     id="email"
+                                    th:field="*{email}"
                                     class="form-control"
-                                    th:field="*{email}">
+                                    th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+
+                                <div class="invalid-feedback"
+                                    th:if="${#fields.hasErrors('email')}"
+                                    th:errors="*{email}">
+                                </div>
                             </div>
 
+
                             <!-- Phone -->
-                            <div class="mb-4">
+                            <div class="mb-3">
                                 <label for="phone" class="form-label">Phone</label>
+
                                 <input
                                     type="tel"
                                     id="phone"
+                                    th:field="*{phone}"
                                     class="form-control"
-                                    th:field="*{phone}">
+                                    th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'">
+
+                                <div class="invalid-feedback"
+                                    th:if="${#fields.hasErrors('phone')}"
+                                    th:errors="*{phone}">
+                                </div>
+                            </div>
+
+                            <!-- Street -->
+                            <div class="mb-3">
+                                <label for="street" class="form-label">Street</label>
+
+                                <input
+                                    type="text"
+                                    id="street"
+                                    th:field="*{address.street}"
+                                    class="form-control"
+                                    th:classappend="${#fields.hasErrors('address.street')} ? 'is-invalid'">
+
+                                <div class="invalid-feedback"
+                                    th:if="${#fields.hasErrors('address.street')}"
+                                    th:errors="*{address.street}">
+                                </div>
+                            </div>
+
+                            <!-- City + Postal Code -->
+                            <div class="row">
+                                <!-- City -->
+                                <div class="col-md-8 mb-3">
+                                    <label for="city" class="form-label">City</label>
+
+                                    <input
+                                        type="text"
+                                        id="city"
+                                        th:field="*{address.city}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('address.city')} ? 'is-invalid'">
+
+                                    <div class="invalid-feedback"
+                                        th:if="${#fields.hasErrors('address.city')}"
+                                        th:errors="*{address.city}">
+                                    </div>
+                                </div>
+
+                                <!-- Postal Code -->
+                                <div class="col-md-4 mb-3">
+                                    <label for="postalCode" class="form-label">Postal Code</label>
+
+                                    <input
+                                        type="text"
+                                        id="postalCode"
+                                        th:field="*{address.postalCode}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('address.postalCode')} ? 'is-invalid'">
+
+                                    <div class="invalid-feedback"
+                                        th:if="${#fields.hasErrors('address.postalCode')}"
+                                        th:errors="*{address.postalCode}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Country -->
+                            <div class="mb-4">
+                                <label for="country" class="form-label">Country</label>
+
+                                <input
+                                    type="text"
+                                    id="country"
+                                    th:field="*{address.country}"
+                                    class="form-control"
+                                    th:classappend="${#fields.hasErrors('address.country')} ? 'is-invalid'">
+
+                                <div class="invalid-feedback"
+                                    th:if="${#fields.hasErrors('address.country')}"
+                                    th:errors="*{address.country}">
+                                </div>
                             </div>
 
                             <!-- Buttons -->

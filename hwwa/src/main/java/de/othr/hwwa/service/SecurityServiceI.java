@@ -7,4 +7,5 @@ public interface SecurityServiceI {
     public long getCurrentUserId();
     public Company getCurrentCompany();
     public User getCurrentUser();
+    public Long getCurrentCompanyId();
 }

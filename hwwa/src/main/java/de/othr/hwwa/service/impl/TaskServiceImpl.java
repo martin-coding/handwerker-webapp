@@ -4,8 +4,7 @@ import de.othr.hwwa.model.*;
 import de.othr.hwwa.model.dto.TaskCreateDto;
 import de.othr.hwwa.model.dto.TaskUpdateDto;
 import de.othr.hwwa.repository.*;
-import de.othr.hwwa.service.CommentServiceI;
-import de.othr.hwwa.service.MaterialServiceI;
+import de.othr.hwwa.service.GeocodingServiceI;
 import de.othr.hwwa.service.TaskServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -26,13 +25,21 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
     private final TodoRepositoryI todoRepository;
     private final CommentRepositoryI commentRepository;
     private final MaterialRepositoryI materialRepository;
+    private final InvoiceRepositoryI invoiceRepository;
+    private final CoordinatesRepositoryI coordinatesRepository;
+    private final GeocodingServiceI geocodingService;
 
     @Autowired
     public TaskServiceImpl(TaskRepositoryI taskRepository,
                            TaskAssignmentRepository taskAssignmentRepository,
                            ClientRepositoryI clientRepository,
-                           UserRepositoryI userRepository, TodoRepositoryI todoRepository,
-                           CommentRepositoryI commentRepository, MaterialRepositoryI materialRepository) {
+                           UserRepositoryI userRepository,
+                           TodoRepositoryI todoRepository,
+                           CommentRepositoryI commentRepository,
+                           MaterialRepositoryI materialRepository,
+                           InvoiceRepositoryI invoiceRepository,
+                           CoordinatesRepositoryI coordinatesRepository,
+                           GeocodingServiceI geocodingService) {
         this.taskRepository = taskRepository;
         this.taskAssignmentRepository = taskAssignmentRepository;
         this.clientRepository = clientRepository;
@@ -40,6 +47,9 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
         this.todoRepository = todoRepository;
         this.commentRepository = commentRepository;
         this.materialRepository = materialRepository;
+        this.invoiceRepository = invoiceRepository;
+        this.coordinatesRepository = coordinatesRepository;
+        this.geocodingService = geocodingService;
     }
 
     private boolean isOwnerOrManager() {
@@ -108,7 +118,7 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
     @Override
     public List<Task> getAssignedTasksForUser() {
         if (isOwnerOrManager()) {
-            return taskRepository.findByClientCompanyIdOrderByIdAsc(getCurrentCompany().getId());
+            return taskRepository.findByClientCompanyIdAndDeletedIsFalseOrderByIdAsc(getCurrentCompany().getId());
         }
 
         return taskAssignmentRepository.findByUserId(getCurrentUserId())
@@ -124,14 +134,14 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
         }
 
         if (isOwnerOrManager()) {
-            Task task = taskRepository.findById(taskId)
+            Task task = taskRepository.findByIdAndDeletedIsFalse(taskId)
                     .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
             assertTaskBelongsToCurrentCompany(task);
             return Optional.of(task);
         }
 
         assertCurrentUserAssignedToTask(taskId);
-        return taskRepository.findById(taskId);
+        return taskRepository.findByIdAndDeletedIsFalse(taskId);
     }
 
     @Override
@@ -140,7 +150,7 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
             return Optional.empty();
         }
 
-        Optional<Task> taskOpt = taskRepository.findById(taskId);
+        Optional<Task> taskOpt = taskRepository.findByIdAndDeletedIsFalse(taskId);
         taskOpt.ifPresent(this::assertCanAccessTaskForMaterialTodo);
         return taskOpt;
     }
@@ -179,7 +189,7 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
             throw new IllegalArgumentException("Task not found: null");
         }
 
-        Task task = taskRepository.findById(taskId)
+        Task task = taskRepository.findByIdAndDeletedIsFalse(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
 
         assertTaskBelongsToCurrentCompany(task);
@@ -205,7 +215,7 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
             throw new IllegalArgumentException("Task not found: null");
         }
 
-        Task task = taskRepository.findById(taskId)
+        Task task = taskRepository.findByIdAndDeletedIsFalse(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
 
         assertTaskBelongsToCurrentCompany(task);
@@ -218,7 +228,14 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
         commentRepository.deleteAll(comments);
         todoRepository.deleteAll(todos);
 
-        taskRepository.delete(task);
+        Invoice invoice = invoiceRepository.findInvoiceByTask(task).orElse(null);
+        if (invoice != null) {
+            task.setDeleted(true);
+        }
+        else{
+            taskRepository.delete(task);
+        }
+
     }
 
     @Override
@@ -264,7 +281,7 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
             throw new IllegalArgumentException("Initial minutes must be >= 0");
         }
 
-        Task task = taskRepository.findById(taskId)
+        Task task = taskRepository.findByIdAndDeletedIsFalse(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
         assertTaskBelongsToCurrentCompany(task);
 
@@ -299,7 +316,7 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
             throw new IllegalArgumentException("TaskId/UserId must not be null");
         }
 
-        Task task = taskRepository.findById(taskId)
+        Task task = taskRepository.findByIdAndDeletedIsFalse(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
         assertTaskBelongsToCurrentCompany(task);
 
@@ -332,5 +349,12 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
         TaskAssignment assignment = new TaskAssignment(user, task);
         assignment.setMinutesWorked(initialMinutes);
         taskAssignmentRepository.save(assignment);
+    }
+
+    public Coordinates getTaskCoordinates(Long taskId) {
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
+        Address address = task.getClient().getAddress();
+
+        return geocodingService.getOrCreate(address);
     }
 }

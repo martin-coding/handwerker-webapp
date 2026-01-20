@@ -37,7 +37,7 @@ public class CommentServiceImpl extends SecurityServiceImpl implements CommentSe
 
     private void assertCanAccessTask(long taskId) {
         if (isOwnerOrManager()) {
-            Task task = taskRepository.findById(taskId).orElseThrow(() -> new IllegalArgumentException("Task not found"));
+            Task task = taskRepository.findByIdAndDeletedIsFalse(taskId).orElseThrow(() -> new IllegalArgumentException("Task not found"));
             Long currentCompanyId = getCurrentCompany().getId();
             Long taskCompanyId = task.getClient() != null && task.getClient().getCompany() != null
                     ? task.getClient().getCompany().getId()
@@ -70,7 +70,7 @@ public class CommentServiceImpl extends SecurityServiceImpl implements CommentSe
     public Comment createComment(long taskId, String text) {
         assertCanAccessTask(taskId);
 
-        Task task = taskRepository.findById(taskId)
+        Task task = taskRepository.findByIdAndDeletedIsFalse(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
 
         Comment c = new Comment();

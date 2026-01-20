@@ -40,13 +40,13 @@
 
         <div class="row g-4">
           <div class="col-md-6 input-wrapper">
-            <label class="form-label fw-medium">Name</label>
+            <label class="form-label fw-medium">Beschreibung</label>
             <input type="text"
-                   th:field="*{name}"
-                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"
-                   placeholder="Name"
+                   th:field="*{description}"
+                   th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
+                   placeholder="Beschreibung"
                    class="input-field input-field-employee">
-            <div class="invalid-feedback" th:errors="*{name}"></div>
+            <div class="invalid-feedback" th:errors="*{description}"></div>
           </div>
 
           <div class="col-md-3 input-wrapper">

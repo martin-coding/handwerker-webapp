@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface TodoRepositoryI extends JpaRepository<Todo, Long> {
     List<Todo> findByTaskIdOrderByDoneAscIdAsc(long taskId);
+    boolean existsByTaskIdAndDoneFalse(Long taskId);
 }

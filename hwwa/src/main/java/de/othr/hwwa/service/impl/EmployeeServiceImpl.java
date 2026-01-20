@@ -1,6 +1,5 @@
 package de.othr.hwwa.service.impl;
 
-import de.othr.hwwa.config.MyUserDetails;
 import de.othr.hwwa.exceptions.EqualUserException;
 import de.othr.hwwa.exceptions.UserDoesNotExistsException;
 import de.othr.hwwa.model.*;
@@ -11,8 +10,7 @@ import de.othr.hwwa.repository.UserRepositoryI;
 import de.othr.hwwa.service.EmailServiceI;
 import de.othr.hwwa.service.EmployeeServiceI;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,21 +35,13 @@ public class EmployeeServiceImpl extends SecurityServiceImpl implements Employee
     }
 
     @Override
-    public Page<User> getEmployeeList(int page, int size, String sort, String dir, String keyword){
-        Company company = getCurrentCompany();
-        Sort.Direction direction =
-                dir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-
-        Sort sortOrder = Sort.by(direction, sort);
-        if ("lastName".equals(sort)) {
-            sortOrder = Sort.by(direction, "lastName").and(Sort.by(direction, "firstName"));
-        }
-
-        PageRequest pageRequest = PageRequest.of(page, size, sortOrder);
+    public Page<User> getEmployeeList(Pageable pageable, String keyword){
+        Long companyId = getCurrentCompanyId();
+    
         if (keyword != null && !keyword.isEmpty()) {
-            return userRepository.findByCompanyIdAndActiveTrueAndKeyword(company.getId(), keyword, pageRequest);
+            return userRepository.findByCompanyIdAndActiveTrueAndKeyword(companyId, keyword, pageable);
         }
-        return userRepository.findByCompanyIdAndActiveTrue(company.getId(), pageRequest);
+        return userRepository.findByCompanyIdAndActiveTrue(companyId, pageable);
     }
 
     @Override
@@ -96,7 +86,7 @@ public class EmployeeServiceImpl extends SecurityServiceImpl implements Employee
             // Kann nur auftreten, wenn schädlicher Nutzer versucht das System zu sabotieren, daher ist es nicht notwendig dies extra in der GUI anzuzeigen.
             throw new IllegalArgumentException("Role nicht gefunden");
         }
-        User newUser  = new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()), dto.getHourlyRate(), role, getCurrentCompany());
+        User newUser  = new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()), dto.getHourlyRate(), role, getCurrentCompany(), LocalDateTime.now());
 
 
         if (newUser.getCreatedAt() == null) {
@@ -116,7 +106,7 @@ public class EmployeeServiceImpl extends SecurityServiceImpl implements Employee
     public UserDto getUserById(long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
-            return new UserDto();
+            throw new UserDoesNotExistsException(null);
         }
         else{
             return new UserDto(user.getId(), user.getFirstName(), user.getLastName(), user.getRole().getName(), user.getHourlyRate());

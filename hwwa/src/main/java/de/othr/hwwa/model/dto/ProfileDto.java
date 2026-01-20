@@ -2,6 +2,8 @@ package de.othr.hwwa.model.dto;
 import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDate;
+
 public class ProfileDto {
     @NotBlank(message = "Vorname darf nicht leer sein")
     @Size(min = 2, max = 50, message = "Vorname muss zwischen 2 und 50 Zeichen lang sein")
@@ -30,16 +32,19 @@ public class ProfileDto {
     private String phoneNumber;
     private boolean changePassword;
 
+    private LocalDate createdAt;
+
 
     public ProfileDto() {}
 
 
 
-    public ProfileDto(String firstName, String lastName, String email, String phoneNumber) {
+    public ProfileDto(String firstName, String lastName, String email, String phoneNumber, LocalDate createdAt) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.createdAt = createdAt;
     }
 
     public String getFirstName() {
@@ -88,6 +93,14 @@ public class ProfileDto {
 
     public void setChangePassword(boolean changePassword) {
         this.changePassword = changePassword;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
     }
 }
 

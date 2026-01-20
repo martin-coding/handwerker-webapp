@@ -1,0 +1,72 @@
+<!-- Sidebar -->
+<aside  th:fragment="sidebar" class="sidebar bg-surface-custom">
+    <div class="sidebar-header">
+        <h3 th:text="#{sidebar_header}"></h3>
+        <p th:text="#{sidebar_subheader}"></p>
+
+        <div class="search">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" th:palceholder="#{search_bar_place_holder}">
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="vh-100 p-3">
+
+                <!-- INVOICES HEADER -->
+                <div class="mb-2">
+                    <h6 class="text-dark text-uppercase" th:text="#{tasks_done}"></h6>
+                </div>
+                <div th:each="task : ${tasks}" class="mb-3">
+                    <a th:href="@{/invoices/{id}(id=${task.id})}"
+                       class="d-block text-decoration-none text-dark">
+                        <div class="border rounded p-2 bg-white">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <span class="fw-bold" th:text="'#' + ${task.id}">#402</span>
+                                <small class="text-muted" th:text="${task.client}">Smith Residence</small>
+                            </div>
+
+                            <div class="mt-2">
+                                <strong th:text="${task.title}">Kitchen Reno</strong>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- INVOICES HEADER -->
+                <div class="mt-4 mb-2">
+                    <h6 class="text-dark text-uppercase" th:text="#{invoices}"></h6>
+                </div>
+
+                <!-- INVOICES -->
+                <div th:each="invoice : ${invoices}" class="mb-3">
+                    <a th:href="@{/invoices/{id}(id=${invoice.taskId})}"
+                       class="d-block text-decoration-none text-dark">
+                        <div class="border rounded p-2 bg-white">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <span class="fw-bold"
+                                      th:text="${invoice.id}">
+                                    INV-2024-001
+                                </span>
+                                <small class="text-muted"
+                                       th:text="${invoice.clientName}">
+                                    Smith Residence
+                                </small>
+                            </div>
+
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    Task:
+                                    <span th:text="${invoice.taskReference}">
+                                        #402
+                                    </span>
+                                </small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>

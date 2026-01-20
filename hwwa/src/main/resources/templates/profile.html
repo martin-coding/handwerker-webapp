@@ -22,20 +22,19 @@
 <main class="flex-grow-1 app-main">
     <div class="container-xl py-4">
 
-        <div th:if="${param.success}" class="alert-custom-success mb-3">
-            Daten wurde erfolgreich gespeichert
+        <div th:if="${param.success}" class="alert-custom-success mb-3" th:text="#{profile_success_message}">
         </div>
 
-        <div th:if="${param.error}" class="alert-custom-error mb-3">
+        <div th:if="${param.error}" class="alert-custom-error mb-3" th:text="#{profile_error_message}">
             2 Faktor Authentifizierung wurde bereits angelegt
         </div>
 
-        <h1>Mitarbeiterdetails bearbeiten</h1>
-        <p>Bearbeiten Sie die persönlichen Daten, Rolle und Berechtigungen des Mitarbeiters.</p>
+        <h1 th:text="#{profile_header}"></h1>
+        <p th:text="#{profile_subheader}"></p>
 
         <a th:href="@{/2fa/init}"
            class="btn btn-primary d-inline-flex align-items-center gap-2">
-            <span>2 Faktor Authentifizierung einrichten</span>
+            <span th:text="#{profile_two_factor_button_text}"></span>
         </a>
 
         <!-- Profil -->
@@ -44,15 +43,15 @@
                  style="background-image:url('https://lh3.googleusercontent.com/aida-public/AB6AXuAITRXtmNvpfryi_i2qRORmJ-wRCvEy8p_y0_x6m2u5-ebUGj4szRojYQKkmFOSYDvvEY6G8m1eAyoaG1ortjXwh1ySpvte2atoHwv2TshaVl9IGfrYQuTZoGZwhxl_MCjbvzsBbGXAPwXVJhc2Z1Fyd7yWR072v88wIOIDX2oB8t7IMVflKBREbi07Lxp-ukB-fpwtkbUFcR7YeFdxnhSJ_HB_wuykCJIQ8v19cQ2WqxiIp2pRj-HK3tpdOBLYK8uELXrAhOQF')">
             </div>
             <div>
-                <h2 th:text="${profile.firstName} + ' ' + ${profile.lastName}">Max Mustermann</h2>
-                <small>Mitarbeiter seit 2021</small><br>
-                <button class="profil-button">Profilbild ändern</button>
+                <h2 th:text="${profile.firstName} + ' ' + ${profile.lastName}"></h2>
+                <small th:text="#{profile_employement_time} + ' ' +${profile.createdAt}"></small><br>
+                <button class="profil-button" th:text="#{profile_edit_button}"></button>
             </div>
         </div>
 
         <div class="card form-card">
             <div class="fw-medium">
-                <label>Persönliche Daten</label>
+                <label th:text="#{personal_data}"></label>
             </div>
 
             <hr>
@@ -60,7 +59,7 @@
             <form th:object="${profile}" th:action="@{/profile/employee/edit}" method="post">
                 <div class="row g-4">
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Vorname</label>
+                        <label class="form-label fw-medium" th:text="#{firstName}"></label>
                         <div class="input-group">
                             <input type="text"
                                    th:field="*{firstName}"
@@ -72,7 +71,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Nachname</label>
+                        <label class="form-label fw-medium" th:text="#{lastName}"></label>
                         <div class="input-group">
                             <input type="text"
                                    th:field="*{lastName}"
@@ -84,7 +83,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Email</label>
+                        <label class="form-label fw-medium" th:text="#{email}"></label>
                         <div class="input-group">
                             <input type="email"
                                    th:field="*{email}"
@@ -96,7 +95,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Telefonnummer</label>
+                        <label class="form-label fw-medium" th:text="#{phoneNumber}"></label>
                         <div class="input-group">
                             <input type="text"
                                    th:field="*{phoneNumber}"
@@ -107,7 +106,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 input-wrapper mt-5">
-                        <label class="form-label fw-medium">Altes Passwort</label>
+                        <label class="form-label fw-medium" th:text="#{old_password}"></label>
                         <input type="password"
                                th:field="*{oldPassword}"
                                th:classappend="${#fields.hasErrors('oldPassword')} ? 'is-invalid'"
@@ -118,7 +117,7 @@
                         <div class="invalid-feedback" th:errors="*{oldPassword}"></div>
                     </div>
                     <div class="col-md-6 input-wrapper mt-5">
-                        <label class="form-label fw-medium">Neues Passwort</label>
+                        <label class="form-label fw-medium" th:text="#{new_password}"></label>
                         <input type="password"
                                th:field="*{newPassword}"
                                th:classappend="${#fields.hasErrors('newPassword')} ? 'is-invalid'"
@@ -128,15 +127,12 @@
                         <span class="material-symbols-outlined input-field-icon icon-employee">visibility</span>
                         <div class="invalid-feedback" th:errors="*{newPassword}"></div>
                     </div>
-                    <p>Um Ihr Passwort zu ändern, geben Sie bitte Ihr aktuelles und Ihr neues Passwort ein.</p>
+                    <p th:text="#{password_change_message}"></p>
                     <div class="button-right-orientated">
                         <div>
-                            <button type="button"
-                                    class="btn btn-light me-2"
-                                    onclick="history.back()">
-                                Abbrechen
-                            </button>
-                            <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+                            <a th:href="@{/}" class="btn btn-light me-2" th:text="#{cancel}">
+                            </a>
+                            <button type="submit" class="btn btn-primary" th:text="#{save_changes}"></button>
                         </div>
                     </div>
                 </div>
@@ -145,7 +141,7 @@
 
         <div class="card form-card" sec:authorize="hasAuthority('updateCompanyData')">
             <div class="fw-medium">
-                <label>Firmendaten</label>
+                <label th:text="#{company_data}"></label>
             </div>
 
             <hr>
@@ -153,7 +149,7 @@
             <form th:object="${company}" th:action="@{/profile/company/edit}" method="post">
                 <div class="row g-4">
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Firmenname</label>
+                        <label class="form-label fw-medium" th:text="#{companyName}"></label>
                         <div class="input-group">
                             <input type="text"
                                    th:field="*{companyName}"
@@ -164,7 +160,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Straße</label>
+                        <label class="form-label fw-medium" th:text="#{street}"></label>
                         <div class="input-group">
                             <input type="text"
                                    th:field="*{street}"
@@ -175,7 +171,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Stadt</label>
+                        <label class="form-label fw-medium" th:text="#{city}"></label>
                         <div class="input-group">
                             <input type="text"
                                    th:field="*{city}"
@@ -186,7 +182,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Postleitzahl</label>
+                        <label class="form-label fw-medium" th:text="#{postalCode}"></label>
                         <div class="input-group">
                             <input type="text"
                                    th:field="*{postalCode}"
@@ -197,7 +193,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 input-wrapper">
-                        <label class="form-label fw-medium">Land</label>
+                        <label class="form-label fw-medium" th:text="#{country}"></label>
                         <div class="input-group">
                             <input type="text"
                                    th:field="*{country}"
@@ -209,18 +205,14 @@
                     </div>
                     <div class="button-right-orientated">
                         <div>
-                            <button type="button"
-                                    class="btn btn-light me-2"
-                                    onclick="history.back()">
-                                Abbrechen
-                            </button>
-                            <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+                            <a th:href="@{/}" class="btn btn-light me-2" th:text="#{cancel}">
+                            </a>
+                            <button type="submit" class="btn btn-primary" th:text="#{save_changes}"></button>
                         </div>
                     </div>
                 </div>
             </form>
         </div>
-
     </div>
 </main>
 

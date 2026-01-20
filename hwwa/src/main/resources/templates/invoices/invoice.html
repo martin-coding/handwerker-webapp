@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Invoice – CraftManager</title>
+
+    <!-- Bootstrap CSS Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/input_fields_and_icons.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/table.css}">
+    <link rel="stylesheet" th:href="@{/css/invoice.css}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body class="app-body">
+
+<!-- Include header -->
+<div th:insert="~{fragments/header :: siteHeader}"></div>
+
+<div class="app-main-invoice">
+
+    <div th:insert="~{fragments/sidebar :: sidebar}" ></div>
+
+    <!-- invoice -->
+    <main class="flex-grow-1">
+        <div class="invoice-container">
+            <form th:action="@{/invoices/{id}/save(id=${invoice.taskId})}" th:object="${invoice}" method="post">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 th:text="${invoice.companyName}"></h4>
+                        <p>
+                            <span th:text="${invoice.companyAddress.street}"></span><br/>
+                            <span th:text="${invoice.companyAddress.city + ', ' + invoice.companyAddress.postalCode}"></span><br/>
+                            <span th:text="${invoice.createdByEmail}"></span>
+                        </p>
+
+                        <!-- Hidden inputs for posting -->
+                        <input type="hidden" th:field="*{taskId}"/>
+                        <input type="hidden" th:field="*{companyName}"/>
+                        <input type="hidden" th:field="*{createdByEmail}"/>
+                        <input type="hidden" th:field="*{companyAddress.street}"/>
+                        <input type="hidden" th:field="*{companyAddress.city}"/>
+                        <input type="hidden" th:field="*{companyAddress.postalCode}"/>
+                    </div>
+
+                    <div class="col-md-6 text-end">
+                        <h3>Invoice</h3>
+                        <p>
+                            <strong th:text="#{invoice_reference}"></strong>
+                            <span th:text="'INV-' + ${invoice.id}"></span>
+                            <input type="hidden" th:field="*{id}"/>
+                        </p>
+                        <p>
+                            <strong th:text="#{invoice_issued}"></strong>
+                            <span th:text="${invoice.invoiceCreationDate}"></span>
+                            <input type="hidden" th:field="*{invoiceCreationDate}"/><br>
+                            <strong th:text="#{invoice_due}"></strong>
+                            <span th:text="${invoice.invoiceIssuedDate}"></span>
+                            <input type="hidden" th:field="*{invoiceIssuedDate}"/>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bill To -->
+                <div class="mt-5">
+                    <h5 th:text="#{bill_to}"></h5>
+                    <p>
+                        <span th:text="${invoice.clientName}"></span><br/>
+                        <span th:text="${invoice.clientAddress.street}"></span><br/>
+                        <span th:text="${invoice.clientAddress.city + ', ' + invoice.clientAddress.postalCode}"></span>
+                    </p>
+
+                    <!-- Hidden inputs for posting -->
+                    <input type="hidden" th:field="*{clientName}"/>
+                    <input type="hidden" th:field="*{clientAddress.street}"/>
+                    <input type="hidden" th:field="*{clientAddress.city}"/>
+                    <input type="hidden" th:field="*{clientAddress.postalCode}"/>
+                </div>
+
+                <!-- Job Reference -->
+                <div class="mt-5">
+                    <p>
+                        <strong th:text="#{job_reference}"></strong>
+                        <span th:text="${invoice.taskReference}"></span>
+                        <input type="hidden" th:field="*{taskReference}"/>
+                    </p>
+                </div>
+
+                <!-- Work Details -->
+                <div class="mt-4">
+                    <h6 th:text="#{work_details}"></h6>
+                    <table class="table invoice-table-transparent" id="workTable">
+                        <thead>
+                        <tr>
+                            <th style="width:40%" th:text="#{description}"></th>
+                            <th style="width:15%" th:text="#{hours}"></th>
+                            <th style="width:15%" th:text="#{rate}"></th>
+                            <th style="width:20%" th:text="#{total}"></th>
+                            <th class="no-print" style="width:10%" th:text="#{actions}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="workCost, iter : *{workCosts}">
+                            <td>
+                                <input type="text" th:field="*{workCosts[__${iter.index}__].description}" class="form-control"/>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('workCosts[' + iter.index + '].description')}" th:errors="*{workCosts[__${iter.index}__].description}"></div>
+                            </td>
+                            <td>
+                                <input type="number" th:field="*{workCosts[__${iter.index}__].hoursWorked}" class="form-control"/>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('workCosts[' + iter.index + '].hoursWorked')}" th:errors="*{workCosts[__${iter.index}__].hoursWorked}"></div>
+                            </td>
+                            <td>
+                                <input type="number" step="0.01" th:field="*{workCosts[__${iter.index}__].hourlyRate}" class="form-control"/>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('workCosts[' + iter.index + '].hourlyRate')}" th:errors="*{workCosts[__${iter.index}__].hourlyRate}"></div>
+                            </td>
+                            <td th:text="${workCost.total}"></td>
+                            <td class="no-print">
+                                <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">✕</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-sm btn-secondary no-print" th:text="#{invoice_add_new_line_button}" onclick="addWorkRow()"></button>
+                </div>
+
+                <!-- Materials Used -->
+                <div class="mt-4">
+                    <h6 th:text="#{materials_used}"></h6>
+                    <table class="table invoice-table-transparent" id="materialTable">
+                        <thead>
+                        <tr>
+                            <th style="width:40%" th:text="#{description}"></th>
+                            <th style="width:15%" th:text="#{quantity}"></th>
+                            <th style="width:15%" th:text="#{unit_price}"></th>
+                            <th style="width:20%" th:text="#{total}"></th>
+                            <th class="no-print" style="width:10%" th:text="#{actions}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="material, iter : *{materials}">
+                            <td>
+                                <input type="text" th:field="*{materials[__${iter.index}__].description}" class="form-control"/>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('materials[' + iter.index + '].description')}" th:errors="*{materials[__${iter.index}__].description}"></div>
+                            </td>
+                            <td>
+                                <input type="number" th:field="*{materials[__${iter.index}__].count}" class="form-control"/>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('materials[' + iter.index + '].count')}" th:errors="*{materials[__${iter.index}__].count}"></div>
+                            </td>
+                            <td>
+                                <input type="number" step="0.01" th:field="*{materials[__${iter.index}__].pricePerStock}" class="form-control"/>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('materials[' + iter.index + '].pricePerStock')}" th:errors="*{materials[__${iter.index}__].pricePerStock}"></div>
+                            </td>
+                            <td th:text="${material.total}"></td>
+                            <td class="no-print">
+                                <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">✕</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-sm btn-secondary no-print" th:text="#{invoice_add_new_line_button}" onclick="addMaterialRow()"></button>
+                </div>
+
+                <!-- Total -->
+                <div class="row mt-4">
+                    <div class="col-md-6"></div>
+                    <div class="col-md-6 text-end">
+                        <table class="table invoice-table-transparent">
+                            <tbody>
+                            <tr class="invoice-total-row">
+                                <td th:text="#{total}"></td>
+                                <td th:text="${invoice.total}">$805</td>
+                                <input type="hidden" th:field="*{total}"/>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mt-4 no-print">
+
+                    <!-- Delete -->
+                    <button type="button"
+                            class="btn btn-outline-danger"
+                            formmethod="post"
+                            data-bs-toggle="modal"
+                            th:data-bs-target="'#deleteModal-' + ${invoice.id}"
+                            th:text="#{delete_invoice}">
+                    </button>
+                    <div>
+                        <!-- Send -->
+                        <button type="submit"
+                                class="btn btn-outline-secondary"
+                                th:formaction="@{/invoices/{id}/send(id=${invoice.id})}"
+                                formmethod="post"
+                                th:text="#{send_invoice}">
+                        </button>
+
+                        <!-- Save -->
+                        <button type="submit"
+                                class="btn btn-primary ms-2"
+                                th:text="#{save_changes}">
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+            <!-- Delete Modal -->
+            <div class="modal fade" th:id="'deleteModal-' + ${invoice.id}" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 th:text="#{delete_invoice}" class="modal-title"></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body" th:text="#{delete_invoice_message}"></div>
+                        <div class="modal-footer">
+                            <button th:text="#{cancel}" class="btn btn-secondary" data-bs-dismiss="modal"></button>
+                            <form th:action="@{/invoices/{id}/delete(id=${invoice.id})}" method="post">
+                                <button th:text="#{delete}" type="submit" class="btn btn-danger"></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </main>
+</div>
+<!-- Footer -->
+<div th:insert="~{fragments/footer :: siteFooter}"></div>
+
+<script th:src="@{/js/invoice.js}"></script>
+</body>
+</html>

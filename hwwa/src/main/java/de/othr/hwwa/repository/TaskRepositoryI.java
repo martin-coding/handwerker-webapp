@@ -1,15 +1,18 @@
 package de.othr.hwwa.repository;
 
 import de.othr.hwwa.model.Task;
+import de.othr.hwwa.model.TaskStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TaskRepositoryI extends JpaRepository<Task, Long> {
+    List<Task> findByTitleContainingIgnoreCaseAndDeletedIsFalse(String title);
 
-    List<Task> findByTitleContainingIgnoreCase(String title);
-
-    List<Task> findByClientCompanyIdOrderByIdAsc(Long companyId);
+    List<Task> findByClientCompanyIdAndDeletedIsFalseOrderByIdAsc(Long companyId);
+    Optional<Task> findByIdAndDeletedIsFalse(Long id);
+    List<Task> findByCompanyIdAndStatusAndDeletedIsFalse(long companyId, TaskStatus status);
 }

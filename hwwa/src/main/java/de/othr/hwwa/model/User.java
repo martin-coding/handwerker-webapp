@@ -56,7 +56,7 @@ public class User implements Serializable{
 
     public User(){}
 
-    public User(String firstName, String lastName,String email, String password, float hourlyRate, Role role, Company company) {
+    public User(String firstName, String lastName,String email, String password, float hourlyRate, Role role, Company company, LocalDateTime createdAt) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -64,6 +64,7 @@ public class User implements Serializable{
         this.hourlyRate = hourlyRate;
         this.role = role;
         this.company = company;
+        this.createdAt = createdAt;
     }
 
     public boolean isTwoFactorEnabled() {return twoFactorEnabled;}
@@ -113,6 +114,8 @@ public class User implements Serializable{
     public String getPhoneNumber() {return phoneNumber;}
 
     public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
+
+    public String getRoleName() {return role.getName();}
 
     public Role getRole() {return role;}
 

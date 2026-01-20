@@ -36,17 +36,15 @@
                 </div>
 
                 <!-- INTRO -->
-                <h1 class="h3 fw-bold mb-2">Willkommen zurück – melde dich an</h1>
-                <p class="text-muted-custom mb-4">Behalte Aufgaben, Team und Abrechnung einfach und effizient im Griff.</p>
+                <h1 class="h3 fw-bold mb-2" th:text="#{login_header}"></h1>
+                <p class="text-muted-custom mb-4" th:text="#{login_subheader}"></p>
 
                 <!-- ERROR MESSAGE -->
-                <div th:if="${param.error}" class="alert-custom-error mb-3">
-                    Ungültige Email oder Passwort
+                <div th:if="${param.error}" class="alert-custom-error mb-3" th:text="#{login_error_message}">
                 </div>
 
                 <!-- LOGOUT MESSAGE -->
-                <div th:if="${param.logout}" class="alert-custom-success mb-3">
-                    Du wurdest erfolgreich abgemeldet
+                <div th:if="${param.logout}" class="alert-custom-success mb-3" th:text="#{login_success_message}">
                 </div>
 
                 <!-- LOGIN FORM -->
@@ -57,14 +55,14 @@
 
                     <!-- EMAIL -->
                     <div class="mb-3 input-wrapper">
-                        <label class="form-label fw-medium">Email</label>
+                        <label class="form-label fw-medium" th:text="#{email}"></label>
                         <span class="material-symbols-outlined input-field-icon icon-left">mail</span>
                         <input type="email" name="username" id="email" required placeholder="Email" class="input-field input-field-login">
                     </div>
 
                     <!-- PASSWORD -->
                     <div class="mb-0 input-wrapper">
-                        <label class="form-label fw-medium">Passwort</label>
+                        <label class="form-label fw-medium" th:text="#{password}"></label>
                         <span class="material-symbols-outlined input-field-icon icon-left">lock</span>
                         <input type="password" name="password" id="password" required placeholder="Passwort" class="input-field input-field-login">
                         <span class="material-symbols-outlined input-field-icon icon-right">visibility</span>
@@ -72,21 +70,19 @@
 
                     <div class="mb-3 input-wrapper">
                         <div class="text-end mt-1">
-                            <a th:href="@{/forgot-password}" class="small text-primary-custom text-decoration-none">
-                                Passwort vergessen?
+                            <a th:href="@{/forgot-password}" class="small text-primary-custom text-decoration-none" th:text="#{forgot_password}">
                             </a>
                         </div>
                     </div>
 
                     <!-- SUBMIT -->
-                    <button type="submit" class="btn-custom mb-3">Einloggen</button>
+                    <button type="submit" class="btn-custom mb-3" th:text="#{login}"></button>
                 </form>
 
                 <!-- REGISTER -->
                 <p class="text-center small text-secondary">
-                    Noch kein Konto?
-                    <a th:href="@{/registration}" class="text-primary-custom fw-semibold text-decoration-none">
-                        Registrieren
+                    <span th:text="#{account_question}"></span>
+                    <a th:href="@{/registration}" class="text-primary-custom fw-semibold text-decoration-none" th:text="#{register}">
                     </a>
                 </p>
             </div>
