@@ -25,4 +25,5 @@ public interface TaskRepositoryI extends JpaRepository<Task, Long> {
     List<Task> findByClientCompanyIdAndDeletedIsFalseOrderByIdAsc(Long companyId);
     Optional<Task> findByIdAndDeletedIsFalse(Long id);
     List<Task> findByCompanyIdAndStatusAndDeletedIsFalse(long companyId, TaskStatus status);
+    Long countByStatusAndDeletedFalseAndCompanyId(TaskStatus status, Long companyId);
 }

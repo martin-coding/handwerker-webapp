@@ -15,6 +15,8 @@ public interface TaskServiceI {
 
     Page<Task> findAllTasks(Pageable pageable, Collection<TaskStatus> statuses);
 
+    Long countByStatus(TaskStatus status);
+
     void delete(Task task);
 
     List<Task> getAssignedTasksForUser();

@@ -34,6 +34,42 @@
             </div>
         </div>
 
+        <!-- Cards -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 mb-4">
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="text-muted">Geplante Aufgaben</h6>
+                        <h3 th:text="${taskCountPlanned}">12</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="text-muted">Aufgaben in Bearbeitung</h6>
+                        <h3 th:text="${taskCountInProgress}">8</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="text-muted">Erledigte Aufgaben</h6>
+                        <h3 th:text="${taskCountDone}">21</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="text-muted">Abgebrochene Aufgaben</h6>
+                        <h3 th:text="${taskCountCanceled}">21</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Aufgabenübersicht -->
 
         <div class="card shadow-sm">

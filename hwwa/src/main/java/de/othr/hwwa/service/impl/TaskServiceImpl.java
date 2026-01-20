@@ -366,4 +366,10 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
         Long companyId = getCurrentCompanyId();
         return taskRepository.findByCompanyIdAndDeletedFalseAndStatusIn(companyId, statuses, pageable);
     }
+
+    @Override
+    public Long countByStatus(TaskStatus status) {
+        Long companyId = getCurrentCompanyId();
+        return taskRepository.countByStatusAndDeletedFalseAndCompanyId(status, companyId);
+    }
 }

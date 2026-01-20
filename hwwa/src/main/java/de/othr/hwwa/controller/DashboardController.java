@@ -72,6 +72,18 @@ public class DashboardController {
         model.addAttribute("dir", dir);
         model.addAttribute("activeTab", tab);
 
+        model.addAttribute("taskCountPlanned",
+            taskService.countByStatus(TaskStatus.PLANNED));
+
+        model.addAttribute("taskCountInProgress",
+                taskService.countByStatus(TaskStatus.IN_PROGRESS));
+
+        model.addAttribute("taskCountDone",
+                taskService.countByStatus(TaskStatus.DONE));
+
+        model.addAttribute("taskCountCanceled",
+                taskService.countByStatus(TaskStatus.CANCELED));
+
         return "dashboard";
     }
 }
