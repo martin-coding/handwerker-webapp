@@ -369,7 +369,7 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
 
     @Override
     public Page<Task> getTasksPagedForCurrentUser(String keyword, Collection<TaskStatus> statuses, Pageable pageable) {
-        String k = keyword == null ? "" : keyword.trim();
+        String k = (keyword == null || keyword.isBlank()) ? null : keyword.trim();
         Long companyId = getCurrentCompany().getId();
 
         if (isOwnerOrManager()) {
