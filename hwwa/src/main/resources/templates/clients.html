@@ -34,19 +34,18 @@
         <div class="row mb-3">
             <div class="text-md-end mt-2 mt-md-0">
                 <a th:text="#{client_add}"
-                th:href="@{/clients/new}"
-                class="btn btn-primary">
+                   th:href="@{/clients/new}"
+                   class="btn btn-primary">
                 </a>
             </div>
         </div>
-
 
         <!-- Clients table -->
         <div class="card shadow-sm">
             <div class="table-responsive">
 
                 <table class="table general-table mb-0">
-                    <thead class="bg-light-custom">
+                    <thead class="bg-body-tertiary">
                     <tr>
                         <th>
                             <a th:href="@{/clients(
@@ -97,7 +96,7 @@
                         <td class="text-end">
                             <div class="d-inline-flex gap-2">
                                 <a th:href="@{/clients/{id}/edit(id=${client.id})}"
-                                class="btn btn-sm btn-icon btn-icon-edit">
+                                   class="btn btn-sm btn-icon btn-icon-edit">
                                     <span class="material-symbols-outlined">edit</span>
                                 </a>
 
@@ -128,27 +127,27 @@
                     <span th:text="${clientPage.totalElements}">24</span>
                     <span th:text="#{client}"></span>
                 </p>
-                    
+
                 <div class="d-flex gap-2">
                     <a th:text="#{previous}"
-                    th:href="@{/clients(
+                       th:href="@{/clients(
                         page=${currentPage - 1},
                         sort=${sort},
                         dir=${dir},
                         keyword=${keyword}
                     )}"
-                    th:classappend="${currentPage == 0} ? 'disabled'"
-                    class="btn btn-outline-secondary btn-sm">
+                       th:classappend="${currentPage == 0} ? 'disabled'"
+                       class="btn btn-outline-secondary btn-sm">
                     </a>
                     <a th:text="#{next}"
-                    th:href="@{/clients(
+                       th:href="@{/clients(
                         page=${currentPage + 1},
                         sort=${sort},
                         dir=${dir},
                         keyword=${keyword}
                     )}"
-                    th:classappend="${currentPage + 1 == totalPages} ? 'disabled'"
-                    class="btn btn-outline-secondary btn-sm">
+                       th:classappend="${currentPage + 1 == totalPages} ? 'disabled'"
+                       class="btn btn-outline-secondary btn-sm">
                     </a>
                 </div>
             </div>

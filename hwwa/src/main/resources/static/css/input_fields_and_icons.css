@@ -1,12 +1,19 @@
-/* Input fields */
 .input-field{
     width: 100%;
     border-radius: .5rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--control-border);
     font-size: 1rem;
     line-height: 1.25rem;
     padding: .75rem 0.75rem .75rem 0.75rem;
+    background: var(--control-bg);
+    color: var(--text-dark);
 }
+.input-field:focus{
+    outline: none;
+    border-color: var(--control-border-focus);
+    box-shadow: 0 0 0 .25rem rgba(19, 91, 236, 0.25);
+}
+
 .input-field-login{
     padding: 0.75rem 2.5rem 0.75rem 2.5rem;
 }
@@ -48,4 +55,5 @@
 .icon-container {
     width: 2rem;
     height: 2rem;
-    color: var(--primary); }
+    color: var(--primary);
+}

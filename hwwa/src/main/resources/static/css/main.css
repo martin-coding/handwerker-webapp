@@ -1,10 +1,7 @@
-/* Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
 
-/* Root variables: colors, sizes, etc. */
 :root {
-    /* Colors */
     --primary: #135bec;
     --primary-light: #e0e7ff;
     --primary-hover: rgba(19, 91, 236, 0.85);
@@ -20,16 +17,55 @@
     --error-light: #fef2f2;
     --purple:#8b5cf6;
 
-    /* Card & border radius */
-    --card-radius: 1rem; /* 2xl */
+    --card-radius: 1rem;
     --badge-radius: 999px;
 
-    /* Shadows */
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
     --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+
+    --border-subtle: rgba(0,0,0,0.06);
+    --border-strong: rgba(0,0,0,0.12);
+
+    --control-bg: var(--surface-light);
+    --control-border: rgba(0,0,0,0.18);
+    --control-border-focus: rgba(19, 91, 236, 0.9);
+
+    --bar-track-start: #f1f5f9;
+    --bar-track-end: #ffffff;
+
+    --icon-hover-bg: rgba(0,0,0,0.06);
 }
 
-/* Global */
+html[data-bs-theme="dark"] {
+    color-scheme: dark;
+
+    --background-light: #0b0f14;
+    --surface-light: #111827;
+    --text-dark: #e5e7eb;
+    --muted: #9ca3af;
+    --muted-light: #1f2937;
+
+    --primary-light: rgba(19, 91, 236, 0.25);
+
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.35);
+    --shadow-md: 0 6px 14px rgba(0,0,0,0.45);
+
+    --border-subtle: rgba(255,255,255,0.10);
+    --border-strong: rgba(255,255,255,0.18);
+
+    --control-bg: rgba(17,24,39,0.9);
+    --control-border: rgba(255,255,255,0.18);
+    --control-border-focus: rgba(96, 165, 250, 0.95);
+
+    --bar-track-start: #0f172a;
+    --bar-track-end: #111827;
+
+    --icon-hover-bg: rgba(255,255,255,0.08);
+
+    --success-light: rgba(22,163,74,0.18);
+    --error-light: rgba(185,28,28,0.18);
+}
+
 html, body {
     height: 100%;
     margin: 0;
@@ -38,34 +74,28 @@ html, body {
     background: var(--background-light);
 }
 
-/* Layout */
 .app-body { display: flex; flex-direction: column; min-height: 100vh; }
 .app-main { flex: 1; }
 
-/* Header */
 .app-header {
     background: var(--surface-light);
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+    border-bottom: 1px solid var(--border-subtle);
 }
 .header-inner { height: 80px; align-items: center; }
 
-/* Brand */
 .brand-title { font-size: 1rem; margin: 0; font-weight: 700; line-height: 1; }
 
-/* Avatar */
 .avatar {
     width: 40px; height: 40px;
     border-radius: 50%;
     background-size: cover;
     background-position: center;
-    border: 2px solid #fff;
+    border: 2px solid var(--surface-light);
     box-shadow: var(--shadow-sm);
 }
 
-/* Navigation */
 .nav-links .btn { border-radius: .6rem; }
 
-/* Utility classes */
 .text-primary-custom { color: var(--primary); }
 .bg-primary-custom { background-color: var(--primary); }
 .bg-primary-custom:hover { background-color: var(--primary-hover); }
@@ -78,14 +108,12 @@ html, body {
 .bg-warning-custom { background-color: var(--warning); }
 .text-error-custom { color: var(--error); }
 .bg-error-custom { background-color: var(--error); }
-.bg-purple-custom { background: var(--purple);}
+.bg-purple-custom { background: var(--purple); }
 .rounded-2xl-custom { border-radius: var(--card-radius); }
 .rounded-full-custom { border-radius: var(--badge-radius); }
 .shadow-sm-custom { box-shadow: var(--shadow-sm); }
 .shadow-md-custom { box-shadow: var(--shadow-md); }
 
-
-/* Responsive tweaks */
 @media (min-width: 992px) { .feature-media { min-height: 220px; } }
 @media (max-width: 991.98px) {
     #mobileNav {
@@ -97,6 +125,8 @@ html, body {
         padding: 0.5rem 1rem;
         z-index: 1000;
         box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-subtle);
+        border-radius: 12px;
     }
     #mobileNav a { width: 100%; margin-bottom: .5rem; }
 }

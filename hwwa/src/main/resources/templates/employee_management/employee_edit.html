@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="de" class="light">
+<html lang="de" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <title>Mitarbeiterdetails bearbeiten</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script th:src="@{/js/theme.js}"></script>
 
     <!-- Bootstrap CSS Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,7 +13,6 @@
     <link rel="stylesheet" th:href="@{/css/input_fields_and_icons.css}">
     <link rel="stylesheet" th:href="@{/css/cards.css}">
     <link rel="stylesheet" th:href="@{/css/button.css}">
-
 </head>
 
 <body class="app-body">
@@ -20,7 +21,6 @@
 
 <main class="flex-grow-1 app-main">
     <div class="container-xl py-4">
-
 
         <h1 th:text="#{employee_edit_header}"></h1>
         <p th:text="#{employee_edit_subheader}"></p>
@@ -67,12 +67,9 @@
                     </div>
                 </div>
 
-
-
                 <div class="button-right-orientated">
                     <div>
-                        <a th:href="@{/employee}" class="btn btn-light me-2" th:text="#{cancel}">
-                        </a>
+                        <a th:href="@{/employee}" class="btn btn-outline-secondary me-2" th:text="#{cancel}"></a>
                         <button type="submit" class="btn btn-primary" th:text="#{save_changes}"></button>
                     </div>
                 </div>
@@ -83,5 +80,8 @@
 </main>
 
 <div th:insert="~{fragments/footer :: siteFooter}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/scripts.js}"></script>
 </body>
 </html>

@@ -17,9 +17,20 @@ import java.util.Optional;
 
 @Repository
 public interface TaskAssignmentRepository extends JpaRepository<TaskAssignment, TaskAssignmentId> {
+
     List<TaskAssignment> findByUserId(Long userId);
+
     List<TaskAssignment> findByTaskId(Long taskId);
+
     Optional<TaskAssignment> findByUserIdAndTaskId(Long userId, Long taskId);
+
+    @Query("""
+           select ta
+           from TaskAssignment ta
+           join fetch ta.user u
+           where ta.task.id = :taskId
+           """)
+    List<TaskAssignment> findByTaskIdWithUser(@Param("taskId") Long taskId);
     // US36 – Aktive Aufgaben pro Mitarbeiter
     @Query("""
         SELECT ta
