@@ -18,7 +18,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class DashboardServiceImpl implements DashboardServiceI {
+public class DashboardServiceImpl extends SecurityServiceImpl implements DashboardServiceI {
 
     private final TaskAssignmentRepository taskAssignmentRepository;
 
@@ -31,9 +31,11 @@ public class DashboardServiceImpl implements DashboardServiceI {
             String search,
             Pageable pageable
     ) {
+        Long companyId = getCurrentCompanyId();
 
         Page<TaskAssignment> page =
                 taskAssignmentRepository.findActiveAssignmentsPaged(
+                        companyId,
                         List.of(TaskStatus.PLANNED, TaskStatus.IN_PROGRESS),
                         search == null ? "" : search,
                         pageable
@@ -57,8 +59,10 @@ public class DashboardServiceImpl implements DashboardServiceI {
 
     LocalDateTime to = LocalDateTime.now();
 
+    Long companyId = getCurrentCompanyId();
+
     return taskAssignmentRepository
-            .sumMinutesWorkedPerUser(from, to)
+            .sumMinutesWorkedPerUser(companyId, from, to)
             .stream()
             .map(row -> new EmployeeWorkTimeDto(
                     (Long) row[0],
