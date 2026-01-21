@@ -37,7 +37,7 @@ public class Invoice implements Serializable {
     private String clientEmail;
     private Address clientAddress;
 
-    private float TotalAmount;
+    private float totalAmount;
 
     public Invoice() {
     }
@@ -118,10 +118,10 @@ public class Invoice implements Serializable {
     }
 
     public float getTotalAmount() {
-        return TotalAmount;
+        return totalAmount;
     }
 
     public void setTotalAmount(float totalAmount) {
-        TotalAmount = totalAmount;
+        this.totalAmount = totalAmount;
     }
 }

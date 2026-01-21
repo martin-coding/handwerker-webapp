@@ -71,6 +71,11 @@
                             </a>
                         </th>
                         <th>
+                            <a th:href="@{/clients(sort='totalAmount', dir=${dir == 'asc' ? 'desc' : 'asc'}, keyword=${keyword})}">
+                                Umsatz
+                            </a>
+                        </th>
+                        <th>
                             <a th:href="@{/clients(sort='createdAt', dir=${dir == 'asc' ? 'desc' : 'asc'}, keyword=${keyword})}">
                                 Created
                             </a>
@@ -85,6 +90,7 @@
                         <td th:text="${client.email}">john@example.com</td>
                         <td th:text="${client.openTasks}">3</td>
                         <td th:text="${client.completedTasks}">5</td>
+                        <td th:text="${client.totalAmount}"></td>
                         <td th:text="${#temporals.format(client.createdAt, 'yyyy-MM-dd')}"></td>
 
                         <td class="text-end">

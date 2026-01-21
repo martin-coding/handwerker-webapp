@@ -78,6 +78,7 @@ public class InvoiceServiceImpl extends SecurityServiceImpl implements InvoiceSe
         }
 
         //Create Invoice
+        float total = 0.0f;
         invoice = new Invoice(getCurrentUser(), task, getCurrentCompany(), task.getClient());
         invoice = invoiceRepository.save(invoice);
 
@@ -86,11 +87,16 @@ public class InvoiceServiceImpl extends SecurityServiceImpl implements InvoiceSe
         for (Material material : task.getMaterials()) {
             InvoiceMaterial invoiceMaterial = new  InvoiceMaterial(material, invoice);
             invoiceMaterialRepository.save(invoiceMaterial);
+            total += invoiceMaterial.getTotal();
         }
         for (TaskAssignment assignment : task.getTaskAssignments()) {
             InvoiceWorkCost workCost = new  InvoiceWorkCost(assignment, invoice);
             invoiceWorkCostRepository.save(workCost);
+            total += workCost.getTotal();
         }
+
+        invoice.setTotalAmount(total);
+        invoice = invoiceRepository.save(invoice);
 
         List<InvoiceWorkCost> workCosts = invoiceWorkCostRepository.findInvoiceWorkCostByInvoice(invoice);
         List<InvoiceMaterial> invoiceMaterials = invoiceMaterialRepository.findInvoiceMaterialByInvoice(invoice);
@@ -108,12 +114,19 @@ public class InvoiceServiceImpl extends SecurityServiceImpl implements InvoiceSe
         invoiceWorkCostRepository.deleteInvoiceWorkCostByInvoice(invoice);
         invoiceMaterialRepository.deleteInvoiceMaterialByInvoice(invoice);
 
+        float total = 0.0f;
+
         for(InvoiceWorkCostDto workCostDto : invoiceDto.getWorkCosts()) {
             invoiceWorkCostRepository.save(new  InvoiceWorkCost(workCostDto, invoice));
+            total += workCostDto.getHourlyRate() * workCostDto.getHoursWorked();
         }
         for(InvoiceMaterialDto materialDto : invoiceDto.getMaterials()) {
             invoiceMaterialRepository.save(new  InvoiceMaterial(materialDto, invoice));
+            total += materialDto.getPricePerStock() * materialDto.getCount();
         }
+
+        invoice.setTotalAmount(total);
+        invoiceRepository.save(invoice);
     }
 
     @Transactional

@@ -1,5 +1,4 @@
 package de.othr.hwwa.model.dto;
-import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;

@@ -29,9 +29,12 @@ public interface ClientRepositoryI extends JpaRepository<Client, Long> {
             SUM(CASE 
                 WHEN t.status IN ('DONE', 'CANCELED') THEN 1 
                 ELSE 0 
-            END) AS completedTasks
+            END) AS completedTasks,
+
+            COALESCE(SUM(i.totalAmount), 0) AS totalAmount
         FROM Client c
         LEFT JOIN c.tasks t
+        LEFT JOIN Invoice i ON i.task = t
         WHERE c.company.id = :companyId
         AND c.active = true
         AND (

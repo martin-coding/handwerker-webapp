@@ -18,22 +18,25 @@ public class UserRegistrationDto {
     @Email(message = "Bitte eine gültige E-Mail-Adresse eingeben")
     private String email;
 
-    @NotBlank(message = "Straße darf nicht leer sein")
-    @Size(max = 100, message = "Straße darf maximal 100 Zeichen enthalten")
+    @NotBlank(message = "{address.street.not.blank}")
+    @Size(max = 100, message = "{address.street.size}")
     private String street;
-    @NotBlank(message = "Stadt darf nicht leer sein")
-    @Size(max = 50, message = "Stadt darf maximal 50 Zeichen enthalten")
+
+    @NotBlank(message = "{address.city.not.blank}")
+    @Size(max = 50, message = "{address.city.size}")
     private String city;
-    @NotBlank(message = "Postleitzahl darf nicht leer sein")
+
+    @NotBlank(message = "{address.postalCode.not.blank}")
     @Pattern(
             regexp = "^[A-Za-z0-9 \\-]{3,10}$",
-            message = "Ungültige Postleitzahl"
+            message = "{address.postalCode.pattern}"
     )
     private String postalCode;
-    @NotBlank(message = "Land darf nicht leer sein")
+
+    @NotBlank(message = "{address.country.not.blank}")
     @Pattern(
             regexp = "^[A-Za-zÀ-ÿ]+(?:[ '-][A-Za-zÀ-ÿ]+)*$",
-            message = "Ungültiger Ländername"
+            message = "{address.country.pattern}"
     )
     private String country;
 
