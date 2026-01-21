@@ -23,8 +23,8 @@
         <!-- Page heading -->
         <div class="page-header mb-4 d-flex justify-content-between align-items-center">
             <div>
-                <h1>Dashboard</h1>
-                <p class="mb-0">Aufgabenübersicht</p>
+                <h1 th:text="#{dashboard}"></h1>
+                <p class="mb-0" th:text="#{dashboard_task}"></p>
             </div>
 
             <!-- Dashboard Switch -->
@@ -43,7 +43,7 @@
             <div class="col">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h6 class="text-muted">Geplante Aufgaben</h6>
+                        <h6 class="text-muted" th:text="#{dashboard_task_planned}"></h6>
                         <h3 th:text="${taskCountPlanned}">12</h3>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
             <div class="col">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h6 class="text-muted">Aufgaben in Bearbeitung</h6>
+                        <h6 class="text-muted" th:text="#{dashboard_task_progress}"></h6>
                         <h3 th:text="${taskCountInProgress}">8</h3>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
             <div class="col">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h6 class="text-muted">Erledigte Aufgaben</h6>
+                        <h6 class="text-muted" th:text="#{dashboard_task_done}"></h6>
                         <h3 th:text="${taskCountDone}">21</h3>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
             <div class="col">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h6 class="text-muted">Abgebrochene Aufgaben</h6>
+                        <h6 class="text-muted" th:text="#{dashboard_task_cancelled}"></h6>
                         <h3 th:text="${taskCountCanceled}">21</h3>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                             sort=${sort},
                             dir=${dir}
                         )}">
-                        Aktuelle Aufgaben
+                        <span th:text="#{dashboard_task_current}"></span>
                     </a>
                 </li>
 
@@ -101,7 +101,7 @@
                             sort=${sort},
                             dir=${dir}
                         )}">
-                        Abgeschlossene Aufgaben
+                        <span th:text="#{dashboard_task_past}"></span>
                     </a>
                 </li>
             </ul>
@@ -110,11 +110,13 @@
             <table class="table align-middle">
                 <thead>
                     <tr>
-                        <th>Aufgabe</th>
-                        <th>Ersteller</th>
-                        <th>Status</th>
-                        <th th:text="${activeTab == 'present' ? 'Start' : 'Abgeschlossen am'}"></th>
-                        <th class="text-center">Details</th>
+                        <th th:text="#{task}"></th>
+                        <th th:text="#{creator}"></th>
+                        <th th:text="#{status}"></th>
+                        <th th:with="labelKey=${activeTab == 'present' ? 'started' : 'completed'}"
+                            th:text="#{${labelKey}}">
+                        </th>
+                        <th class="text-center" th:text="#{details}"></th>
                     </tr>
                 </thead>
 
@@ -165,9 +167,9 @@
                     <span th:text="${taskPage.number * taskPage.size + 1}">1</span>
                     -
                     <span th:text="${taskPage.number * taskPage.size + taskPage.numberOfElements}">8</span>
-                    of
+                    <span th:text="#{of}"></span>
                     <span th:text="${taskPage.totalElements}">24</span>
-                    Tasks
+                    <span th:text="#{tasks}"></span>
                 </p>
 
                 <div class="d-flex gap-2">
