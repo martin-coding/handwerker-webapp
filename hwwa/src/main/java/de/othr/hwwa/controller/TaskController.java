@@ -18,6 +18,9 @@ import de.othr.hwwa.service.TaskServiceI;
 import de.othr.hwwa.service.TodoServiceI;
 import de.othr.hwwa.service.WeatherServiceI;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -25,6 +28,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -40,7 +44,9 @@ public class TaskController {
     public TaskController(TaskServiceI taskService,
                           TodoServiceI todoService,
                           MaterialServiceI materialService,
-                          ClientRepositoryI clientRepository, CommentServiceI commentService, WeatherServiceI weatherService) {
+                          ClientRepositoryI clientRepository,
+                          CommentServiceI commentService,
+                          WeatherServiceI weatherService) {
         this.taskService = taskService;
         this.todoService = todoService;
         this.materialService = materialService;
@@ -99,20 +105,51 @@ public class TaskController {
         return clientRepository.findByCompanyIdOrderByNameAsc(getCurrentCompany().getId());
     }
 
+    private String normalizeTab(String tab) {
+        if (tab == null) return "present";
+        String t = tab.trim().toLowerCase();
+        if ("present".equals(t) || "past".equals(t) || "all".equals(t)) return t;
+        return "present";
+    }
+
+    private Collection<TaskStatus> statusesForTab(String tab) {
+        return switch (tab) {
+            case "past" -> List.of(TaskStatus.DONE, TaskStatus.CANCELED);
+            case "all" -> List.of(TaskStatus.values());
+            default -> List.of(TaskStatus.PLANNED, TaskStatus.IN_PROGRESS);
+        };
+    }
+
+    private Sort sortForTab(String tab) {
+        return switch (tab) {
+            case "past" -> Sort.by(Sort.Order.desc("endDateTime"), Sort.Order.desc("id"));
+            case "all" -> Sort.by(Sort.Order.desc("id"));
+            default -> Sort.by(Sort.Order.desc("startDateTime"), Sort.Order.desc("id"));
+        };
+    }
+
     @GetMapping("/tasks")
-    public String tasks(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
-        List<Task> tasks = taskService.getAssignedTasksForUser();
+    public String tasks(@RequestParam(value = "keyword", required = false) String keyword,
+                        @RequestParam(value = "tab", defaultValue = "present") String tab,
+                        @RequestParam(value = "page", defaultValue = "0") int page,
+                        @RequestParam(value = "size", defaultValue = "10") int size,
+                        Model model) {
 
-        if (keyword != null && !keyword.isBlank()) {
-            String k = keyword.trim().toLowerCase();
-            tasks = tasks.stream()
-                    .filter(t -> t.getTitle() != null && t.getTitle().toLowerCase().contains(k))
-                    .toList();
-        }
+        String activeTab = normalizeTab(tab);
+        Collection<TaskStatus> statuses = statusesForTab(activeTab);
+        Sort sort = sortForTab(activeTab);
 
-        model.addAttribute("tasks", tasks);
+        PageRequest pageable = PageRequest.of(page, size, sort);
+        Page<Task> tasksPage = taskService.getTasksPagedForCurrentUser(keyword, statuses, pageable);
+
+        model.addAttribute("tasksPage", tasksPage);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("activeTab", activeTab);
+        model.addAttribute("pageSize", size);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", tasksPage.getTotalPages());
         model.addAttribute("canManageTasks", canManageTasks());
+
         return "task/tasks";
     }
 
@@ -155,7 +192,7 @@ public class TaskController {
     public String taskDetails(@PathVariable long id, Model model) {
         Task task = taskService.getAssignedTaskById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found " + id));
-        
+
         Coordinates coordinates = taskService.getTaskCoordinates(task.getId());
         WeatherDto weather = weatherService.getWeather(coordinates);
 

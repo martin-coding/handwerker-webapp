@@ -3,13 +3,12 @@ package de.othr.hwwa.service;
 import de.othr.hwwa.model.*;
 import de.othr.hwwa.model.dto.TaskCreateDto;
 import de.othr.hwwa.model.dto.TaskUpdateDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface TaskServiceI {
 
@@ -41,5 +40,7 @@ public interface TaskServiceI {
 
     void assignUserToTask(User user, Task task, int initialMinutes);
 
-    public Coordinates getTaskCoordinates(Long taskId);
+    Coordinates getTaskCoordinates(Long taskId);
+
+    Page<Task> getTasksPagedForCurrentUser(String keyword, Collection<TaskStatus> statuses, Pageable pageable);
 }
