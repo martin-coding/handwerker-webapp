@@ -212,7 +212,7 @@ public class DataInitializer implements CommandLineRunner {
                 });
 
         Client client1 = helper.createClient(company, "Schneider Hans", "schneider@example.de", "089 9012345",new Address("32 Galgenbergstraße", "Regensburg", "93053", "Deutschland"), LocalDateTime.now().minusDays(10));
-        Client client2 = helper.createClient(company, "Musterbau GmbH – Neubau EFH", "jan.hoepfl@st.oth-regensburg.de", "089 9090909",new Address("32 Galgenbergstraße", "Regensburg", "93053", "Deutschland"), LocalDateTime.now().minusDays(5));
+        Client client2 = helper.createClient(company, "Musterbau GmbH – Neubau EFH", "muster@firma.de", "089 9090909",new Address("32 Galgenbergstraße", "Regensburg", "93053", "Deutschland"), LocalDateTime.now().minusDays(5));
         Client client3 = helper.createClient(company2, "Elektro König KG – Büroausbau", "info@elektro-koenig.de", "0821 303030",new Address("32 Galgenbergstraße", "Regensburg", "93053", "Deutschland"), LocalDateTime.now().minusDays(7));
 
         seedSchreinereiData(
