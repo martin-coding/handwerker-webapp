@@ -75,7 +75,7 @@
                         </div>
 
                         <button type="button" class="btn btn-sm icon-btn" id="themeToggleBtn" aria-pressed="false" title="Darkmode umschalten">
-                            <span class="material-symbols-outlined">light_mode</span>
+                            <span class="material-symbols-outlined">dark_mode</span>
                         </button>
 
                         <form th:action="@{/logout}" method="post">
@@ -92,4 +92,6 @@
             </div>
         </div>
     </header>
+
+    <script th:src="@{/js/theme.js}"></script>
 </div>

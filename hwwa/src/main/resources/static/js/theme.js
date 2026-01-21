@@ -1,29 +1,34 @@
 (function () {
+    if (window.__craftmanagerThemeInit) return;
+    window.__craftmanagerThemeInit = true;
+
     const STORAGE_KEY = 'theme';
     const root = document.documentElement;
 
-    function systemPrefersDark() {
-        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    function normalizeTheme(value) {
+        return value === 'dark' || value === 'light' ? value : null;
     }
 
     function getTheme() {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored === 'dark' || stored === 'light') return stored;
-        return 'dark';
+        const stored = normalizeTheme(localStorage.getItem(STORAGE_KEY));
+        if (stored) return stored;
+        return 'light';
     }
 
     function applyTheme(theme) {
-        root.setAttribute('data-bs-theme', theme);
+        const t = normalizeTheme(theme) || 'light';
+
+        root.setAttribute('data-bs-theme', t);
 
         const btn = document.getElementById('themeToggleBtn');
-        if (btn) btn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+        if (btn) btn.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
 
         const icon = btn ? btn.querySelector('.material-symbols-outlined') : null;
-        if (icon) icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+        if (icon) icon.textContent = t === 'dark' ? 'light_mode' : 'dark_mode';
     }
 
     function toggleTheme() {
-        const current = root.getAttribute('data-bs-theme') || getTheme();
+        const current = normalizeTheme(root.getAttribute('data-bs-theme')) || getTheme();
         const next = current === 'dark' ? 'light' : 'dark';
         localStorage.setItem(STORAGE_KEY, next);
         applyTheme(next);
