@@ -27,6 +27,7 @@ public interface TaskAssignmentRepository extends JpaRepository<TaskAssignment, 
         JOIN ta.user u
         JOIN ta.task t
         WHERE u.active = true
+        AND u.company.id = :companyId
         AND t.companyId = :companyId
         AND t.status IN (:statuses)
         AND (
