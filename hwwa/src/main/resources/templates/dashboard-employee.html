@@ -71,9 +71,7 @@
                             </tr>
 
                             <tr th:if="${#lists.isEmpty(taskPage.content)}">
-                                <td colspan="3" class="text-center text-muted py-3">
-                                    Keine aktiven Aufgaben vorhanden
-                                </td>
+                                <td colspan="3" class="text-center text-muted py-3" th:text="#{dashboard_employee_empty}"></td>
                             </tr>
                             </tbody>
                         </table>

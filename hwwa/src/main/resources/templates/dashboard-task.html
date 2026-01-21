@@ -111,6 +111,7 @@
                 <thead>
                     <tr>
                         <th th:text="#{task}"></th>
+                        <th th:text="#{client}"></th>
                         <th th:text="#{creator}"></th>
                         <th th:text="#{status}"></th>
                         <th th:with="labelKey=${activeTab == 'present' ? 'started' : 'completed'}"
@@ -124,9 +125,9 @@
                     <tr th:each="task : ${tasks}">
                         <td th:text="${task.title}"></td>
 
-                        <td th:text="${task.createdBy.firstName + ' ' + task.createdBy.lastName}">
-                            Max Müller
-                        </td>
+                        <td th:text="${task.client.name}"></td>
+
+                        <td th:text="${task.createdBy.firstName + ' ' + task.createdBy.lastName}"></td>
 
                         <td>
                             <span class="badge bg-info"

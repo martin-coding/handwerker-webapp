@@ -22,7 +22,7 @@
         <!-- Header (text only) -->
         <div class="page-header mb-4">
             <div>
-                <h1 th:text="#{client}"></h1>
+                <h1 th:text="#{clients}"></h1>
                 <p th:text="#{client_txt}"></p>
             </div>
         </div>
@@ -126,7 +126,7 @@
                     <span th:text="${clientPage.number * clientPage.size + clientPage.numberOfElements}">8</span>
                     <span th:text="#{of}"></span>
                     <span th:text="${clientPage.totalElements}">24</span>
-                    <span th:text="#{client}"></span>
+                    <span th:text="#{clients}"></span>
                 </p>
                     
                 <div class="d-flex gap-2">
