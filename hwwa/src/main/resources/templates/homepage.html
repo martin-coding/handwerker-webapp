@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Homepage - CraftManager</title>
 
-    <!-- Bootstrap CSS Fonts -->
+    <script th:src="@{/js/theme.js}"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/input_fields_and_icons.css}">
@@ -13,152 +14,161 @@
     <link rel="stylesheet" th:href="@{/css/cards.css}">
     <link rel="stylesheet" th:href="@{/css/button.css}">
 
+    <style>
+        .home-tile {
+            transition: transform .12s ease, box-shadow .12s ease, outline-color .12s ease;
+            outline: 1px solid transparent;
+        }
+        .home-tile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 .75rem 1.5rem rgba(0, 0, 0, .25);
+            outline-color: rgba(13, 110, 253, .6);
+        }
+        .home-tile:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 .75rem 1.5rem rgba(0, 0, 0, .25);
+            outline-color: rgba(13, 110, 253, .85);
+        }
+    </style>
 </head>
-<script th:src="@{/js/scripts.js}"></script>
-<body class="app-body">
 
-<!-- Include header -->
+<body class="app-body bg-body">
+
 <div th:insert="~{fragments/header :: siteHeader}"></div>
 
-<!-- MAIN -->
 <main class="flex-grow-1 app-main">
     <div class="container-xl py-4">
-        <!-- Page heading -->
+
         <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
             <div>
-                <h1 th:text="'Hallo, ' + ${currentUser.firstName}">Hallo, Max</h1>
-                <div class="text-muted-custom small d-flex align-items-center gap-2 mt-1">
-                    <span class="material-symbols-outlined">calendar_today</span>
-                    Tuesday, October 24th
+                <h1 th:text="'Hallo, ' + ${currentUser.firstName}">Hallo</h1>
+                <div class="text-muted-custom small mt-1">
+                    <span th:text="${todayLabel}"></span>
                 </div>
             </div>
         </div>
 
-        <!-- Grid: main card + summary -->
         <div class="row g-4">
 
-            <!-- Weekly hours card -->
-            <div class="col-12 col-xl-4">
-                <div class="card card-stats p-3 h-100 d-flex flex-column justify-content-between">
-                    <div>
-                        <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="col-12 col-sm-6 col-lg-4">
+                <a class="card shadow-sm h-100 text-decoration-none bg-body-tertiary border-0 home-tile" th:href="@{/tasks}">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="task-icon text-body rounded-2 p-2 bg-body">
+                                <span class="material-symbols-outlined">check_box</span>
+                            </div>
                             <div>
-                                <h6 class="mb-0">Weekly Hours</h6>
-                                <small class="text-muted-custom">Oct 20 - Oct 26</small>
+                                <div class="fw-semibold text-body">Aufgaben</div>
+                                <div class="small text-muted-custom">Zugewiesene Tasks & Status</div>
                             </div>
                         </div>
-
-                        <div class="d-flex align-items-baseline gap-2 mb-4">
-                            <div class="display-5 mb-0">32.5</div>
-                            <small class="text-muted-custom">/ 40 hrs</small>
-                        </div>
                     </div>
-
-                    <div class="weekly-bars d-flex align-items-end gap-2">
-                        <div class="bar text-center">
-                            <div class="bar-track"><div class="bar-fill" style="height:85%"></div></div>
-                            <small class="d-block mt-2">Mon</small>
-                        </div>
-                        <div class="bar text-center">
-                            <div class="bar-track"><div class="bar-fill" style="height:60%"></div></div>
-                            <small class="d-block mt-2">Tue</small>
-                        </div>
-                        <div class="bar text-center">
-                            <div class="bar-track"><div class="bar-fill" style="height:45%"></div></div>
-                            <small class="d-block mt-2">Wed</small>
-                        </div>
-                        <div class="bar text-center">
-                            <div class="bar-track"><div class="bar-fill" style="height:90%"></div></div>
-                            <small class="d-block mt-2">Thu</small>
-                        </div>
-                        <div class="bar text-center">
-                            <div class="bar-track"><div class="bar-fill muted" style="height:10%"></div></div>
-                            <small class="d-block mt-2">Fri</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Today's tasks -->
-        <div class="mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0">Today's Assigned Tasks</h4>
-                <a href="#" class="text-primary-custom small d-flex align-items-center gap-1 text-decoration-none">View All </a>
+                </a>
             </div>
 
-            <div class="card rounded-3 overflow-hidden">
-                <!-- Task 1 -->
-                <div class="p-3 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between border-bottom">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="task-icon bg-warning-custom text-white rounded-2 p-2">
-                            <span class="material-symbols-outlined">plumbing</span>
-                        </div>
-                        <div>
-                            <div class="fw-semibold">Bathroom Fixture Install</div>
-                            <div class="small text-muted-custom mt-1 d-flex gap-2 align-items-center">
-                                <span class="d-flex align-items-center gap-1"><span class="material-symbols-outlined small">location_on</span>456 Oak Ave</span>
-                                <span class="dot-sep"></span>
-                                <span>2:30 PM</span>
+            <div class="col-12 col-sm-6 col-lg-4" sec:authorize="hasAuthority('manageInvoices')">
+                <a class="card shadow-sm h-100 text-decoration-none bg-body-tertiary border-0 home-tile" th:href="@{/invoices}">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="task-icon text-body rounded-2 p-2 bg-body">
+                                <span class="material-symbols-outlined">receipt_long</span>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-body">Rechnungen</div>
+                                <div class="small text-muted-custom">Erstellen & verwalten</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="d-flex gap-3 align-items-center mt-3 mt-md-0">
-                        <span class="badge bg-light-custom text-dark">Pending</span>
-                        <button class="btn btn-sm btn-light icon-btn"><span class="material-symbols-outlined">chevron_right</span></button>
-                    </div>
-                </div>
-
-                <!-- Task 2 -->
-                <div class="p-3 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between border-bottom">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="task-icon bg-purple-custom text-white rounded-2 p-2">
-                            <span class="material-symbols-outlined">design_services</span>
-                        </div>
-                        <div>
-                            <div class="fw-semibold">Initial Site Survey</div>
-                            <div class="small text-muted-custom mt-1 d-flex gap-2 align-items-center">
-                                <span class="d-flex align-items-center gap-1"><span class="material-symbols-outlined small">location_on</span>789 Pine Ln</span>
-                                <span class="dot-sep"></span>
-                                <span>4:00 PM</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex gap-3 align-items-center mt-3 mt-md-0">
-                        <span class="badge bg-light-custom text-dark">Unassigned</span>
-                        <button class="btn btn-sm btn-light icon-btn"><span class="material-symbols-outlined">chevron_right</span></button>
-                    </div>
-                </div>
-
-                <!-- Task 3 (completed) -->
-                <div class="p-3 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="task-icon bg-success-custom text-white rounded-2 p-2">
-                            <span class="material-symbols-outlined">check_circle</span>
-                        </div>
-                        <div class="opacity-75">
-                            <div class="fw-semibold text-decoration-line-through">Materials Pickup</div>
-                            <div class="small text-muted-custom mt-1 d-flex gap-2 align-items-center">
-                                <span class="d-flex align-items-center gap-1"><span class="material-symbols-outlined small">store</span>Hardware Depot</span>
-                                <span class="dot-sep"></span>
-                                <span>8:00 AM</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex gap-3 align-items-center mt-3 mt-md-0">
-                        <span class="badge bg-success-custom text-white">Completed</span>
-                        <button class="btn btn-sm btn-light icon-btn"><span class="material-symbols-outlined">chevron_right</span></button>
-                    </div>
-                </div>
+                </a>
             </div>
+
+            <div class="col-12 col-sm-6 col-lg-4" sec:authorize="hasAuthority('manageEmployees')">
+                <a class="card shadow-sm h-100 text-decoration-none bg-body-tertiary border-0 home-tile" th:href="@{/employee}">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="task-icon text-body rounded-2 p-2 bg-body">
+                                <span class="material-symbols-outlined">group</span>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-body">Mitarbeiter</div>
+                                <div class="small text-muted-custom">Team & Rollen</div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-4" sec:authorize="hasAuthority('manageClients')">
+                <a class="card shadow-sm h-100 text-decoration-none bg-body-tertiary border-0 home-tile" th:href="@{/clients}">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="task-icon text-body rounded-2 p-2 bg-body">
+                                <span class="material-symbols-outlined">person_book</span>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-body">Kunden</div>
+                                <div class="small text-muted-custom">Kundendaten verwalten</div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-4">
+                <a class="card shadow-sm h-100 text-decoration-none bg-body-tertiary border-0 home-tile" th:href="@{/calendar}">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="task-icon text-body rounded-2 p-2 bg-body">
+                                <span class="material-symbols-outlined">calendar_today</span>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-body">Kalender</div>
+                                <div class="small text-muted-custom">Tasks, Feiertage & Urlaub</div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-4" sec:authorize="hasAuthority('manageDashboard')">
+                <a class="card shadow-sm h-100 text-decoration-none bg-body-tertiary border-0 home-tile" th:href="@{/dashboard/tasks}">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="task-icon text-body rounded-2 p-2 bg-body">
+                                <span class="material-symbols-outlined">dashboard</span>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-body">Dashboard</div>
+                                <div class="small text-muted-custom">Auswertungen & KPIs</div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-4">
+                <a class="card shadow-sm h-100 text-decoration-none bg-body-tertiary border-0 home-tile" th:href="@{/profile}">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="task-icon text-body rounded-2 p-2 bg-body">
+                                <span class="material-symbols-outlined">person</span>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-body">Profil</div>
+                                <div class="small text-muted-custom">Benutzerdaten</div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
         </div>
     </div>
 </main>
-<!-- Include footer -->
 
 <div th:insert="~{fragments/footer :: siteFooter}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/scripts.js}"></script>
 </body>
 </html>

@@ -45,7 +45,7 @@ public class DataInitializer implements CommandLineRunner {
         Authority manageDashboard = helper.createAuthority("manageDashboard");
 
         Role employee = helper.createRole("Employee", Set.of(tasks, basic));
-        Role manager = helper.createRole("Manager", Set.of(tasks, basic, manageClients, manageDashboard));
+        Role manager = helper.createRole("Manager", Set.of(tasks, basic, manageClients, manageDashboard, manageInvoices));
         Role owner = helper.createRole("Owner", Set.of(tasks, createUser, manageEmployees, basic, updateCompanyData, manageClients, manageInvoices, manageDashboard));
 
         Company company = helper.createCompany("Schreinerei Sonnenschein", new Address("Sonnenweg 12", "München", "80331", "Deutschland"));

@@ -99,7 +99,7 @@ public class DataInitializerHelper {
                                 Address address,
                                 LocalDateTime createdAt) {
 
-        Client existing = clientRepository.findByCompanyIdOrderByNameAsc(company.getId()).stream()
+        Client existing = clientRepository.findByCompanyIdAndActiveTrueOrderByNameAsc(company.getId()).stream()
                 .filter(c -> c.getEmail() != null && c.getEmail().equalsIgnoreCase(email))
                 .findFirst()
                 .orElse(null);

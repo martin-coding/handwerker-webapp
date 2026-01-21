@@ -9,7 +9,7 @@
     <link rel="stylesheet" th:href="@{/css/input_fields_and_icons.css}">
     <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}" defer></script>
 </head>
-<body class="app-body bg-light d-flex flex-column min-vh-100">
+<body class="app-body bg-body d-flex flex-column min-vh-100">
 
 <!-- Header -->
 <div th:insert="~{fragments/header :: siteHeader}"></div>
@@ -23,9 +23,9 @@
                         <h2 class="card-title mb-4"
                             th:text="${client.id == null} ? #{client.new} : #{client.edit}">
                         </h2>
-                        
+
                         <!-- Form for Creating/Editing Clients -->
-                        <form th:action="${client.id == null ? '/clients' : '/clients/' + client.id}" 
+                        <form th:action="${client.id == null ? '/clients' : '/clients/' + client.id}"
                               th:object="${client}" method="post">
 
                             <!-- Name -->
@@ -33,15 +33,15 @@
                                 <label for="name" class="form-label">Name</label>
 
                                 <input
-                                    type="text"
-                                    id="name"
-                                    th:field="*{name}"
-                                    class="form-control"
-                                    th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
+                                        type="text"
+                                        id="name"
+                                        th:field="*{name}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
 
                                 <div class="invalid-feedback"
-                                    th:if="${#fields.hasErrors('name')}"
-                                    th:errors="*{name}">
+                                     th:if="${#fields.hasErrors('name')}"
+                                     th:errors="*{name}">
                                 </div>
                             </div>
 
@@ -50,32 +50,31 @@
                                 <label for="email" class="form-label" th:text="#{email}">Email</label>
 
                                 <input
-                                    id="email"
-                                    th:field="*{email}"
-                                    class="form-control"
-                                    th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                                        id="email"
+                                        th:field="*{email}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
 
                                 <div class="invalid-feedback"
-                                    th:if="${#fields.hasErrors('email')}"
-                                    th:errors="*{email}">
+                                     th:if="${#fields.hasErrors('email')}"
+                                     th:errors="*{email}">
                                 </div>
                             </div>
-
 
                             <!-- Phone -->
                             <div class="mb-3">
                                 <label for="phone" class="form-label" th:text="#{phoneNumber}">Phone</label>
 
                                 <input
-                                    type="tel"
-                                    id="phone"
-                                    th:field="*{phone}"
-                                    class="form-control"
-                                    th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'">
+                                        type="tel"
+                                        id="phone"
+                                        th:field="*{phone}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'">
 
                                 <div class="invalid-feedback"
-                                    th:if="${#fields.hasErrors('phone')}"
-                                    th:errors="*{phone}">
+                                     th:if="${#fields.hasErrors('phone')}"
+                                     th:errors="*{phone}">
                                 </div>
                             </div>
 
@@ -84,15 +83,15 @@
                                 <label for="street" class="form-label" th:text="#{street}">Street</label>
 
                                 <input
-                                    type="text"
-                                    id="street"
-                                    th:field="*{address.street}"
-                                    class="form-control"
-                                    th:classappend="${#fields.hasErrors('address.street')} ? 'is-invalid'">
+                                        type="text"
+                                        id="street"
+                                        th:field="*{address.street}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('address.street')} ? 'is-invalid'">
 
                                 <div class="invalid-feedback"
-                                    th:if="${#fields.hasErrors('address.street')}"
-                                    th:errors="*{address.street}">
+                                     th:if="${#fields.hasErrors('address.street')}"
+                                     th:errors="*{address.street}">
                                 </div>
                             </div>
 
@@ -103,15 +102,15 @@
                                     <label for="city" class="form-label" th:text="#{city}">City</label>
 
                                     <input
-                                        type="text"
-                                        id="city"
-                                        th:field="*{address.city}"
-                                        class="form-control"
-                                        th:classappend="${#fields.hasErrors('address.city')} ? 'is-invalid'">
+                                            type="text"
+                                            id="city"
+                                            th:field="*{address.city}"
+                                            class="form-control"
+                                            th:classappend="${#fields.hasErrors('address.city')} ? 'is-invalid'">
 
                                     <div class="invalid-feedback"
-                                        th:if="${#fields.hasErrors('address.city')}"
-                                        th:errors="*{address.city}">
+                                         th:if="${#fields.hasErrors('address.city')}"
+                                         th:errors="*{address.city}">
                                     </div>
                                 </div>
 
@@ -120,15 +119,15 @@
                                     <label for="postalCode" class="form-label" th:text="#{postalCode}">Postal Code</label>
 
                                     <input
-                                        type="text"
-                                        id="postalCode"
-                                        th:field="*{address.postalCode}"
-                                        class="form-control"
-                                        th:classappend="${#fields.hasErrors('address.postalCode')} ? 'is-invalid'">
+                                            type="text"
+                                            id="postalCode"
+                                            th:field="*{address.postalCode}"
+                                            class="form-control"
+                                            th:classappend="${#fields.hasErrors('address.postalCode')} ? 'is-invalid'">
 
                                     <div class="invalid-feedback"
-                                        th:if="${#fields.hasErrors('address.postalCode')}"
-                                        th:errors="*{address.postalCode}">
+                                         th:if="${#fields.hasErrors('address.postalCode')}"
+                                         th:errors="*{address.postalCode}">
                                     </div>
                                 </div>
                             </div>
@@ -138,22 +137,22 @@
                                 <label for="country" class="form-label" th:text="#{country}">Country</label>
 
                                 <input
-                                    type="text"
-                                    id="country"
-                                    th:field="*{address.country}"
-                                    class="form-control"
-                                    th:classappend="${#fields.hasErrors('address.country')} ? 'is-invalid'">
+                                        type="text"
+                                        id="country"
+                                        th:field="*{address.country}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('address.country')} ? 'is-invalid'">
 
                                 <div class="invalid-feedback"
-                                    th:if="${#fields.hasErrors('address.country')}"
-                                    th:errors="*{address.country}">
+                                     th:if="${#fields.hasErrors('address.country')}"
+                                     th:errors="*{address.country}">
                                 </div>
                             </div>
 
                             <!-- Buttons -->
                             <div class="d-flex justify-content-between">
                                 <a th:text="#{cancel}" th:href="@{/clients}" class="btn btn-outline-secondary"></a>
-                                <button type="submit" class="btn btn-primary" 
+                                <button type="submit" class="btn btn-primary"
                                         th:text="${client.id == null ? 'Save Client' : 'Update Client'}">
                                 </button>
                             </div>

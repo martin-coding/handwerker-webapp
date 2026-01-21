@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -22,20 +23,25 @@ public class CalendarServiceImpl extends SecurityServiceImpl implements Calendar
 
     @Override
     public List<Task> getMyAssignedTasksInRange(LocalDateTime startInclusive, LocalDateTime endExclusive) {
-        return taskAssignmentRepository.findByUserId(getCurrentUserId())
-                .stream()
-                .map(TaskAssignment::getTask)
-                .filter(t -> t.getStartDateTime() != null && t.getEndDateTime() != null)
-                .filter(t -> t.getStartDateTime().isBefore(endExclusive) && t.getEndDateTime().isAfter(startInclusive))
-                .toList();
-    }
+        if (startInclusive == null || endExclusive == null) {
+            return List.of();
+        }
+        if (!startInclusive.isBefore(endExclusive)) {
+            return List.of();
+        }
 
-    @Override
-    public List<Task> getMyAssignedTasksWithoutDates() {
+        Long currentCompanyId = getCurrentCompany() != null ? getCurrentCompany().getId() : null;
+
         return taskAssignmentRepository.findByUserId(getCurrentUserId())
                 .stream()
                 .map(TaskAssignment::getTask)
-                .filter(t -> t.getStartDateTime() == null || t.getEndDateTime() == null)
+                .filter(t -> t != null && t.getStartDateTime() != null && t.getEndDateTime() != null)
+                .filter(t -> t.getClient() != null && t.getClient().getCompany() != null)
+                .filter(t -> currentCompanyId != null && currentCompanyId.equals(t.getClient().getCompany().getId()))
+                .filter(t -> t.getStartDateTime().isBefore(endExclusive) && t.getEndDateTime().isAfter(startInclusive))
+                .sorted(Comparator
+                        .comparing(Task::getStartDateTime)
+                        .thenComparing(t -> t.getId() == null ? 0L : t.getId()))
                 .toList();
     }
 }

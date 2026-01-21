@@ -4,13 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
-
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -30,7 +28,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
     @Bean
     @Order(1)
     public SecurityFilterChain apiSecurityFilterChain(
@@ -40,7 +37,6 @@ public class SecurityConfig {
 
         http
                 .securityMatcher("/api/**")
-
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -71,6 +67,8 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**", "/login", "/logout", "/registration").permitAll()
                 .requestMatchers("/", "/home").hasAuthority("basic")
                 .requestMatchers("/tasks/**").hasAuthority("tasks")
+                .requestMatchers("/calendar", "/calendar/**").hasAuthority("tasks")
+                .requestMatchers("/apicalendar", "/apicalendar/**").hasAuthority("tasks")
                 .requestMatchers("/employee/**").hasAuthority("manageEmployees")
                 .requestMatchers("/profile/company/edit/**").hasAuthority("updateCompanyData")
                 .requestMatchers("/clients/**").hasAuthority("manageClients")
@@ -92,6 +90,7 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
         );
+
         http.httpBasic(Customizer.withDefaults());
         return http.build();
     }

@@ -1,8 +1,7 @@
-/* Cards */
 .card {
     background: var(--surface-light);
     border-radius: var(--card-radius);
-    border: 1px solid rgba(0,0,0,0.06);
+    border: 1px solid var(--border-subtle);
 }
 
 .twoFA-card {
@@ -13,10 +12,9 @@
     align-self: center;
 }
 
-/* Role cards */
 .role-card {
     display: block;
-    border: 1px solid #dbdfe6;
+    border: 1px solid var(--border-strong);
     border-radius: 10px;
     padding: 1rem;
     cursor: pointer;
@@ -43,13 +41,11 @@
     color: var(--primary);
 }
 
-
-/* Stat cards */
 .stat-card {
     background: var(--surface-light);
     padding: 24px;
     border-radius: 12px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border-strong);
 }
 
 .stat-card h3 {
@@ -57,11 +53,10 @@
     font-weight: 700;
 }
 
-/* Profil Cards */
 .profile-card,
 .form-card {
-    background: #fff;
-    border: 1px solid #dbdfe6;
+    background: var(--surface-light);
+    border: 1px solid var(--border-strong);
     border-radius: 12px;
     padding: 24px;
     margin-top: 30px;

@@ -1,13 +1,15 @@
 .app-main-invoice {
     flex: 1;
-    display: flex; /* ← important */
-    flex-direction: row; /* default, optional */
+    display: flex;
+    flex-direction: row;
 }
-/* Invoice container */
+
 .invoice-container {
-    background-color: white;
+    background-color: var(--surface-light);
     width: 90%;
     margin: 50px auto;
     padding: 40px;
     box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
 }

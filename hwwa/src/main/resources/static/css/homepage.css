@@ -1,21 +1,21 @@
-/* Bars */
 .weekly-bars .bar{
-    flex:1;}
+    flex:1;
+}
 .weekly-bars .bar-track{
     height:96px;
-    background:linear-gradient(180deg,#f1f5f9,#fff);
+    background:linear-gradient(180deg,var(--bar-track-start),var(--bar-track-end));
     border-radius:.35rem;
     position:relative;
-    overflow:hidden;}
+    overflow:hidden;
+}
 .weekly-bars .bar-fill{
     position:absolute;
     left:0;
     right:0;
     bottom:0;
     background:var(--primary);
-    transition:height .3s ease;}
+    transition:height .3s ease;
+}
 .weekly-bars .bar-fill.muted{
-    background:var(--muted)}
-
-
-
+    background:var(--muted)
+}

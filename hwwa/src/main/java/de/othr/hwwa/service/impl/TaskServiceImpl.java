@@ -229,11 +229,9 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
         Invoice invoice = invoiceRepository.findInvoiceByTask(task).orElse(null);
         if (invoice != null) {
             task.setDeleted(true);
-        }
-        else{
+        } else {
             taskRepository.delete(task);
         }
-
     }
 
     @Override
@@ -349,10 +347,11 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
         taskAssignmentRepository.save(assignment);
     }
 
+    @Override
     public Coordinates getTaskCoordinates(Long taskId) {
-        Task task = taskRepository.findById(taskId).orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
         Address address = task.getClient().getAddress();
-
         return geocodingService.getOrCreate(address);
     }
 
@@ -366,5 +365,17 @@ public class TaskServiceImpl extends SecurityServiceImpl implements TaskServiceI
     public Long countByStatus(TaskStatus status) {
         Long companyId = getCurrentCompanyId();
         return taskRepository.countByStatusAndDeletedFalseAndCompanyId(status, companyId);
+    }
+
+    @Override
+    public Page<Task> getTasksPagedForCurrentUser(String keyword, Collection<TaskStatus> statuses, Pageable pageable) {
+        String k = keyword == null ? "" : keyword.trim();
+        Long companyId = getCurrentCompany().getId();
+
+        if (isOwnerOrManager()) {
+            return taskRepository.findCompanyTasksPaged(companyId, statuses, k, pageable);
+        }
+
+        return taskRepository.findAssignedTasksForUserPaged(companyId, getCurrentUserId(), statuses, k, pageable);
     }
 }

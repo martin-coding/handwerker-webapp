@@ -1,11 +1,14 @@
 package de.othr.hwwa.service.impl;
 
 import de.othr.hwwa.model.Comment;
+import de.othr.hwwa.model.CommentNotificationScope;
 import de.othr.hwwa.model.Task;
 import de.othr.hwwa.repository.CommentRepositoryI;
 import de.othr.hwwa.repository.TaskAssignmentRepository;
 import de.othr.hwwa.repository.TaskRepositoryI;
 import de.othr.hwwa.service.CommentServiceI;
+import de.othr.hwwa.event.CommentCreatedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +24,15 @@ public class CommentServiceImpl extends SecurityServiceImpl implements CommentSe
     private final CommentRepositoryI commentRepository;
     private final TaskRepositoryI taskRepository;
     private final TaskAssignmentRepository taskAssignmentRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public CommentServiceImpl(CommentRepositoryI commentRepository,
                               TaskRepositoryI taskRepository,
-                              TaskAssignmentRepository taskAssignmentRepository) {
+                              TaskAssignmentRepository taskAssignmentRepository, ApplicationEventPublisher eventPublisher) {
         this.commentRepository = commentRepository;
         this.taskRepository = taskRepository;
         this.taskAssignmentRepository = taskAssignmentRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     private boolean isOwnerOrManager() {
@@ -67,7 +72,7 @@ public class CommentServiceImpl extends SecurityServiceImpl implements CommentSe
 
     @Override
     @Transactional
-    public Comment createComment(long taskId, String text) {
+    public Comment createComment(long taskId, String text, CommentNotificationScope scope) {
         assertCanAccessTask(taskId);
 
         Task task = taskRepository.findByIdAndDeletedIsFalse(taskId)
@@ -79,7 +84,12 @@ public class CommentServiceImpl extends SecurityServiceImpl implements CommentSe
         c.setCreatedAt(LocalDateTime.now());
         c.setCreatedByUser(getCurrentUser());
 
-        return commentRepository.save(c);
+        Comment saved = commentRepository.save(c);
+
+        CommentNotificationScope s = (scope == null) ? CommentNotificationScope.ALL : scope;
+        eventPublisher.publishEvent(new CommentCreatedEvent(saved.getId(), s));
+
+        return saved;
     }
 
     @Override
@@ -118,5 +128,4 @@ public class CommentServiceImpl extends SecurityServiceImpl implements CommentSe
 
         commentRepository.deleteById(commentId);
     }
-
 }

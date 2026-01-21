@@ -1,4 +1,3 @@
-/* Image panels */
 .bg-img {
     background-size: cover;
     background-position: center;
@@ -12,7 +11,6 @@
     background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuADGVsVBm8HgTvWpDwMe-NEwcmiJ98XN2rhDgo4d46xHQRonRwkP-HYN8M215wWe_VJmucr5uJRwClPwastz5CKGv7FVxiDGYcA0KrufkJghyfrGgLUYMpiiTbmJtM3wCDVsJmuHnCDIawk2lgtRCrCJlXLBFjNJmwNy2RaPPhy8KQxxNcSyc_NK1N7m0mWGd9X7k9yQLxr8GalWwz906mrQ9sf0mwQJ-Ki49z0sT4V72n-CWSeEB8qQZ-0JwjGoxTekpqYynFV');
 }
 
-
 .qr {
     margin: 20px 0;
 }
@@ -20,7 +18,8 @@
 .qr img {
     width: 200px;
     height: 200px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-strong);
     border-radius: 8px;
     padding: 8px;
+    background: var(--surface-light);
 }

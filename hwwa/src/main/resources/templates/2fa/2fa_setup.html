@@ -5,6 +5,8 @@
     <title>Two-Factor Authentication Setup</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <script th:src="@{/js/theme.js}"></script>
+
     <!-- Bootstrap CSS Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/main.css}">
@@ -18,7 +20,6 @@
 <body class="app-body">
 
 <div class="card twoFA-card">
-    <!-- Back arrow + header -->
     <div class="d-flex align-items-left mb-3">
         <a th:href="@{/profile}" class="me-3 text-decoration-none text-muted-custom">
             <span class="material-symbols-outlined">arrow_back</span>

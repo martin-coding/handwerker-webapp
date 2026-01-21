@@ -1,0 +1,74 @@
+.fc {
+    color: var(--bs-body-color);
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: .75rem;
+    padding: .75rem;
+    margin-bottom: 1rem;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1.1rem;
+}
+
+.fc .fc-scrollgrid,
+.fc .fc-scrollgrid td,
+.fc .fc-scrollgrid th {
+    border-color: var(--bs-border-color);
+}
+
+.fc .fc-timegrid-slot {
+    background: var(--bs-body-bg);
+}
+
+.fc .fc-timegrid-axis-cushion,
+.fc .fc-timegrid-slot-label-cushion {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.fc .fc-timegrid-axis-cushion {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.fc .fc-col-header-cell-cushion,
+.fc .fc-timegrid-slot-label-cushion {
+    color: var(--bs-body-color);
+}
+
+.fc .fc-button-primary {
+    background-color: var(--bs-secondary-bg);
+    border-color: var(--bs-border-color);
+    color: var(--bs-body-color);
+}
+
+.fc .fc-button-primary:hover {
+    background-color: var(--bs-tertiary-bg);
+    border-color: var(--bs-border-color);
+    color: var(--bs-body-color);
+}
+
+.fc .fc-button-primary:disabled {
+    opacity: .6;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: #fff;
+}
+
+.fc .fc-scroller {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.fc .fc-scroller::-webkit-scrollbar {
+    display: none;
+}
