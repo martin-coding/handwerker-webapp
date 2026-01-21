@@ -30,18 +30,6 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain calendarApiSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("/api/calendar/**")
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().hasAuthority("tasks")
-                );
-        return http.build();
-    }
-
-    @Bean
-    @Order(2)
     public SecurityFilterChain apiSecurityFilterChain(
             HttpSecurity http,
             JwtFilter jwtFilter
@@ -63,7 +51,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(3)
+    @Order(2)
     public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(csrf -> csrf
@@ -80,6 +68,7 @@ public class SecurityConfig {
                 .requestMatchers("/", "/home").hasAuthority("basic")
                 .requestMatchers("/tasks/**").hasAuthority("tasks")
                 .requestMatchers("/calendar", "/calendar/**").hasAuthority("tasks")
+                .requestMatchers("/apicalendar", "/apicalendar/**").hasAuthority("tasks")
                 .requestMatchers("/employee/**").hasAuthority("manageEmployees")
                 .requestMatchers("/profile/company/edit/**").hasAuthority("updateCompanyData")
                 .requestMatchers("/clients/**").hasAuthority("manageClients")
