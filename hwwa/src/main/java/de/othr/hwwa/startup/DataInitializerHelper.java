@@ -31,6 +31,9 @@ public class DataInitializerHelper {
     private final MaterialRepositoryI materialRepository;
     private final TodoRepositoryI todoRepository;
     private final CommentRepositoryI commentRepository;
+    private final InvoiceRepositoryI invoiceRepository;
+    private final InvoiceMaterialRepositoryI invoiceMaterialRepository;
+    private final InvoiceWorkCostRepositoryI invoiceWorkCostRepository;
 
 
     public DataInitializerHelper(
@@ -42,7 +45,10 @@ public class DataInitializerHelper {
             TaskAssignmentRepository taskAssignmentRepository,
             MaterialRepositoryI materialRepository,
             TodoRepositoryI todoRepository,
-            CommentRepositoryI commentRepository
+            CommentRepositoryI commentRepository,
+            InvoiceRepositoryI invoiceRepository,
+            InvoiceWorkCostRepositoryI invoiceWorkCostRepository,
+            InvoiceMaterialRepositoryI invoiceMaterialRepository
     ) {
         this.roleRepository = roleRepository;
         this.authorityRepository = authorityRepository;
@@ -53,6 +59,10 @@ public class DataInitializerHelper {
         this.materialRepository = materialRepository;
         this.todoRepository = todoRepository;
         this.commentRepository = commentRepository;
+        this.invoiceRepository = invoiceRepository;
+        this.invoiceWorkCostRepository = invoiceWorkCostRepository;
+        this.invoiceMaterialRepository = invoiceMaterialRepository;
+
     }
 
 
@@ -244,5 +254,22 @@ public class DataInitializerHelper {
         comment.setCreatedAt(createdAt);
 
         return commentRepository.save(comment);
+    }
+    public Invoice createInvoiceIfMissing(User createdByUser, Task task, Company company, Client client) {
+        Invoice invoice = this.invoiceRepository.findInvoiceByTask(task).orElse(null);
+        if (invoice == null) {
+            invoice = new Invoice(createdByUser, task, company, client);
+            invoice = invoiceRepository.save(invoice);
+            for (Material material : task.getMaterials()) {
+                InvoiceMaterial invoiceMaterial = new InvoiceMaterial(material, invoice);
+                invoiceMaterialRepository.save(invoiceMaterial);
+            }
+            for (TaskAssignment taskAssignment : task.getTaskAssignments()) {
+                InvoiceWorkCost invoiceWorkCost = new InvoiceWorkCost(taskAssignment, invoice);
+                invoiceWorkCostRepository.save(invoiceWorkCost);
+            }
+
+        }
+        return invoice;
     }
 }
