@@ -48,9 +48,8 @@ public class DataInitializer implements CommandLineRunner {
         Role manager = helper.createRole("Manager", Set.of(tasks, basic, manageClients, manageDashboard, manageInvoices));
         Role owner = helper.createRole("Owner", Set.of(tasks, createUser, manageEmployees, basic, updateCompanyData, manageClients, manageInvoices, manageDashboard));
 
-        Company company = helper.createCompany("Schreinerei Sonnenschein", new Address("Sonnenweg 12", "München", "80331", "Deutschland"));
-        Company company1 = helper.createCompany("Elektro Beier GmbH", new Address("Industriestraße 5", "München", "80995", "Deutschland"));
-        Company company2 = helper.createCompany("Malerbetrieb Farbklecks", new Address("Hauptstraße 7", "Augsburg", "86150", "Deutschland"));
+        Company company = helper.createCompany("Schreinerei Sonnenschein", new Address("1 Steinsdorfstraße", "München", "80538", "Deutschland"));
+        Company company2 = helper.createCompany("Malerbetrieb Farbklecks", new Address("5 Hauptstraße", "Augsburg", "86405", "Deutschland"));
 
         User user1 = userRepository.findUserByEmailIgnoreCase("thomas.test@abc.com")
                 .orElseGet(() -> {
@@ -62,7 +61,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setRole(owner);
                     user.setCompany(company);
                     user.setCreatedAt(LocalDateTime.now());
-                    user.setPhoneNumber("0821 222222");
+                    user.setPhoneNumber("+49 172 222222");
                     user.setHourlyRate(65.0f);
                     return userRepository.save(user);
                 });
@@ -77,8 +76,8 @@ public class DataInitializer implements CommandLineRunner {
                     user.setRole(employee);
                     user.setCompany(company);
                     user.setCreatedAt(LocalDateTime.now());
-                    user.setPhoneNumber("0821 222222");
-                    user.setHourlyRate(65.0f);
+                    user.setPhoneNumber("+49 172 222222");
+                    user.setHourlyRate(55.0f);
                     return userRepository.save(user);
                 });
 
@@ -92,7 +91,7 @@ public class DataInitializer implements CommandLineRunner {
                     user.setRole(manager);
                     user.setCompany(company);
                     user.setCreatedAt(LocalDateTime.now());
-                    user.setPhoneNumber("0821 222222");
+                    user.setPhoneNumber("+49 172 222222");
                     user.setHourlyRate(65.0f);
                     return userRepository.save(user);
                 });
@@ -107,8 +106,8 @@ public class DataInitializer implements CommandLineRunner {
                     user.setRole(employee);
                     user.setCompany(company);
                     user.setCreatedAt(LocalDateTime.now());
-                    user.setPhoneNumber("0821 222222");
-                    user.setHourlyRate(65.0f);
+                    user.setPhoneNumber("+49 172 222222");
+                    user.setHourlyRate(45.0f);
                     return userRepository.save(user);
                 });
 
@@ -122,8 +121,8 @@ public class DataInitializer implements CommandLineRunner {
                     user.setRole(employee);
                     user.setCompany(company);
                     user.setCreatedAt(LocalDateTime.now());
-                    user.setPhoneNumber("0821 222222");
-                    user.setHourlyRate(65.0f);
+                    user.setPhoneNumber("+49 172 222222");
+                    user.setHourlyRate(20.0f);
                     return userRepository.save(user);
                 });
 
@@ -137,8 +136,8 @@ public class DataInitializer implements CommandLineRunner {
                     user.setRole(employee);
                     user.setCompany(company);
                     user.setCreatedAt(LocalDateTime.now());
-                    user.setPhoneNumber("0821 222222");
-                    user.setHourlyRate(65.0f);
+                    user.setPhoneNumber("+49 172 222222");
+                    user.setHourlyRate(35.0f);
                     return userRepository.save(user);
                 });
 
@@ -152,8 +151,8 @@ public class DataInitializer implements CommandLineRunner {
                     user.setRole(employee);
                     user.setCompany(company);
                     user.setCreatedAt(LocalDateTime.now());
-                    user.setPhoneNumber("0821 222222");
-                    user.setHourlyRate(65.0f);
+                    user.setPhoneNumber("+49 172 222222");
+                    user.setHourlyRate(50.0f);
                     return userRepository.save(user);
                 });
 
@@ -167,8 +166,8 @@ public class DataInitializer implements CommandLineRunner {
                     user.setRole(employee);
                     user.setCompany(company);
                     user.setCreatedAt(LocalDateTime.now());
-                    user.setPhoneNumber("0821 222222");
-                    user.setHourlyRate(65.0f);
+                    user.setPhoneNumber("+49 172 222222");
+                    user.setHourlyRate(40.0f);
                     return userRepository.save(user);
                 });
 
@@ -182,8 +181,8 @@ public class DataInitializer implements CommandLineRunner {
                     user.setRole(employee);
                     user.setCompany(company2);
                     user.setCreatedAt(LocalDateTime.now());
-                    user.setPhoneNumber("0821 222222");
-                    user.setHourlyRate(65.0f);
+                    user.setPhoneNumber("+49 172 222222");
+                    user.setHourlyRate(75.0f);
                     return userRepository.save(user);
                 });
 
@@ -197,8 +196,8 @@ public class DataInitializer implements CommandLineRunner {
                     user.setRole(owner);
                     user.setCompany(company2);
                     user.setCreatedAt(LocalDateTime.now());
-                    user.setPhoneNumber("0821 222222");
-                    user.setHourlyRate(65.0f);
+                    user.setPhoneNumber("+49 172 222222");
+                    user.setHourlyRate(50.0f);
                     return userRepository.save(user);
                 });
 
@@ -211,9 +210,9 @@ public class DataInitializer implements CommandLineRunner {
                     return apiUserRepository.save(apiUser);
                 });
 
-        Client client1 = helper.createClient(company, "Schneider Hans", "schneider@example.de", "089 9012345",new Address("32 Galgenbergstraße", "Regensburg", "93053", "Deutschland"), LocalDateTime.now().minusDays(10));
-        Client client2 = helper.createClient(company, "Musterbau GmbH – Neubau EFH", "muster@firma.de", "089 9090909",new Address("32 Galgenbergstraße", "Regensburg", "93053", "Deutschland"), LocalDateTime.now().minusDays(5));
-        Client client3 = helper.createClient(company2, "Elektro König KG – Büroausbau", "info@elektro-koenig.de", "0821 303030",new Address("32 Galgenbergstraße", "Regensburg", "93053", "Deutschland"), LocalDateTime.now().minusDays(7));
+        Client client1 = helper.createClient(company, "Schneider Hans", "schneider@example.de", "+49 172 222222",new Address("32 Galgenbergstraße", "Regensburg", "93053", "Deutschland"), LocalDateTime.now().minusDays(10));
+        Client client2 = helper.createClient(company, "Musterbau GmbH – Neubau EFH", "muster@firma.de", "+49 172 222222",new Address("7 Hauptstraße", "Obertraubling", "93083", "Deutschland"), LocalDateTime.now().minusDays(300));
+        Client client3 = helper.createClient(company2, "Elektro König KG – Büroausbau", "info@elektro-koenig.de", "+49 172 222222",new Address("12 Spielstraße", "Horb am Neckar", "72160", "Deutschland"), LocalDateTime.now().minusDays(250));
 
         seedSchreinereiData(
                 user1,
@@ -267,7 +266,7 @@ public class DataInitializer implements CommandLineRunner {
         Task montageTreppenstufen = helper.createTaskIfMissing(
                 "Montage neue Treppenstufen",
                 "Alte Treppenstufen demontieren und neue Massivholzstufen montieren, Oberflächen schleifen und ölen.",
-                TaskStatus.IN_PROGRESS,
+                TaskStatus.DONE,
                 now.plusDays(1).withHour(8).withMinute(0).withSecond(0).withNano(0),
                 now.plusDays(1).withHour(15).withMinute(0).withSecond(0).withNano(0),
                 owner,
@@ -278,7 +277,7 @@ public class DataInitializer implements CommandLineRunner {
         Task reparaturTuer = helper.createTaskIfMissing(
                 "Innentüren nachjustieren",
                 "Mehrere klemmende Innentüren im Neubau nachjustieren und Beschläge prüfen.",
-                TaskStatus.DONE,
+                TaskStatus.PLANNED,
                 now.minusDays(3).withHour(9).withMinute(0).withSecond(0).withNano(0),
                 now.minusDays(3).withHour(12).withMinute(0).withSecond(0).withNano(0),
                 manager,
@@ -403,6 +402,8 @@ public class DataInitializer implements CommandLineRunner {
                 "Alle Türen laufen wieder sauber, Kunde sehr zufrieden.",
                 now.minusDays(2).withHour(13).withMinute(15)
         );
+
+        helper.createInvoiceIfMissing(owner, montageTreppenstufen, company, clientNeubau);
     }
 
     private void seedMalerbetriebData(
