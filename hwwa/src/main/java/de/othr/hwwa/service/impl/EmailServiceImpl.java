@@ -63,7 +63,7 @@ public class EmailServiceImpl implements EmailServiceI {
             mailMessage.setText(msgBody);
             this.mailSender.send(mailMessage);
         } catch (Exception e) {
-            System.out.println("Error while Sending Mail");
+            // intentionally silent: exception swallowed, but no console output
         }
     }
 
@@ -76,8 +76,7 @@ public class EmailServiceImpl implements EmailServiceI {
             helper.addAttachment("Invoice-" + invoiceDto.getId() + ".pdf", new ByteArrayResource(pdf));
             mailSender.send(message);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error while sending mail with PDF attachment");
+            // intentionally silent: exception swallowed, but no console output
         }
     }
 
@@ -116,7 +115,7 @@ public class EmailServiceImpl implements EmailServiceI {
                 mailMessage.setText(emailText);
                 mailSender.send(mailMessage);
             } catch (Exception e) {
-                e.printStackTrace();
+                // intentionally silent: exception swallowed, but no console output
             }
         }
     }
@@ -143,7 +142,7 @@ public class EmailServiceImpl implements EmailServiceI {
                 mailMessage.setText(body);
                 mailSender.send(mailMessage);
             } catch (Exception e) {
-                e.printStackTrace();
+                // intentionally silent: exception swallowed, but no console output
             }
         }
     }

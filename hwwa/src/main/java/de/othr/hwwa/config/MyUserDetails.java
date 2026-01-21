@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import de.othr.hwwa.model.Authority;
 import de.othr.hwwa.model.Role;
+import de.othr.hwwa.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import de.othr.hwwa.model.Authority;
-import de.othr.hwwa.model.User;
 
 public class MyUserDetails implements UserDetails {
 
@@ -23,18 +22,15 @@ public class MyUserDetails implements UserDetails {
     private Role role;
     private User loggedInUser;
 
-
     public MyUserDetails(User user) {
         this.loggedInUser = user;
         this.email = user.getEmail();
-        this.password= user.getPassword();
-        System.out.println("password of the user is="+password);
-        System.out.println("email of the user is="+this.email);
+        this.password = user.getPassword();
         this.active = user.isActive();
 
         Role userRole = user.getRole();
         this.authorities = new ArrayList<>();
-        if (userRole != null){
+        if (userRole != null) {
             for (Authority authority : userRole.getAuthorities()) {
                 authorities.add(new SimpleGrantedAuthority(authority.getName()));
             }
@@ -45,7 +41,7 @@ public class MyUserDetails implements UserDetails {
         return this.loggedInUser;
     }
 
-    public boolean isTwoFactorEnabled(){
+    public boolean isTwoFactorEnabled() {
         return this.loggedInUser.isTwoFactorEnabled();
     }
 
@@ -83,5 +79,4 @@ public class MyUserDetails implements UserDetails {
     public boolean isEnabled() {
         return this.active;
     }
-
 }
