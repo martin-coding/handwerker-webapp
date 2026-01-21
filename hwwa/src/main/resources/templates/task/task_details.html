@@ -304,9 +304,20 @@
 
               <input type="hidden" th:field="*{notificationScope}" id="notificationScope"/>
 
-              <button type="button" class="btn btn-sm btn-primary" id="commentPostBtn">
-                Posten
-              </button>
+              <div class="d-flex gap-2 flex-wrap">
+                <!-- Robust: funktioniert auch ohne JS, nutzt Default-NotificationScope -->
+                <button type="submit" class="btn btn-sm btn-primary" id="commentSubmitBtn">
+                  Posten
+                </button>
+
+                <!-- Optional: Auswahl öffnen (wenn JS verfügbar) -->
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#commentNotifyModal">
+                  Optionen
+                </button>
+              </div>
             </form>
 
             <div class="modal fade" id="commentNotifyModal" tabindex="-1" aria-hidden="true">
@@ -320,6 +331,9 @@
                   <div class="modal-body">
                     <div class="text-muted small">
                       Wer soll per E-Mail benachrichtigt werden?
+                    </div>
+                    <div class="text-muted small mt-2">
+                      Hinweis: Die Auswahl postet den Kommentar direkt.
                     </div>
                   </div>
 
@@ -444,19 +458,16 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('commentForm');
-    const openBtn = document.getElementById('commentPostBtn');
     const scopeInput = document.getElementById('notificationScope');
     const modalEl = document.getElementById('commentNotifyModal');
-    const modal = new bootstrap.Modal(modalEl);
 
-    openBtn.addEventListener('click', function () {
-      modal.show();
-    });
+    if (!form || !scopeInput || !modalEl) return;
 
     modalEl.querySelectorAll('button[data-scope]').forEach(btn => {
       btn.addEventListener('click', function () {
         scopeInput.value = btn.getAttribute('data-scope');
-        modal.hide();
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
         form.submit();
       });
     });

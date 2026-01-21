@@ -23,8 +23,17 @@ public class EmailServiceImpl implements EmailServiceI {
     @Value("${spring.mail.username}")
     private String sender;
 
+    @Value("${app.base-url:http://localhost:8080}")
+    private String baseUrl;
+
     public EmailServiceImpl(JavaMailSender mailSender) {
         this.mailSender = mailSender;
+    }
+
+    private String normalizeBaseUrl() {
+        String base = (baseUrl == null || baseUrl.isBlank()) ? "http://localhost:8080" : baseUrl.trim();
+        if (base.endsWith("/")) base = base.substring(0, base.length() - 1);
+        return base;
     }
 
     @Async
@@ -36,6 +45,8 @@ public class EmailServiceImpl implements EmailServiceI {
             mailMessage.setTo(user.getEmail());
             mailMessage.setSubject("Herzlich Willkommen - " + user.getCompany().getName());
 
+            String loginLink = normalizeBaseUrl() + "/login";
+
             String msgBody =
                     "Hallo " + user.getFirstName() + ",\n\n" +
                             "dein Benutzerkonto wurde erfolgreich erstellt.\n\n" +
@@ -43,7 +54,7 @@ public class EmailServiceImpl implements EmailServiceI {
                             "E-Mail: " + user.getEmail() + "\n" +
                             "Passwort: " + notEncryptedPassword + "\n\n" +
                             "Du kannst dich ab sofort hier anmelden:\n" +
-                            "http://localhost:8080/login\n\n" +
+                            loginLink + "\n\n" +
                             "Bitte ändere das automatisch generierte Passwort nach deiner ersten Anmeldung in der App.\n\n" +
                             "Viele Grüße,\n" +
                             "dein Team,\n" +

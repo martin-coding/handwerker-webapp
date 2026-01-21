@@ -8,6 +8,7 @@ import de.othr.hwwa.repository.CommentRepositoryI;
 import de.othr.hwwa.repository.TaskAssignmentRepository;
 import de.othr.hwwa.repository.UserRepositoryI;
 import de.othr.hwwa.service.EmailServiceI;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,6 +26,9 @@ public class CommentMailListener {
     private final CommentRepositoryI commentRepository;
     private final TaskAssignmentRepository taskAssignmentRepository;
     private final UserRepositoryI userRepository;
+
+    @Value("${app.base-url:http://localhost:8080}")
+    private String baseUrl;
 
     public CommentMailListener(
             EmailServiceI emailService,
@@ -89,7 +93,11 @@ public class CommentMailListener {
         if (recipients.isEmpty()) return;
 
         String taskTitle = c.getTask().getTitle() != null ? c.getTask().getTitle() : ("Task " + taskId);
-        String link = "http://localhost:8080/tasks/" + taskId;
+
+        String base = (baseUrl == null || baseUrl.isBlank()) ? "http://localhost:8080" : baseUrl.trim();
+        if (base.endsWith("/")) base = base.substring(0, base.length() - 1);
+
+        String link = base + "/tasks/" + taskId;
 
         emailService.sendCommentNotification(recipients, taskTitle, c.getText(), link);
     }

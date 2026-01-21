@@ -8,7 +8,7 @@ public class CommentCreateDto {
     @NotBlank(message = "Kommentar darf nicht leer sein")
     private String text;
 
-    private CommentNotificationScope notificationScope = CommentNotificationScope.NONE;
+    private CommentNotificationScope notificationScope = CommentNotificationScope.ALL;
 
     public String getText() { return text; }
     public void setText(String text) { this.text = text; }

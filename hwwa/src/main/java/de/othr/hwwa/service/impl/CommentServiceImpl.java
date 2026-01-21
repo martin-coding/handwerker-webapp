@@ -86,7 +86,7 @@ public class CommentServiceImpl extends SecurityServiceImpl implements CommentSe
 
         Comment saved = commentRepository.save(c);
 
-        CommentNotificationScope s = (scope == null) ? CommentNotificationScope.NONE : scope;
+        CommentNotificationScope s = (scope == null) ? CommentNotificationScope.ALL : scope;
         eventPublisher.publishEvent(new CommentCreatedEvent(saved.getId(), s));
 
         return saved;
@@ -128,5 +128,4 @@ public class CommentServiceImpl extends SecurityServiceImpl implements CommentSe
 
         commentRepository.deleteById(commentId);
     }
-
 }
