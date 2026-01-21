@@ -105,7 +105,7 @@ public class TaskController {
     }
 
     private List<Client> loadClientsForCurrentCompany() {
-        return clientRepository.findByCompanyIdOrderByNameAsc(getCurrentCompany().getId());
+        return clientRepository.findByCompanyIdAndActiveTrueOrderByNameAsc(getCurrentCompany().getId());
     }
 
     private String normalizeTab(String tab) {

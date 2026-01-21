@@ -50,5 +50,5 @@ public interface ClientRepositoryI extends JpaRepository<Client, Long> {
         Pageable pageable
     );
 
-    List<Client> findByCompanyIdOrderByNameAsc(Long companyId);
+    List<Client> findByCompanyIdAndActiveTrueOrderByNameAsc(Long companyId);
 }
