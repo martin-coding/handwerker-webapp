@@ -259,6 +259,36 @@
 
       <div class="col-lg-4">
 
+        <div class="card shadow-sm mb-4"
+             th:if="${myAssignment != null}">
+          <div class="card-header bg-body-tertiary">
+            <strong>Arbeitszeit buchen</strong>
+          </div>
+
+          <div class="card-body">
+            <div class="text-muted small mb-2">
+              Bisher gebucht: <span th:text="${myAssignment.minutesWorked}">0</span> min
+            </div>
+
+            <div th:if="${workHoursError}" class="alert alert-danger py-2" th:text="${workHoursError}"></div>
+            <div th:if="${workHoursSuccess}" class="alert alert-success py-2" th:text="${workHoursSuccess}"></div>
+
+            <form th:action="@{/tasks/{id}/work-hours/add(id=${task.id})}"
+                  th:object="${workHoursAdd}"
+                  method="post"
+                  class="d-flex gap-2 align-items-end flex-wrap">
+              <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+              <div>
+                <label class="form-label">Minuten</label>
+                <input type="number" min="1" step="1" class="form-control" th:field="*{minutes}">
+              </div>
+
+              <button type="submit" class="btn btn-primary">Hinzufügen</button>
+            </form>
+          </div>
+        </div>
+
         <div class="card shadow-sm mb-4">
           <div class="card-header bg-body-tertiary d-flex justify-content-between align-items-center">
             <strong>ToDos</strong>

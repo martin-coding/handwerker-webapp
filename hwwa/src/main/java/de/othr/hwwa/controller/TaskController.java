@@ -5,12 +5,14 @@ import de.othr.hwwa.model.Client;
 import de.othr.hwwa.model.Company;
 import de.othr.hwwa.model.Coordinates;
 import de.othr.hwwa.model.Task;
+import de.othr.hwwa.model.TaskAssignment;
 import de.othr.hwwa.model.TaskStatus;
 import de.othr.hwwa.model.User;
 import de.othr.hwwa.model.dto.CommentCreateDto;
 import de.othr.hwwa.model.dto.TaskCreateDto;
 import de.othr.hwwa.model.dto.TaskUpdateDto;
 import de.othr.hwwa.model.dto.WeatherDto;
+import de.othr.hwwa.model.dto.WorkHoursAddDto;
 import de.othr.hwwa.repository.ClientRepositoryI;
 import de.othr.hwwa.service.CommentServiceI;
 import de.othr.hwwa.service.MaterialServiceI;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Collection;
 import java.util.List;
@@ -204,6 +207,16 @@ public class TaskController {
         updateDto.setStartDateTime(task.getStartDateTime());
         updateDto.setEndDateTime(task.getEndDateTime());
 
+        List<TaskAssignment> assignments = taskService.getAssignmentsForTask(id);
+        Long currentUserId = getCurrentUser().getId();
+
+        TaskAssignment myAssignment = assignments.stream()
+                .filter(a -> a.getUser() != null && currentUserId.equals(a.getUser().getId()))
+                .findFirst()
+                .orElse(null);
+
+        boolean canBookWorkHours = (myAssignment != null);
+
         model.addAttribute("task", task);
         model.addAttribute("taskUpdate", updateDto);
         model.addAttribute("todos", todoService.getTodosForTask(id));
@@ -211,13 +224,36 @@ public class TaskController {
         model.addAttribute("clients", loadClientsForCurrentCompany());
         model.addAttribute("statuses", TaskStatus.values());
         model.addAttribute("canManageTasks", canManageTasks());
-        model.addAttribute("assignments", taskService.getAssignmentsForTask(id));
+        model.addAttribute("assignments", assignments);
         model.addAttribute("comments", commentService.getCommentsForTask(id));
         model.addAttribute("commentCreate", new CommentCreateDto());
-        model.addAttribute("currentUserId", getCurrentUser().getId());
+        model.addAttribute("currentUserId", currentUserId);
         model.addAttribute("weather", weather);
+        model.addAttribute("workHoursAdd", new WorkHoursAddDto());
+
+        model.addAttribute("myAssignment", myAssignment);
+        model.addAttribute("canBookWorkHours", canBookWorkHours);
 
         return "task/task_details";
+    }
+
+    @PostMapping("/tasks/{id}/work-hours/add")
+    public String addMyWorkHours(@PathVariable long id,
+                                 @Valid @ModelAttribute("workHoursAdd") WorkHoursAddDto dto,
+                                 BindingResult bindingResult,
+                                 RedirectAttributes ra) {
+
+        taskService.getAssignedTaskById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found " + id));
+
+        if (bindingResult.hasErrors()) {
+            ra.addFlashAttribute("workHoursError", "Bitte gültige Minuten (> 0) eingeben.");
+            return "redirect:/tasks/" + id;
+        }
+
+        taskService.addWorkHours(id, getCurrentUser().getId(), dto.getMinutes());
+        ra.addFlashAttribute("workHoursSuccess", "Arbeitszeit gespeichert.");
+        return "redirect:/tasks/" + id;
     }
 
     @PostMapping("/tasks/{id}/edit")
@@ -236,16 +272,34 @@ public class TaskController {
             Task task = taskService.getAssignedTaskById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Task not found " + id));
 
+            Coordinates coordinates = taskService.getTaskCoordinates(task.getId());
+            WeatherDto weather = weatherService.getWeather(coordinates);
+
+            List<TaskAssignment> assignments = taskService.getAssignmentsForTask(id);
+            Long currentUserId = getCurrentUser().getId();
+
+            TaskAssignment myAssignment = assignments.stream()
+                    .filter(a -> a.getUser() != null && currentUserId.equals(a.getUser().getId()))
+                    .findFirst()
+                    .orElse(null);
+
+            boolean canBookWorkHours = (myAssignment != null);
+
             model.addAttribute("task", task);
             model.addAttribute("todos", todoService.getTodosForTask(id));
             model.addAttribute("materials", materialService.getMaterialsForTask(id));
             model.addAttribute("clients", loadClientsForCurrentCompany());
             model.addAttribute("statuses", TaskStatus.values());
             model.addAttribute("canManageTasks", true);
-            model.addAttribute("assignments", taskService.getAssignmentsForTask(id));
+            model.addAttribute("assignments", assignments);
             model.addAttribute("comments", commentService.getCommentsForTask(id));
             model.addAttribute("commentCreate", new CommentCreateDto());
-            model.addAttribute("currentUserId", getCurrentUser().getId());
+            model.addAttribute("currentUserId", currentUserId);
+            model.addAttribute("weather", weather);
+            model.addAttribute("workHoursAdd", new WorkHoursAddDto());
+
+            model.addAttribute("myAssignment", myAssignment);
+            model.addAttribute("canBookWorkHours", canBookWorkHours);
 
             return "task/task_details";
         }
