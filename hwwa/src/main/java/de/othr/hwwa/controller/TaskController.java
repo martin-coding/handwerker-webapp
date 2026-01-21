@@ -33,6 +33,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class TaskController {
@@ -138,18 +139,25 @@ public class TaskController {
                         @RequestParam(value = "size", defaultValue = "10") int size,
                         Model model) {
 
+        int safePage = Math.max(page, 0);
+
+        Set<Integer> allowedSizes = Set.of(5, 10, 20, 50);
+        int safeSize = allowedSizes.contains(size) ? size : 10;
+
+        String k = (keyword == null || keyword.isBlank()) ? null : keyword.trim();
+
         String activeTab = normalizeTab(tab);
         Collection<TaskStatus> statuses = statusesForTab(activeTab);
         Sort sort = sortForTab(activeTab);
 
-        PageRequest pageable = PageRequest.of(page, size, sort);
-        Page<Task> tasksPage = taskService.getTasksPagedForCurrentUser(keyword, statuses, pageable);
+        PageRequest pageable = PageRequest.of(safePage, safeSize, sort);
+        Page<Task> tasksPage = taskService.getTasksPagedForCurrentUser(k, statuses, pageable);
 
         model.addAttribute("tasksPage", tasksPage);
-        model.addAttribute("keyword", keyword);
+        model.addAttribute("keyword", k);
         model.addAttribute("activeTab", activeTab);
-        model.addAttribute("pageSize", size);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", safeSize);
+        model.addAttribute("currentPage", safePage);
         model.addAttribute("totalPages", tasksPage.getTotalPages());
         model.addAttribute("canManageTasks", canManageTasks());
 

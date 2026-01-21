@@ -79,11 +79,11 @@
                                name="keyword"
                                th:value="${keyword}"
                                class="form-control"
-                               placeholder="Suchen (Task, Beschreibung, Kunde, Mitarbeiter)...">
+                               placeholder="Suchen">
                     </div>
 
                     <div style="min-width: 160px;">
-                        <select class="form-select" name="size">
+                        <select class="form-select" name="size" onchange="this.form.submit()">
                             <option th:selected="${pageSize == 5}" value="5">5 / Seite</option>
                             <option th:selected="${pageSize == 10}" value="10">10 / Seite</option>
                             <option th:selected="${pageSize == 20}" value="20">20 / Seite</option>
@@ -93,7 +93,7 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-outline-secondary">Suchen</button>
-                        <a th:href="@{/tasks(tab=${activeTab}, size=${pageSize})}"
+                        <a th:href="@{/tasks(tab=${activeTab}, page=0, size=${pageSize})}"
                            class="btn btn-outline-secondary">
                             Clear
                         </a>
@@ -159,7 +159,7 @@
 
                             <span th:if="${activeTab != 'past'}">
                                 <span th:if="${task.startDateTime != null and task.endDateTime != null}"
-                                      th:text="${#temporals.format(task.startDateTime, 'dd.MM.yyyy HH:mm')} + ' - ' + ${#temporals.format(task.endDateTime, 'dd.MM.yyyy HH:mm')}"></span>
+                                      th:text="${#temporals.format(task.startDateTime, 'dd.MM.yyyy HH:mm') + ' - ' + #temporals.format(task.endDateTime, 'dd.MM.yyyy HH:mm')}"></span>
                                 <span th:if="${task.startDateTime == null or task.endDateTime == null}" class="text-muted">-</span>
                             </span>
                         </td>
@@ -187,19 +187,19 @@
                 </p>
 
                 <div class="d-flex gap-2">
-                    <a class="btn btn-outline-secondary btn-sm"
-                       th:classappend="${tasksPage.first} ? 'disabled' : ''"
-                       th:attr="aria-disabled=${tasksPage.first}"
+                    <a th:if="${!tasksPage.first}"
+                       class="btn btn-outline-secondary btn-sm"
                        th:href="@{/tasks(tab=${activeTab}, page=${tasksPage.number - 1}, size=${pageSize}, keyword=${keyword})}">
                         &laquo;
                     </a>
+                    <span th:if="${tasksPage.first}" class="btn btn-outline-secondary btn-sm disabled">&laquo;</span>
 
-                    <a class="btn btn-outline-secondary btn-sm"
-                       th:classappend="${tasksPage.last} ? 'disabled' : ''"
-                       th:attr="aria-disabled=${tasksPage.last}"
+                    <a th:if="${!tasksPage.last}"
+                       class="btn btn-outline-secondary btn-sm"
                        th:href="@{/tasks(tab=${activeTab}, page=${tasksPage.number + 1}, size=${pageSize}, keyword=${keyword})}">
                         &raquo;
                     </a>
+                    <span th:if="${tasksPage.last}" class="btn btn-outline-secondary btn-sm disabled">&raquo;</span>
                 </div>
             </div>
         </div>

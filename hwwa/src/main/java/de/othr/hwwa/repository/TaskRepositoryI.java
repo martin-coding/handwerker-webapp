@@ -32,25 +32,46 @@ public interface TaskRepositoryI extends JpaRepository<Task, Long> {
 
     Long countByStatusAndDeletedFalseAndCompanyId(TaskStatus status, Long companyId);
 
-    @Query("""
-           select distinct t
-           from Task t
-           join t.client c
-           left join t.taskAssignments ta
-           left join ta.user u
-           where t.deleted = false
-             and c.company.id = :companyId
-             and t.status in (:statuses)
-             and (
-                  :keyword is null or :keyword = ''
-                  or lower(t.title) like lower(concat('%', :keyword, '%'))
-                  or lower(t.description) like lower(concat('%', :keyword, '%'))
-                  or lower(c.name) like lower(concat('%', :keyword, '%'))
-                  or lower(c.email) like lower(concat('%', :keyword, '%'))
-                  or lower(u.firstName) like lower(concat('%', :keyword, '%'))
-                  or lower(u.lastName) like lower(concat('%', :keyword, '%'))
-             )
-           """)
+    @Query(
+            value = """
+                   select distinct t
+                   from Task t
+                   join t.client c
+                   left join t.taskAssignments ta
+                   left join ta.user u
+                   where t.deleted = false
+                     and c.company.id = :companyId
+                     and t.status in (:statuses)
+                     and (
+                          :keyword is null or :keyword = ''
+                          or lower(t.title) like lower(concat('%', :keyword, '%'))
+                          or lower(t.description) like lower(concat('%', :keyword, '%'))
+                          or lower(c.name) like lower(concat('%', :keyword, '%'))
+                          or lower(c.email) like lower(concat('%', :keyword, '%'))
+                          or lower(u.firstName) like lower(concat('%', :keyword, '%'))
+                          or lower(u.lastName) like lower(concat('%', :keyword, '%'))
+                     )
+                   """,
+            countQuery = """
+                   select count(distinct t)
+                   from Task t
+                   join t.client c
+                   left join t.taskAssignments ta
+                   left join ta.user u
+                   where t.deleted = false
+                     and c.company.id = :companyId
+                     and t.status in (:statuses)
+                     and (
+                          :keyword is null or :keyword = ''
+                          or lower(t.title) like lower(concat('%', :keyword, '%'))
+                          or lower(t.description) like lower(concat('%', :keyword, '%'))
+                          or lower(c.name) like lower(concat('%', :keyword, '%'))
+                          or lower(c.email) like lower(concat('%', :keyword, '%'))
+                          or lower(u.firstName) like lower(concat('%', :keyword, '%'))
+                          or lower(u.lastName) like lower(concat('%', :keyword, '%'))
+                     )
+                   """
+    )
     Page<Task> findCompanyTasksPaged(
             @Param("companyId") Long companyId,
             @Param("statuses") Collection<TaskStatus> statuses,
@@ -58,24 +79,44 @@ public interface TaskRepositoryI extends JpaRepository<Task, Long> {
             Pageable pageable
     );
 
-    @Query("""
-           select distinct t
-           from Task t
-           join t.taskAssignments ta
-           join ta.user u
-           join t.client c
-           where t.deleted = false
-             and c.company.id = :companyId
-             and u.id = :userId
-             and t.status in (:statuses)
-             and (
-                  :keyword is null or :keyword = ''
-                  or lower(t.title) like lower(concat('%', :keyword, '%'))
-                  or lower(t.description) like lower(concat('%', :keyword, '%'))
-                  or lower(c.name) like lower(concat('%', :keyword, '%'))
-                  or lower(c.email) like lower(concat('%', :keyword, '%'))
-             )
-           """)
+    @Query(
+            value = """
+                   select distinct t
+                   from Task t
+                   join t.taskAssignments ta
+                   join ta.user u
+                   join t.client c
+                   where t.deleted = false
+                     and c.company.id = :companyId
+                     and u.id = :userId
+                     and t.status in (:statuses)
+                     and (
+                          :keyword is null or :keyword = ''
+                          or lower(t.title) like lower(concat('%', :keyword, '%'))
+                          or lower(t.description) like lower(concat('%', :keyword, '%'))
+                          or lower(c.name) like lower(concat('%', :keyword, '%'))
+                          or lower(c.email) like lower(concat('%', :keyword, '%'))
+                     )
+                   """,
+            countQuery = """
+                   select count(distinct t)
+                   from Task t
+                   join t.taskAssignments ta
+                   join ta.user u
+                   join t.client c
+                   where t.deleted = false
+                     and c.company.id = :companyId
+                     and u.id = :userId
+                     and t.status in (:statuses)
+                     and (
+                          :keyword is null or :keyword = ''
+                          or lower(t.title) like lower(concat('%', :keyword, '%'))
+                          or lower(t.description) like lower(concat('%', :keyword, '%'))
+                          or lower(c.name) like lower(concat('%', :keyword, '%'))
+                          or lower(c.email) like lower(concat('%', :keyword, '%'))
+                     )
+                   """
+    )
     Page<Task> findAssignedTasksForUserPaged(
             @Param("companyId") Long companyId,
             @Param("userId") Long userId,
