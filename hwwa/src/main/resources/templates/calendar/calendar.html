@@ -132,11 +132,20 @@
         url: '/api/calendar/events'
       },
 
+      eventDidMount: function(info) {
+        const url = info.event.url;
+        const hasUrl = !!url && url !== 'null' && url !== 'undefined';
+        info.el.style.cursor = hasUrl ? 'pointer' : 'default';
+      },
+
       eventClick: function(info) {
         info.jsEvent.preventDefault();
-        if (info.event.url) {
-          window.location.href = info.event.url;
+
+        const url = info.event.url;
+        if (!url || url === 'null' || url === 'undefined') {
+          return;
         }
+        window.location.href = url;
       }
     });
 
