@@ -83,7 +83,6 @@
                     </div>
 
                     <div style="min-width: 160px;">
-                        <!-- FIX: onchange submit -> URL enthält size=5/20/50 und bleibt beim Refresh erhalten -->
                         <select class="form-select" name="size" onchange="this.form.submit()">
                             <option th:selected="${pageSize == 5}" value="5">5 / Seite</option>
                             <option th:selected="${pageSize == 10}" value="10">10 / Seite</option>
